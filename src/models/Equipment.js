@@ -5,26 +5,36 @@ class Equipment {
     db.all('SELECT * FROM equipment WHERE room_id = ?', [roomId], cb);
   }
 
+  static findById(id, cb) {
+    db.get('SELECT * FROM equipment WHERE id = ?', [id], cb);
+  }
+
   static create(fields, cb) {
     const { room_id, name, serial_number, purchase_date } = fields;
-    const sql = `INSERT INTO equipment (room_id, name, serial_number, purchase_date)
-                 VALUES (?, ?, ?, ?)`;
-    db.run(sql, [room_id, name, serial_number, purchase_date], function (err) {
+    // default status 'в работе' for newly created equipment
+    const status = fields.status || 'в работе';
+    const sql = `INSERT INTO equipment (room_id, name, serial_number, purchase_date, status)
+                 VALUES (?, ?, ?, ?, ?)`;
+    db.run(sql, [room_id, name, serial_number, purchase_date, status], function (err) {
       cb(err, this?.lastID);
     });
   }
 
-  static setActive(id, isActive, cb) {
-    db.run('UPDATE equipment SET is_active = ? WHERE id = ?', [isActive ? 1 : 0, id], cb);
+  static setStatus(id, status, cb) {
+    db.run('UPDATE equipment SET status = ? WHERE id = ?', [status, id], cb);
+  }
+
+  static delete(id, cb) {
+    db.run('DELETE FROM equipment WHERE id = ?', [id], cb);
   }
 
   static update(id, fields, cb) {
-    const { name, serial_number, purchase_date } = fields;
+    const { name, serial_number, purchase_date, status } = fields;
     const sql = `
       UPDATE equipment
-      SET name = ?, serial_number = ?, purchase_date = ?
+      SET name = ?, serial_number = ?, purchase_date = ?, status = COALESCE(?, status)
       WHERE id = ?`;
-    db.run(sql, [name, serial_number, purchase_date, id], cb);
+    db.run(sql, [name, serial_number, purchase_date, status, id], cb);
   }
 }
 

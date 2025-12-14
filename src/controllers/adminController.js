@@ -19,7 +19,10 @@ exports.getDashboardData = (req, res, next) => {
       User.findAllTeachers((err3, teachers) => {
         if (err3) return next(err3);
 
-        res.json({ complaints, rooms, teachers });
+        User.findAllAdmins((err4, admins) => {
+          if (err4) return next(err4);
+          res.json({ complaints, rooms, teachers, admins, currentUser: req.session.user });
+        });
       });
     });
   });
@@ -36,9 +39,10 @@ exports.createRoom = (req, res, next) => {
 
 // Удаление аудитории
 exports.deleteRoom = (req, res, next) => {
-  Room.delete(req.params.id, (err) => {
+  const id = req.params.id;
+  Room.deleteCascade(id, (err) => {
     if (err) return next(err);
-    res.json({ message: 'Аудитория удалена' });
+    res.json({ message: 'Аудитория и связанные данные удалены' });
   });
 };
 
@@ -61,6 +65,21 @@ exports.getRoomData = (req, res, next) => {
   });
 };
 
+// Подробности конкретной жалобы (для страницы администратора)
+exports.getComplaintDetails = (req, res, next) => {
+  const id = req.params.id;
+  Complaint.findById(id, (err, complaint) => {
+    if (err) return next(err);
+    if (!complaint) return res.status(404).json({ message: 'Жалоба не найдена' });
+
+    // сформируем пути к вложениям, если есть
+    const attachments = [];
+    if (complaint.attachment_path) attachments.push(`/uploads/${complaint.attachment_path}`);
+
+    res.json({ complaint, attachments });
+  });
+};
+
 // Добавление оборудования в аудиторию
 exports.addEquipmentToRoom = (req, res, next) => {
   const room_id = req.params.id;
@@ -75,11 +94,26 @@ exports.addEquipmentToRoom = (req, res, next) => {
 // Изменение активности оборудования
 exports.setEquipmentActive = (req, res, next) => {
   const { id } = req.params;
-  const { is_active } = req.body;
-  Equipment.setActive(id, !!is_active, (err) => {
-    if (err) return next(err);
-    res.json({ message: 'Статус оборудования обновлён' });
-  });
+  const { is_active, status } = req.body;
+
+  // Если пришёл статус — используем его
+  if (status) {
+    return Equipment.setStatus(id, status, (err) => {
+      if (err) return next(err);
+      res.json({ message: 'Статус оборудования обновлён' });
+    });
+  }
+
+  // Старый формат: is_active булев — маппим в статус
+  const mapped = (is_active === undefined) ? null : (is_active ? 'в работе' : 'в ремонте');
+  if (mapped) {
+    Equipment.setStatus(id, mapped, (err) => {
+      if (err) return next(err);
+      res.json({ message: 'Статус оборудования обновлён' });
+    });
+  } else {
+    res.status(400).json({ message: 'Параметр status или is_active обязателен' });
+  }
 };
 
 // Редактирование оборудования
@@ -91,13 +125,48 @@ exports.updateEquipment = (req, res, next) => {
   });
 };
 
+// Удаление оборудования
+exports.deleteEquipment = (req, res, next) => {
+  const { id } = req.params;
+  Equipment.delete(id, (err) => {
+    if (err) return next(err);
+    res.json({ message: 'Оборудование удалено' });
+  });
+};
+
 // Изменение статуса жалобы
 exports.changeComplaintStatus = (req, res, next) => {
   const { id } = req.params;
   const { status } = req.body;
-  Complaint.setStatus(id, status, (err) => {
+  // Получаем жалобу, чтобы узнать equipment_id
+  Complaint.findById(id, (err, complaint) => {
     if (err) return next(err);
-    res.json({ message: 'Статус жалобы обновлён' });
+    if (!complaint) return res.status(404).json({ message: 'Жалоба не найдена' });
+
+    Complaint.setStatus(id, status, (err2) => {
+      if (err2) return next(err2);
+
+      // Если отметили как исправлено — помечаем оборудование как активное
+      const eqId = complaint.equipment_id;
+      if (status === 'исправлено') {
+        Equipment.setStatus(eqId, 'в работе', (err3) => {
+          if (err3) return next(err3);
+          res.json({ message: 'Статус жалобы обновлён и оборудование помечено как исправленное' });
+        });
+      } else if (status === 'в ремонте') {
+        Equipment.setStatus(eqId, 'в ремонте', (err3) => {
+          if (err3) return next(err3);
+          res.json({ message: 'Статус жалобы обновлён и оборудование помечено как в ремонте' });
+        });
+      } else if (status === 'на рассмотрении') {
+        Equipment.setStatus(eqId, 'на рассмотрении', (err3) => {
+          if (err3) return next(err3);
+          res.json({ message: 'Статус жалобы обновлён и оборудование помечено как на рассмотрении' });
+        });
+      } else {
+        res.json({ message: 'Статус жалобы обновлён' });
+      }
+    });
   });
 };
 

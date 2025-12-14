@@ -43,17 +43,20 @@
 
           <label>
             Оборудование
-            <input type="text" id="complaintEquipmentName" readonly />
+            <input type="text" id="complaintEquipmentName" readonly placeholder="Выберите оборудование в таблице слева" />
+            <div class="hint">Поля заполняются при выборе оборудования</div>
           </label>
 
           <label>
             Опишите проблему
-            <textarea name="description" required></textarea>
+            <textarea name="description" required placeholder="Коротко опишите неисправность, например: не включается или отсутствует изображение"></textarea>
+            <div class="hint">Опишите, что именно не работает и когда заметили проблему</div>
           </label>
 
           <label>
             Прикрепите фото/видео
             <input type="file" name="attachments" multiple />
+            <div class="hint">Можно прикрепить фото/видео — поможет администратору</div>
           </label>
 
           <button class="btn hover-highlight" type="submit">Отправить</button>

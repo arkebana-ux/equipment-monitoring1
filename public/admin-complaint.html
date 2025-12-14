@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Жалоба</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <button id="backBtn" class="back-link">← Назад</button>
+    <h1 id="complaintTitle">Жалоба</h1>
+    <button id="logoutBtn" class="btn">Выйти</button>
+  </header>
+
+  <main class="tabs-container">
+    <section class="card wide">
+      <h2>Детали жалобы</h2>
+      <div id="complaintDetails"></div>
+    </section>
+
+    <section class="card wide">
+      <h2>Вложения</h2>
+      <div id="attachments"></div>
+    </section>
+  </main>
+
+  <script>
+  (function(){
+    function qp() { const u = new URL(window.location.href); return Object.fromEntries(u.searchParams.entries()); }
+    const params = qp();
+    const id = params.id;
+    if (!id) {
+      document.getElementById('complaintDetails').textContent = 'ID жалобы не задан.';
+    } else {
+      fetch(`/admin/complaints/${id}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.message) return document.getElementById('complaintDetails').textContent = data.message;
+          const c = data.complaint;
+          const d = document.getElementById('complaintDetails');
+          d.innerHTML = `
+            <p><strong>ID:</strong> ${c.id}</p>
+            <p><strong>Преподаватель:</strong> ${c.full_name || c.login || '-'}</p>
+            <p><strong>Оборудование:</strong> ${c.equipment_name || '-'}</p>
+            <p><strong>Описание:</strong><br/>${c.description || '-'}</p>
+            <p><strong>Статус:</strong> ${c.status}</p>
+            <p><strong>Дата подачи:</strong> ${c.created_at || '-'}</p>
+            <p><strong>Дата обновления:</strong> ${c.updated_at || '-'}</p>
+          `;
+
+          const att = document.getElementById('attachments');
+          att.innerHTML = '';
+          (data.attachments || []).forEach(a => {
+            const name = a.split('/').pop().toLowerCase();
+            if (/\.(jpg|jpeg|png|gif)$/.test(name)) {
+              const img = document.createElement('img');
+              img.src = a;
+              img.className = 'attachment-img';
+              att.appendChild(img);
+            } else if (/\.(mp4|webm|ogg)$/.test(name)) {
+              const v = document.createElement('video');
+              v.controls = true;
+              v.src = a;
+              v.className = 'attachment-video';
+              att.appendChild(v);
+            } else {
+              const aEl = document.createElement('a');
+              aEl.href = a;
+              aEl.textContent = name;
+              aEl.download = name;
+              att.appendChild(aEl);
+            }
+            att.appendChild(document.createElement('br'));
+          });
+        })
+        .catch(err => {
+          console.error('Load complaint detail error', err);
+          document.getElementById('complaintDetails').textContent = 'Ошибка при загрузке жалобы';
+        });
+    }
+  })();
+  </script>
+  <script>
+    document.getElementById('backBtn').addEventListener('click', () => {
+      try {
+        const last = sessionStorage.getItem('adminLastTab');
+        if (last) {
+          // remove stored value and go to dashboard with that tab
+          sessionStorage.removeItem('adminLastTab');
+          window.location.href = `/admin-dashboard.html?tab=${encodeURIComponent(last)}`;
+          return;
+        }
+      } catch (e) {}
+      if (window.history.length > 1) window.history.back(); else window.location.href = '/';
+    });
+  </script>
+</body>
+</html>

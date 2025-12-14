@@ -17,6 +17,10 @@ class User {
     db.all('SELECT * FROM users WHERE role = "teacher"', cb);
   }
 
+  static findAllAdmins(cb) {
+    db.all('SELECT * FROM users WHERE role = "admin"', cb);
+  }
+
   static update(id, fields, cb) {
     const { full_name, role } = fields;
     const sql = `UPDATE users SET full_name = ?, role = ? WHERE id = ?`;

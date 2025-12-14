@@ -14,4 +14,15 @@ function ensureRole(role) {
   };
 }
 
-module.exports = { ensureAuth, ensureRole };  // Теперь экспортируем ensureAuth
+function ensureMainAdmin(req, res, next) {
+  if (!req.session.user) {
+    return res.status(403).json({ message: 'Требуется главный администратор' });
+  }
+  const login = String(req.session.user.login || '').toLowerCase();
+  if (login !== 'admin') {
+    return res.status(403).json({ message: 'Требуется главный администратор' });
+  }
+  next();
+}
+
+module.exports = { ensureAuth, ensureRole, ensureMainAdmin };  // Теперь экспортируем ensureAuth

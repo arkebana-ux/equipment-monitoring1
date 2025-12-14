@@ -9,6 +9,7 @@ const { initDb } = require('./src/config/db');
 const authRoutes = require('./src/routes/authRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
 const complaintRoutes = require('./src/routes/complaintRoutes');
+const userRoutes = require('./src/routes/userRoutes');
 const errorHandler = require('./src/middleware/errorHandler');
 
 const app = express();
@@ -54,6 +55,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // --- Роуты ---
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
+app.use('/user', userRoutes);
 app.use('/complaints', complaintRoutes);
 
 // --- обработчик ошибок ---

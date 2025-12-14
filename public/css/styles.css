@@ -101,6 +101,37 @@ textarea {
   color: #ffffff;
 }
 
+/* Отступ между соседними кнопками в одной ячейке */
+.btn + .btn {
+  margin-left: 8px;
+}
+
+/* Красная кнопка удаления */
+.btn-danger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.btn-danger:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+/* Маленькая кнопка (в строке действий) */
+.btn-sm {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Небольшой отступ между смол-кнопками */
+.btn-sm + .btn-sm {
+  margin-left: 6px;
+}
+
 /* ШАПКА */
 
 .topbar {
@@ -192,10 +223,45 @@ textarea {
   background: #eef2ff;
 }
 
+/* Скрыть колонку ID (первая колонка) во всех таблицах */
+.data-table th:first-child,
+.data-table td:first-child {
+  display: none;
+}
+
+/* Выделенная строка и пометка отправлено */
+.data-table tr.selected {
+  outline: 2px solid #4f46e5;
+  background: #eef2ff;
+}
+.data-table tr.sent {
+  background: #ecfccb; /* светло-зелёный */
+  color: #065f46;
+}
+
 .hint {
   margin-top: 8px;
   font-size: 13px;
   color: #6b7280;
+}
+
+/* Equipment status highlighting */
+.status-review td { background: #fff8e1; } /* light yellow */
+.status-repair td { background: #ffecec; } /* light red */
+.status-review, .status-repair { color: #000; }
+.status-review { cursor: not-allowed; }
+.status-repair { cursor: not-allowed; }
+
+/* Attachment previews */
+.attachment-img { max-width: 100%; height: auto; display:block; margin-bottom:8px; border:1px solid #ddd; }
+.attachment-video { max-width:100%; display:block; margin-bottom:8px; }
+
+/* truncate long complaint descriptions in admin table */
+.data-table td.compl-desc {
+  max-width: 420px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ЛЕЙАУТ ДВУХ КОЛОНОК НА СТРАНИЦЕ АУДИТОРИИ */

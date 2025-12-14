@@ -2,6 +2,7 @@
 const User = require('../models/User');
 const RoomTeacher = require('../models/RoomTeacher');
 const Complaint = require('../models/Complaint');
+const Equipment = require('../models/Equipment');
 
 // Получить все аудитории, привязанные к текущему пользователю
 exports.getMyRooms = (req, res, next) => {

@@ -14,13 +14,38 @@ exports.showLoginPage = (req, res) => {
 exports.register = (req, res, next) => {
   const { login, password, full_name, role, rooms } = req.body;
 
+  // Authorization for registration:
+  // - To create an admin account, the requester must be the main admin (login 'admin', case-insensitive)
+  // - To create a teacher account, the requester must be an admin (any admin)
+  // If no session or insufficient rights — reject.
+  if (!req.session || !req.session.user) {
+    return res.status(403).json({ message: 'Требуется авторизация администратора' });
+  }
+
+  const requesterLogin = String(req.session.user.login || '').toLowerCase();
+  const requesterRole = req.session.user.role;
+
+  if (role === 'admin') {
+    if (requesterLogin !== 'admin') {
+      return res.status(403).json({ message: 'Только главный администратор может создавать админов' });
+    }
+  } else {
+    // creating non-admin (teacher)
+    if (requesterRole !== 'admin') {
+      return res.status(403).json({ message: 'Только администраторы могут создавать преподавателей' });
+    }
+  }
+
   bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
     if (err) return next(err);
-
     User.create({ login, password_hash: hash, full_name, role }, (err, id) => {
       if (err) {
         logger.error('Register error: ' + err.message);
-        return res.status(400).json({ message: 'Ошибка регистрации' });
+        // Если ошибка уникальности логина в SQLite
+        if (err.message && /unique|constraint|UNIQUE/i.test(err.message)) {
+          return res.status(409).json({ message: 'Логин уже занят' });
+        }
+        return res.status(400).json({ message: 'Ошибка регистрации', detail: err.message });
       }
 
       // если создаём преподавателя и есть аудитории — привязываем
