@@ -1,0 +1,634 @@
+[2025-12-07T07:55:21.698Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T07:55:21.702Z] [INFO] Connected to SQLite database
+[2025-12-07T07:55:21.756Z] [INFO] Database schema ensured
+[2025-12-07T07:55:33.279Z] [HTTP] [0mGET / [32m200[0m 6.502 ms - 1389[0m
+[2025-12-07T07:55:33.351Z] [HTTP] [0mGET /css/styles.css [32m200[0m 3.523 ms - 1706[0m
+[2025-12-07T07:55:33.356Z] [HTTP] [0mGET /js/main.js [32m200[0m 2.138 ms - 3297[0m
+[2025-12-07T07:55:33.527Z] [HTTP] [0mGET /favicon.ico [33m404[0m 3.607 ms - 150[0m
+[2025-12-07T07:56:02.947Z] [HTTP] [0mGET / [36m304[0m 1.640 ms - -[0m
+[2025-12-07T07:56:03.046Z] [HTTP] [0mGET /css/styles.css [36m304[0m 0.946 ms - -[0m
+[2025-12-07T07:56:03.050Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.417 ms - -[0m
+[2025-12-07T07:56:03.213Z] [HTTP] [0mGET /favicon.ico [33m404[0m 1.145 ms - 150[0m
+[2025-12-07T07:56:16.114Z] [INFO] User registered: Arkebana
+[2025-12-07T07:56:16.117Z] [HTTP] [0mPOST /auth/register [32m200[0m 89.598 ms - 76[0m
+[2025-12-07T07:56:25.849Z] [INFO] User logged in: Arkebana
+[2025-12-07T07:56:25.851Z] [HTTP] [0mPOST /auth/login [32m200[0m 67.574 ms - 56[0m
+[2025-12-07T07:56:25.871Z] [HTTP] [0mGET / [36m304[0m 2.476 ms - -[0m
+[2025-12-07T07:56:25.919Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.449 ms - -[0m
+[2025-12-07T07:56:25.924Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.143 ms - -[0m
+[2025-12-07T07:56:43.215Z] [HTTP] [0mPOST /auth/login [33m401[0m 1.963 ms - 61[0m
+[2025-12-07T07:56:53.799Z] [INFO] User logged in: Arkebana
+[2025-12-07T07:56:53.800Z] [HTTP] [0mPOST /auth/login [32m200[0m 68.924 ms - 56[0m
+[2025-12-07T07:56:53.816Z] [HTTP] [0mGET / [36m304[0m 1.641 ms - -[0m
+[2025-12-07T07:56:53.865Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.987 ms - -[0m
+[2025-12-07T07:56:53.871Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.975 ms - -[0m
+[2025-12-07T07:58:52.432Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T07:58:52.435Z] [INFO] Connected to SQLite database
+[2025-12-07T07:58:52.437Z] [INFO] Database schema ensured
+[2025-12-07T07:58:55.729Z] [HTTP] [0mGET / [36m304[0m 5.883 ms - -[0m
+[2025-12-07T07:58:55.773Z] [HTTP] [0mGET /css/styles.css [36m304[0m 5.886 ms - -[0m
+[2025-12-07T07:58:55.780Z] [HTTP] [0mGET /js/main.js [32m200[0m 8.853 ms - 5034[0m
+[2025-12-07T07:59:01.968Z] [INFO] User logged in: Arkebana
+[2025-12-07T07:59:01.972Z] [HTTP] [0mPOST /auth/login [32m200[0m 81.777 ms - 56[0m
+[2025-12-07T07:59:01.991Z] [HTTP] [0mGET / [36m304[0m 2.449 ms - -[0m
+[2025-12-07T07:59:02.037Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.757 ms - -[0m
+[2025-12-07T07:59:02.043Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.482 ms - -[0m
+[2025-12-07T08:00:35.743Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T08:00:35.747Z] [INFO] Connected to SQLite database
+[2025-12-07T08:00:35.749Z] [INFO] Database schema ensured
+[2025-12-07T08:00:40.933Z] [HTTP] [0mGET / [36m304[0m 6.257 ms - -[0m
+[2025-12-07T08:00:40.979Z] [HTTP] [0mGET /css/styles.css [36m304[0m 6.739 ms - -[0m
+[2025-12-07T08:00:40.982Z] [HTTP] [0mGET /js/main.js [36m304[0m 4.684 ms - -[0m
+[2025-12-07T08:00:45.547Z] [INFO] User logged in: Arkebana
+[2025-12-07T08:00:45.551Z] [HTTP] [0mPOST /auth/login [32m200[0m 82.129 ms - 56[0m
+[2025-12-07T08:00:45.572Z] [HTTP] [0mGET / [32m200[0m 5.316 ms - 1174[0m
+[2025-12-07T08:00:45.616Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.607 ms - -[0m
+[2025-12-07T08:00:45.619Z] [HTTP] [0mGET /js/main.js [36m304[0m 4.511 ms - -[0m
+[2025-12-07T08:01:03.431Z] [INFO] User logged out: Arkebana
+[2025-12-07T08:01:03.434Z] [HTTP] [0mPOST /auth/logout [32m200[0m 2.635 ms - 41[0m
+[2025-12-07T08:01:03.464Z] [HTTP] [0mGET /auth/login [32m200[0m 5.372 ms - 1389[0m
+[2025-12-07T08:01:03.530Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.332 ms - -[0m
+[2025-12-07T08:01:03.535Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.093 ms - -[0m
+[2025-12-07T08:01:15.600Z] [HTTP] [0mPOST /auth/register [32m200[0m 74.811 ms - 76[0m
+[2025-12-07T08:01:15.599Z] [INFO] User registered: Arkebana1
+[2025-12-07T08:01:20.034Z] [INFO] User logged in: Arkebana1
+[2025-12-07T08:01:20.035Z] [HTTP] [0mPOST /auth/login [32m200[0m 67.112 ms - 54[0m
+[2025-12-07T08:01:20.062Z] [HTTP] [0mGET / [32m200[0m 3.129 ms - 881[0m
+[2025-12-07T08:01:20.121Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.428 ms - -[0m
+[2025-12-07T08:01:20.126Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.907 ms - -[0m
+[2025-12-07T08:01:20.142Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 4.632 ms - 28[0m
+[2025-12-07T08:01:24.959Z] [HTTP] [0mPOST /admin/rooms [32m200[0m 22.960 ms - 21[0m
+[2025-12-07T08:01:26.196Z] [HTTP] [0mGET / [36m304[0m 1.539 ms - -[0m
+[2025-12-07T08:01:26.247Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.739 ms - -[0m
+[2025-12-07T08:01:26.251Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.081 ms - -[0m
+[2025-12-07T08:01:26.264Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 2.375 ms - 49[0m
+[2025-12-07T08:01:28.315Z] [HTTP] [0mPOST /admin/rooms [32m200[0m 14.972 ms - 21[0m
+[2025-12-07T08:01:29.605Z] [HTTP] [0mGET / [36m304[0m 1.196 ms - -[0m
+[2025-12-07T08:01:29.660Z] [HTTP] [0mGET /css/styles.css [36m304[0m 0.714 ms - -[0m
+[2025-12-07T08:01:29.667Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.254 ms - -[0m
+[2025-12-07T08:01:29.706Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 2.781 ms - 71[0m
+[2025-12-07T08:01:34.258Z] [HTTP] [0mPOST /admin/rooms [32m200[0m 7.397 ms - 21[0m
+[2025-12-07T08:01:35.513Z] [HTTP] [0mGET / [36m304[0m 1.920 ms - -[0m
+[2025-12-07T08:01:35.570Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.870 ms - -[0m
+[2025-12-07T08:01:35.573Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.407 ms - -[0m
+[2025-12-07T08:01:35.586Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 2.303 ms - 93[0m
+[2025-12-07T08:11:53.562Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T08:11:53.566Z] [INFO] Connected to SQLite database
+[2025-12-07T08:11:53.569Z] [INFO] Database schema ensured
+[2025-12-07T08:11:56.398Z] [HTTP] [0mGET / [32m200[0m 6.780 ms - 1389[0m
+[2025-12-07T08:11:56.447Z] [HTTP] [0mGET /css/styles.css [32m200[0m 8.048 ms - 1195[0m
+[2025-12-07T08:11:56.450Z] [HTTP] [0mGET /js/main.js [32m200[0m 7.314 ms - 9498[0m
+[2025-12-07T08:12:04.622Z] [INFO] User logged in: Arkebana
+[2025-12-07T08:12:04.626Z] [HTTP] [0mPOST /auth/login [32m200[0m 80.439 ms - 56[0m
+[2025-12-07T08:12:04.646Z] [HTTP] [0mGET / [32m200[0m 3.644 ms - 1174[0m
+[2025-12-07T08:12:04.692Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.602 ms - -[0m
+[2025-12-07T08:12:04.698Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.667 ms - -[0m
+[2025-12-07T08:12:08.645Z] [HTTP] [0mGET /auth/login [32m200[0m 2.809 ms - 1389[0m
+[2025-12-07T08:12:44.388Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.595 ms - -[0m
+[2025-12-07T08:12:44.419Z] [HTTP] [0mGET /.well-known/appspecific/com.chrome.devtools.json [33m404[0m 6.385 ms - 187[0m
+[2025-12-07T08:13:34.959Z] [HTTP] [0mGET /auth/login [36m304[0m 1.807 ms - -[0m
+[2025-12-07T08:13:35.111Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.375 ms - -[0m
+[2025-12-07T08:13:35.116Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.674 ms - -[0m
+[2025-12-07T08:13:35.277Z] [HTTP] [0mGET /favicon.ico [33m404[0m 0.936 ms - 150[0m
+[2025-12-07T08:15:07.255Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T08:15:07.258Z] [INFO] Connected to SQLite database
+[2025-12-07T08:15:07.260Z] [INFO] Database schema ensured
+[2025-12-07T08:15:10.908Z] [HTTP] [0mGET /auth/login [36m304[0m 7.114 ms - -[0m
+[2025-12-07T08:15:10.959Z] [HTTP] [0mGET /js/main.js [36m304[0m 7.438 ms - -[0m
+[2025-12-07T08:15:10.955Z] [HTTP] [0mGET /css/styles.css [32m200[0m 7.882 ms - 3168[0m
+[2025-12-07T08:15:16.433Z] [INFO] User logged in: Arkebana
+[2025-12-07T08:15:16.438Z] [HTTP] [0mPOST /auth/login [32m200[0m 81.507 ms - 56[0m
+[2025-12-07T08:15:16.465Z] [HTTP] [0mGET / [36m304[0m 3.018 ms - -[0m
+[2025-12-07T08:15:16.523Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.503 ms - -[0m
+[2025-12-07T08:15:16.526Z] [HTTP] [0mGET /js/main.js [36m304[0m 4.015 ms - -[0m
+[2025-12-07T08:15:27.127Z] [INFO] User logged out: Arkebana
+[2025-12-07T08:15:27.129Z] [HTTP] [0mPOST /auth/logout [32m200[0m 2.575 ms - 41[0m
+[2025-12-07T08:15:27.152Z] [HTTP] [0mGET /auth/login [32m200[0m 3.087 ms - 1389[0m
+[2025-12-07T08:15:27.210Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.961 ms - -[0m
+[2025-12-07T08:15:27.215Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.932 ms - -[0m
+[2025-12-07T08:15:31.532Z] [INFO] User logged in: Arkebana1
+[2025-12-07T08:15:31.535Z] [HTTP] [0mPOST /auth/login [32m200[0m 68.315 ms - 54[0m
+[2025-12-07T08:15:31.558Z] [HTTP] [0mGET / [32m200[0m 1.958 ms - 4306[0m
+[2025-12-07T08:15:31.615Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.808 ms - -[0m
+[2025-12-07T08:15:31.618Z] [HTTP] [0mGET /js/main.js [36m304[0m 4.191 ms - -[0m
+[2025-12-07T08:15:31.633Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 3.501 ms - 289[0m
+[2025-12-07T08:15:53.983Z] [INFO] User registered: Log
+[2025-12-07T08:15:53.985Z] [HTTP] [0mPOST /auth/register [32m200[0m 75.577 ms - 76[0m
+[2025-12-07T08:15:55.481Z] [HTTP] [0mGET / [36m304[0m 1.215 ms - -[0m
+[2025-12-07T08:15:55.532Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.562 ms - -[0m
+[2025-12-07T08:15:55.536Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.685 ms - -[0m
+[2025-12-07T08:15:55.554Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 4.572 ms - 481[0m
+[2025-12-07T08:29:23.529Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T08:29:23.532Z] [INFO] Connected to SQLite database
+[2025-12-07T08:29:23.534Z] [INFO] Database schema ensured
+[2025-12-07T08:29:26.688Z] [HTTP] [0mGET / [32m200[0m 7.349 ms - 1389[0m
+[2025-12-07T08:29:26.733Z] [HTTP] [0mGET /css/styles.css [32m200[0m 6.678 ms - 3377[0m
+[2025-12-07T08:29:26.737Z] [HTTP] [0mGET /js/main.js [32m200[0m 6.161 ms - 20432[0m
+[2025-12-07T08:29:31.195Z] [INFO] User logged in: Arkebana
+[2025-12-07T08:29:31.199Z] [HTTP] [0mPOST /auth/login [32m200[0m 82.504 ms - 56[0m
+[2025-12-07T08:29:31.217Z] [HTTP] [0mGET / [32m200[0m 2.886 ms - 1174[0m
+[2025-12-07T08:29:31.262Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.034 ms - -[0m
+[2025-12-07T08:29:31.268Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.778 ms - -[0m
+[2025-12-07T08:29:33.658Z] [INFO] User logged out: Arkebana
+[2025-12-07T08:29:33.660Z] [HTTP] [0mPOST /auth/logout [32m200[0m 2.711 ms - 41[0m
+[2025-12-07T08:29:33.691Z] [HTTP] [0mGET /auth/login [32m200[0m 4.836 ms - 1389[0m
+[2025-12-07T08:29:33.745Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.138 ms - -[0m
+[2025-12-07T08:29:33.752Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.519 ms - -[0m
+[2025-12-07T08:29:37.802Z] [INFO] User logged in: Arkebana1
+[2025-12-07T08:29:37.804Z] [HTTP] [0mPOST /auth/login [32m200[0m 66.976 ms - 54[0m
+[2025-12-07T08:29:37.825Z] [HTTP] [0mGET / [32m200[0m 1.768 ms - 7241[0m
+[2025-12-07T08:29:37.880Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.963 ms - -[0m
+[2025-12-07T08:29:37.886Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.969 ms - -[0m
+[2025-12-07T08:29:37.919Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 7.922 ms - -[0m
+[2025-12-07T08:29:44.880Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 3.604 ms - 425[0m
+[2025-12-07T08:29:45.055Z] [HTTP] [0mGET /admin/rooms/1/data [36m304[0m 3.693 ms - -[0m
+[2025-12-07T08:29:46.373Z] [HTTP] [0mGET /admin/rooms/1/data [36m304[0m 2.650 ms - -[0m
+[2025-12-07T08:29:47.004Z] [HTTP] [0mGET /admin/rooms/2/data [32m200[0m 2.135 ms - 425[0m
+[2025-12-07T08:29:47.183Z] [HTTP] [0mGET /admin/rooms/2/data [36m304[0m 2.147 ms - -[0m
+[2025-12-07T08:30:02.621Z] [INFO] User registered: u14801
+[2025-12-07T08:30:02.622Z] [HTTP] [0mPOST /auth/register [32m200[0m 74.880 ms - 76[0m
+[2025-12-07T08:30:04.132Z] [HTTP] [0mGET / [36m304[0m 1.084 ms - -[0m
+[2025-12-07T08:30:04.180Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.538 ms - -[0m
+[2025-12-07T08:30:04.186Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.764 ms - -[0m
+[2025-12-07T08:30:04.201Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 5.172 ms - 666[0m
+[2025-12-07T08:30:15.888Z] [HTTP] [0mPOST /admin/rooms [32m200[0m 14.041 ms - 22[0m
+[2025-12-07T08:30:17.167Z] [HTTP] [0mGET / [36m304[0m 1.703 ms - -[0m
+[2025-12-07T08:30:17.210Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.502 ms - -[0m
+[2025-12-07T08:30:17.215Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.928 ms - -[0m
+[2025-12-07T08:30:17.229Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 3.118 ms - 689[0m
+[2025-12-07T08:32:35.131Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 2.186 ms - 794[0m
+[2025-12-07T08:32:40.249Z] [HTTP] [0mPOST /admin/rooms/1/equipment [32m200[0m 13.068 ms - 8[0m
+[2025-12-07T08:32:41.934Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 3.459 ms - 893[0m
+[2025-12-07T08:32:43.810Z] [HTTP] [0mGET /admin/rooms/2/data [32m200[0m 2.082 ms - 794[0m
+[2025-12-07T08:32:45.274Z] [HTTP] [0mGET /admin/rooms/3/data [32m200[0m 2.687 ms - 794[0m
+[2025-12-07T08:32:46.384Z] [HTTP] [0mGET /admin/rooms/4/data [32m200[0m 3.274 ms - 610[0m
+[2025-12-07T08:32:46.915Z] [HTTP] [0mGET /admin/rooms/3/data [36m304[0m 2.540 ms - -[0m
+[2025-12-07T08:32:48.037Z] [HTTP] [0mGET /admin/rooms/1/data [36m304[0m 2.651 ms - -[0m
+[2025-12-07T08:32:57.054Z] [HTTP] [0mPOST /admin/rooms/1/teachers [32m200[0m 55.164 ms - 79[0m
+[2025-12-07T08:32:58.541Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 3.179 ms - 1076[0m
+[2025-12-07T08:33:01.198Z] [HTTP] [0mPOST /admin/rooms/1/teachers [32m200[0m 21.538 ms - 79[0m
+[2025-12-07T08:33:03.198Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 3.600 ms - 1268[0m
+[2025-12-07T08:33:18.367Z] [HTTP] [0mGET /admin/rooms/1/data [36m304[0m 3.900 ms - -[0m
+[2025-12-07T08:33:19.057Z] [HTTP] [0mGET /admin/rooms/2/data [36m304[0m 3.093 ms - -[0m
+[2025-12-07T08:33:20.170Z] [HTTP] [0mGET /admin/rooms/3/data [36m304[0m 2.213 ms - -[0m
+[2025-12-07T08:33:20.884Z] [HTTP] [0mGET /admin/rooms/4/data [36m304[0m 2.551 ms - -[0m
+[2025-12-07T08:33:21.494Z] [HTTP] [0mGET /admin/rooms/3/data [36m304[0m 2.848 ms - -[0m
+[2025-12-07T08:33:22.352Z] [HTTP] [0mGET /admin/rooms/2/data [36m304[0m 1.948 ms - -[0m
+[2025-12-07T08:33:22.782Z] [HTTP] [0mGET /admin/rooms/1/data [36m304[0m 2.638 ms - -[0m
+[2025-12-07T08:41:43.181Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T08:41:43.185Z] [INFO] Connected to SQLite database
+[2025-12-07T08:41:43.188Z] [INFO] Database schema ensured
+[2025-12-07T08:41:45.696Z] [HTTP] [0mGET / [32m200[0m 7.538 ms - 1389[0m
+[2025-12-07T08:41:45.737Z] [HTTP] [0mGET /css/styles.css [32m200[0m 3.471 ms - 3717[0m
+[2025-12-07T08:41:45.746Z] [HTTP] [0mGET /js/main.js [32m200[0m 5.242 ms - 20434[0m
+[2025-12-07T08:41:49.829Z] [INFO] User logged in: Arkebana1
+[2025-12-07T08:41:49.833Z] [HTTP] [0mPOST /auth/login [32m200[0m 83.765 ms - 54[0m
+[2025-12-07T08:41:49.851Z] [HTTP] [0mGET / [32m200[0m 3.303 ms - 4501[0m
+[2025-12-07T08:41:49.898Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.278 ms - -[0m
+[2025-12-07T08:41:49.900Z] [HTTP] [0mGET /js/main.js [36m304[0m 4.445 ms - -[0m
+[2025-12-07T08:41:49.932Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 8.917 ms - -[0m
+[2025-12-07T08:42:00.405Z] [HTTP] [0mGET /admin-room.html?roomId=1&roomName=207 [32m200[0m 2.194 ms - 2868[0m
+[2025-12-07T08:42:00.467Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.090 ms - -[0m
+[2025-12-07T08:42:00.469Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.004 ms - -[0m
+[2025-12-07T08:42:00.557Z] [HTTP] [0mGET /admin/rooms/1/data [36m304[0m 7.164 ms - -[0m
+[2025-12-07T08:42:15.472Z] [HTTP] [0mPOST /admin/rooms/1/equipment [32m200[0m 11.909 ms - 8[0m
+[2025-12-07T08:42:16.683Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 2.726 ms - 1365[0m
+[2025-12-07T08:42:39.659Z] [HTTP] [0mGET / [36m304[0m 1.038 ms - -[0m
+[2025-12-07T08:42:39.715Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.927 ms - -[0m
+[2025-12-07T08:42:39.720Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.409 ms - -[0m
+[2025-12-07T08:42:39.739Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 4.665 ms - -[0m
+[2025-12-07T08:48:16.463Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T08:48:16.466Z] [INFO] Connected to SQLite database
+[2025-12-07T08:48:16.468Z] [INFO] Database schema ensured
+[2025-12-07T08:48:18.799Z] [HTTP] [0mGET / [32m200[0m 7.508 ms - 1389[0m
+[2025-12-07T08:48:18.843Z] [HTTP] [0mGET /css/styles.css [32m200[0m 6.198 ms - 4051[0m
+[2025-12-07T08:48:18.848Z] [HTTP] [0mGET /js/main.js [32m200[0m 5.177 ms - 21121[0m
+[2025-12-07T08:48:23.215Z] [HTTP] [0mPOST /auth/login [32m200[0m 81.086 ms - 54[0m
+[2025-12-07T08:48:23.211Z] [INFO] User logged in: Arkebana1
+[2025-12-07T08:48:23.237Z] [HTTP] [0mGET / [32m200[0m 4.157 ms - 4501[0m
+[2025-12-07T08:48:23.252Z] [HTTP] [0mPOST /auth/login [0m-[0m - ms - -[0m
+[2025-12-07T08:48:23.320Z] [INFO] User logged in: Arkebana1
+[2025-12-07T08:48:24.333Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.812 ms - -[0m
+[2025-12-07T08:48:24.336Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.614 ms - -[0m
+[2025-12-07T08:48:24.365Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 4.872 ms - -[0m
+[2025-12-07T08:48:27.394Z] [HTTP] [0mGET /admin-room.html?roomId=1&roomName=207 [36m304[0m 1.524 ms - -[0m
+[2025-12-07T08:48:27.449Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.746 ms - -[0m
+[2025-12-07T08:48:27.452Z] [HTTP] [0mGET /js/main.js [36m304[0m 4.106 ms - -[0m
+[2025-12-07T08:48:27.514Z] [HTTP] [0mGET /admin/rooms/1/data [36m304[0m 5.602 ms - -[0m
+[2025-12-07T08:48:39.426Z] [HTTP] [0mDELETE /admin/rooms/1/teachers/4 [32m200[0m 9.584 ms - 77[0m
+[2025-12-07T08:48:41.830Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 2.181 ms - 1180[0m
+[2025-12-07T08:48:47.187Z] [HTTP] [0mGET / [36m304[0m 1.147 ms - -[0m
+[2025-12-07T08:48:47.242Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.691 ms - -[0m
+[2025-12-07T08:48:47.246Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.520 ms - -[0m
+[2025-12-07T08:48:47.268Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 3.796 ms - -[0m
+[2025-12-07T08:48:56.607Z] [HTTP] [0mPATCH /admin/teachers/1 [32m200[0m 22.896 ms - 57[0m
+[2025-12-07T08:49:01.791Z] [HTTP] [0mPATCH /admin/teachers/1 [32m200[0m 23.840 ms - 57[0m
+[2025-12-07T08:49:33.951Z] [HTTP] [0mGET /admin-room.html?roomId=1&roomName=207 [36m304[0m 1.166 ms - -[0m
+[2025-12-07T08:49:34.006Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.727 ms - -[0m
+[2025-12-07T08:49:34.011Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.321 ms - -[0m
+[2025-12-07T08:49:34.023Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 3.329 ms - 1188[0m
+[2025-12-07T08:50:52.026Z] [INFO] User logged out: Arkebana1
+[2025-12-07T08:50:52.028Z] [HTTP] [0mPOST /auth/logout [32m200[0m 2.383 ms - 41[0m
+[2025-12-07T08:50:52.050Z] [HTTP] [0mGET /auth/login [32m200[0m 2.898 ms - 1389[0m
+[2025-12-07T08:50:52.104Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.825 ms - -[0m
+[2025-12-07T08:50:52.109Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.908 ms - -[0m
+[2025-12-07T08:50:55.755Z] [INFO] User logged in: Arkebana
+[2025-12-07T08:50:55.757Z] [HTTP] [0mPOST /auth/login [32m200[0m 67.648 ms - 56[0m
+[2025-12-07T08:50:55.781Z] [HTTP] [0mGET / [32m200[0m 2.206 ms - 1174[0m
+[2025-12-07T08:50:55.834Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.562 ms - -[0m
+[2025-12-07T08:50:55.838Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.305 ms - -[0m
+[2025-12-07T08:51:00.187Z] [INFO] User logged out: Arkebana
+[2025-12-07T08:51:00.188Z] [HTTP] [0mPOST /auth/logout [32m200[0m 1.845 ms - 41[0m
+[2025-12-07T08:51:00.212Z] [HTTP] [0mGET /auth/login [32m200[0m 3.488 ms - 1389[0m
+[2025-12-07T08:51:00.277Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.600 ms - -[0m
+[2025-12-07T08:51:00.280Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.846 ms - -[0m
+[2025-12-07T08:51:06.630Z] [INFO] User logged in: Arkebana1
+[2025-12-07T08:51:06.632Z] [HTTP] [0mPOST /auth/login [32m200[0m 66.051 ms - 54[0m
+[2025-12-07T08:51:06.657Z] [HTTP] [0mGET / [32m200[0m 2.047 ms - 4501[0m
+[2025-12-07T08:51:06.720Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.213 ms - -[0m
+[2025-12-07T08:51:06.729Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.099 ms - -[0m
+[2025-12-07T08:51:06.754Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 5.842 ms - 693[0m
+[2025-12-07T08:51:08.920Z] [HTTP] [0mGET /admin-room.html?roomId=1&roomName=207 [36m304[0m 0.934 ms - -[0m
+[2025-12-07T08:51:08.981Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.417 ms - -[0m
+[2025-12-07T08:51:08.984Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.679 ms - -[0m
+[2025-12-07T08:51:09.052Z] [HTTP] [0mGET /admin/rooms/1/data [36m304[0m 5.218 ms - -[0m
+[2025-12-07T08:55:00.943Z] [HTTP] [0mGET / [36m304[0m 1.008 ms - -[0m
+[2025-12-07T08:55:01.004Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.282 ms - -[0m
+[2025-12-07T08:55:01.009Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.707 ms - -[0m
+[2025-12-07T08:55:01.021Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 3.410 ms - -[0m
+[2025-12-07T10:13:13.286Z] [INFO] Database schema ensured
+[2025-12-07T10:13:13.290Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T10:13:13.291Z] [INFO] Connected to SQLite database
+[2025-12-07T10:13:19.696Z] [HTTP] [0mGET / [32m200[0m 7.369 ms - 1389[0m
+[2025-12-07T10:13:19.730Z] [HTTP] [0mGET /css/styles.css [32m200[0m 4.264 ms - 4051[0m
+[2025-12-07T10:13:19.732Z] [HTTP] [0mGET /js/main.js [32m200[0m 3.843 ms - 21550[0m
+[2025-12-07T10:13:23.684Z] [HTTP] [0mPOST /auth/login [33m401[0m 11.850 ms - 61[0m
+[2025-12-07T10:13:28.174Z] [HTTP] [0mPOST /auth/login [33m401[0m 1.741 ms - 61[0m
+[2025-12-07T10:13:34.415Z] [INFO] User registered: Arkebana
+[2025-12-07T10:13:34.416Z] [HTTP] [0mPOST /auth/register [32m200[0m 62.084 ms - 76[0m
+[2025-12-07T10:13:37.520Z] [INFO] User logged in: Arkebana
+[2025-12-07T10:13:37.522Z] [HTTP] [0mPOST /auth/login [32m200[0m 59.389 ms - 54[0m
+[2025-12-07T10:13:37.534Z] [HTTP] [0mGET / [36m304[0m 2.071 ms - -[0m
+[2025-12-07T10:13:37.567Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.581 ms - -[0m
+[2025-12-07T10:13:37.568Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.863 ms - -[0m
+[2025-12-07T10:13:41.743Z] [INFO] User logged in: Arkebana
+[2025-12-07T10:13:41.745Z] [HTTP] [0mPOST /auth/login [32m200[0m 56.208 ms - 54[0m
+[2025-12-07T10:13:41.755Z] [HTTP] [0mGET / [36m304[0m 1.036 ms - -[0m
+[2025-12-07T10:13:41.784Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.637 ms - -[0m
+[2025-12-07T10:13:41.786Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.482 ms - -[0m
+[2025-12-07T10:16:08.195Z] [INFO] Database schema ensured
+[2025-12-07T10:16:08.199Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T10:16:08.199Z] [INFO] Connected to SQLite database
+[2025-12-07T10:16:10.238Z] [HTTP] [0mGET / [36m304[0m 4.356 ms - -[0m
+[2025-12-07T10:16:10.267Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.775 ms - -[0m
+[2025-12-07T10:16:10.268Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.679 ms - -[0m
+[2025-12-07T10:16:13.731Z] [INFO] User logged in: Arkebana
+[2025-12-07T10:16:13.733Z] [HTTP] [0mPOST /auth/login [36m302[0m 65.863 ms - 28[0m
+[2025-12-07T10:16:13.739Z] [HTTP] [0mGET /admin [33m404[0m 1.902 ms - 144[0m
+[2025-12-07T10:16:20.846Z] [ERROR] Register error: SQLITE_CONSTRAINT: UNIQUE constraint failed: users.login
+[2025-12-07T10:16:20.849Z] [HTTP] [0mPOST /auth/register [33m400[0m 59.592 ms - 49[0m
+[2025-12-07T10:18:36.358Z] [INFO] Database schema ensured
+[2025-12-07T10:18:36.362Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T10:18:36.363Z] [INFO] Connected to SQLite database
+[2025-12-07T10:18:39.195Z] [HTTP] [0mGET / [36m304[0m 4.182 ms - -[0m
+[2025-12-07T10:18:39.226Z] [HTTP] [0mGET /css/styles.css [36m304[0m 4.019 ms - -[0m
+[2025-12-07T10:18:39.228Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.653 ms - -[0m
+[2025-12-07T10:18:42.831Z] [INFO] User logged in: Arkebana
+[2025-12-07T10:18:42.834Z] [HTTP] [0mPOST /auth/login [36m302[0m 70.827 ms - 28[0m
+[2025-12-07T10:18:42.840Z] [HTTP] [0mGET /admin [33m404[0m 2.110 ms - 144[0m
+[2025-12-07T10:18:49.855Z] [HTTP] [0mPOST /auth/register [32m200[0m 61.938 ms - 76[0m
+[2025-12-07T10:18:49.852Z] [INFO] User registered: 321
+[2025-12-07T10:19:07.580Z] [INFO] User registered: Admin
+[2025-12-07T10:19:07.582Z] [HTTP] [0mPOST /auth/register [32m200[0m 119.146 ms - 76[0m
+[2025-12-07T10:19:12.560Z] [INFO] User logged in: Admin
+[2025-12-07T10:19:12.561Z] [HTTP] [0mPOST /auth/login [36m302[0m 57.661 ms - 28[0m
+[2025-12-07T10:19:12.566Z] [HTTP] [0mGET /admin [33m404[0m 1.025 ms - 144[0m
+[2025-12-07T10:22:40.994Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T10:22:40.987Z] [INFO] Database schema ensured
+[2025-12-07T10:22:40.995Z] [INFO] Connected to SQLite database
+[2025-12-07T10:22:44.192Z] [HTTP] [0mGET / [36m304[0m 6.763 ms - -[0m
+[2025-12-07T10:22:44.241Z] [HTTP] [0mGET /css/styles.css [36m304[0m 6.314 ms - -[0m
+[2025-12-07T10:22:44.243Z] [HTTP] [0mGET /js/main.js [36m304[0m 4.844 ms - -[0m
+[2025-12-07T10:22:49.114Z] [HTTP] [0mPOST /auth/login [36m302[0m 83.052 ms - 28[0m
+[2025-12-07T10:22:49.110Z] [INFO] User logged in: Arkebana
+[2025-12-07T10:22:49.121Z] [HTTP] [0mGET /admin [36m302[0m 1.915 ms - 38[0m
+[2025-12-07T10:22:49.132Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 4.282 ms - 231[0m
+[2025-12-07T10:22:58.659Z] [INFO] User logged in: Admin
+[2025-12-07T10:22:58.661Z] [HTTP] [0mPOST /auth/login [36m302[0m 67.979 ms - 28[0m
+[2025-12-07T10:22:58.667Z] [HTTP] [0mGET /admin [36m302[0m 1.063 ms - 38[0m
+[2025-12-07T10:22:58.674Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 2.035 ms - -[0m
+[2025-12-07T10:23:06.393Z] [ERROR] Register error: SQLITE_CONSTRAINT: UNIQUE constraint failed: users.login
+[2025-12-07T10:23:06.396Z] [HTTP] [0mPOST /auth/register [33m400[0m 67.511 ms - 49[0m
+[2025-12-07T10:23:10.353Z] [HTTP] [0mPOST /auth/register [33m400[0m 67.596 ms - 49[0m
+[2025-12-07T10:23:10.351Z] [ERROR] Register error: SQLITE_CONSTRAINT: UNIQUE constraint failed: users.login
+[2025-12-07T11:33:11.364Z] [INFO] Database schema ensured
+[2025-12-07T11:33:11.367Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T11:33:11.368Z] [INFO] Connected to SQLite database
+[2025-12-07T11:33:15.616Z] [HTTP] [0mGET / [36m304[0m 5.512 ms - -[0m
+[2025-12-07T11:33:15.701Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.371 ms - -[0m
+[2025-12-07T11:33:15.704Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.391 ms - -[0m
+[2025-12-07T11:33:15.836Z] [HTTP] [0mGET /favicon.ico [33m404[0m 2.011 ms - 150[0m
+[2025-12-07T11:33:19.051Z] [INFO] User logged in: Arkebana
+[2025-12-07T11:33:19.055Z] [HTTP] [0mPOST /auth/login [36m302[0m 82.225 ms - 28[0m
+[2025-12-07T11:33:19.061Z] [HTTP] [0mGET /admin [36m302[0m 2.310 ms - 38[0m
+[2025-12-07T11:33:19.069Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 3.907 ms - -[0m
+[2025-12-07T11:33:25.082Z] [ERROR] Register error: SQLITE_CONSTRAINT: UNIQUE constraint failed: users.login
+[2025-12-07T11:33:25.085Z] [HTTP] [0mPOST /auth/register [33m400[0m 57.980 ms - 49[0m
+[2025-12-07T11:33:27.807Z] [ERROR] Register error: SQLITE_CONSTRAINT: UNIQUE constraint failed: users.login
+[2025-12-07T11:33:27.808Z] [HTTP] [0mPOST /auth/register [33m400[0m 56.679 ms - 49[0m
+[2025-12-07T11:34:52.387Z] [INFO] Database schema ensured
+[2025-12-07T11:34:52.392Z] [INFO] Connected to SQLite database
+[2025-12-07T11:34:52.391Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T11:34:54.711Z] [HTTP] [0mGET / [36m304[0m 4.369 ms - -[0m
+[2025-12-07T11:34:54.744Z] [HTTP] [0mGET /css/styles.css [36m304[0m 4.316 ms - -[0m
+[2025-12-07T11:34:54.746Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.205 ms - -[0m
+[2025-12-07T11:34:58.967Z] [INFO] User logged in: Arkebana
+[2025-12-07T11:34:58.971Z] [HTTP] [0mPOST /auth/login [36m302[0m 67.392 ms - 28[0m
+[2025-12-07T11:34:58.976Z] [HTTP] [0mGET /admin [36m302[0m 1.271 ms - 38[0m
+[2025-12-07T11:34:58.983Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 3.221 ms - -[0m
+[2025-12-07T11:58:04.797Z] [INFO] Database schema ensured
+[2025-12-07T11:58:04.801Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T11:58:04.801Z] [INFO] Connected to SQLite database
+[2025-12-07T11:58:08.991Z] [HTTP] [0mGET / [36m304[0m 4.394 ms - -[0m
+[2025-12-07T11:58:09.037Z] [HTTP] [0mGET /css/styles.css [32m200[0m 7.484 ms - 4051[0m
+[2025-12-07T11:58:09.040Z] [HTTP] [0mGET /js/main.js [32m200[0m 6.183 ms - 21121[0m
+[2025-12-07T11:58:14.567Z] [ERROR] Register error: SQLITE_CONSTRAINT: UNIQUE constraint failed: users.login
+[2025-12-07T11:58:14.568Z] [HTTP] [0mPOST /auth/register [33m400[0m 66.337 ms - 49[0m
+[2025-12-07T11:59:34.208Z] [INFO] User logged in: Arkebana
+[2025-12-07T11:59:34.210Z] [HTTP] [0mPOST /auth/login [32m200[0m 57.624 ms - 54[0m
+[2025-12-07T11:59:34.223Z] [HTTP] [0mGET / [36m304[0m 1.813 ms - -[0m
+[2025-12-07T11:59:34.256Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.513 ms - -[0m
+[2025-12-07T11:59:34.258Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.681 ms - -[0m
+[2025-12-07T11:59:38.818Z] [HTTP] [0mPOST /auth/login [33m401[0m 1.262 ms - 61[0m
+[2025-12-07T11:59:46.696Z] [INFO] User registered: Arkebana12
+[2025-12-07T11:59:46.697Z] [HTTP] [0mPOST /auth/register [32m200[0m 62.611 ms - 76[0m
+[2025-12-07T11:59:52.474Z] [INFO] User logged in: Arkebana12
+[2025-12-07T11:59:52.475Z] [HTTP] [0mPOST /auth/login [32m200[0m 56.805 ms - 54[0m
+[2025-12-07T11:59:52.486Z] [HTTP] [0mGET / [36m304[0m 0.922 ms - -[0m
+[2025-12-07T11:59:52.517Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.310 ms - -[0m
+[2025-12-07T11:59:52.521Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.586 ms - -[0m
+[2025-12-07T12:37:26.043Z] [INFO] Database schema ensured
+[2025-12-07T12:37:26.047Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T12:37:26.048Z] [INFO] Connected to SQLite database
+[2025-12-07T12:37:32.748Z] [HTTP] [0mGET / [36m304[0m 5.131 ms - -[0m
+[2025-12-07T12:37:32.785Z] [HTTP] [0mGET /css/styles.css [32m200[0m 6.200 ms - 4051[0m
+[2025-12-07T12:37:32.788Z] [HTTP] [0mGET /js/main.js [32m200[0m 5.412 ms - 21121[0m
+[2025-12-07T12:37:32.908Z] [HTTP] [0mGET /favicon.ico [33m404[0m 1.380 ms - 150[0m
+[2025-12-07T12:37:44.961Z] [HTTP] [0mPOST /auth/login [33m401[0m 13.933 ms - 61[0m
+[2025-12-07T12:37:48.719Z] [INFO] User registered: Ar
+[2025-12-07T12:37:48.720Z] [HTTP] [0mPOST /auth/register [32m200[0m 62.021 ms - 76[0m
+[2025-12-07T12:37:50.513Z] [INFO] User logged in: Ar
+[2025-12-07T12:37:50.515Z] [HTTP] [0mPOST /auth/login [32m200[0m 57.513 ms - 54[0m
+[2025-12-07T12:37:50.529Z] [HTTP] [0mGET / [32m200[0m 2.500 ms - 4501[0m
+[2025-12-07T12:37:50.561Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.691 ms - -[0m
+[2025-12-07T12:37:50.563Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.051 ms - -[0m
+[2025-12-07T12:37:50.603Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 3.926 ms - -[0m
+[2025-12-07T12:37:55.433Z] [HTTP] [0mPOST /admin/rooms [32m200[0m 15.264 ms - 21[0m
+[2025-12-07T12:37:56.678Z] [HTTP] [0mGET / [36m304[0m 1.096 ms - -[0m
+[2025-12-07T12:37:56.710Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.269 ms - -[0m
+[2025-12-07T12:37:56.713Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.490 ms - -[0m
+[2025-12-07T12:37:56.727Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 3.170 ms - 252[0m
+[2025-12-07T12:37:57.494Z] [HTTP] [0mGET /admin-room.html?roomId=1&roomName=345 [32m200[0m 1.308 ms - 2868[0m
+[2025-12-07T12:37:57.533Z] [HTTP] [0mGET /css/styles.css [36m304[0m 0.972 ms - -[0m
+[2025-12-07T12:37:57.536Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.604 ms - -[0m
+[2025-12-07T12:37:57.546Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 2.292 ms - 240[0m
+[2025-12-07T12:37:59.763Z] [HTTP] [0mGET / [36m304[0m 0.828 ms - -[0m
+[2025-12-07T12:37:59.802Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.126 ms - -[0m
+[2025-12-07T12:37:59.805Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.629 ms - -[0m
+[2025-12-07T12:37:59.813Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 1.515 ms - -[0m
+[2025-12-07T12:38:05.091Z] [HTTP] [0mPOST /auth/register [32m200[0m 62.341 ms - 76[0m
+[2025-12-07T12:38:05.090Z] [INFO] User registered: 4
+[2025-12-07T12:38:06.086Z] [HTTP] [0mGET / [36m304[0m 1.334 ms - -[0m
+[2025-12-07T12:38:06.120Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.421 ms - -[0m
+[2025-12-07T12:38:06.124Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.314 ms - -[0m
+[2025-12-07T12:38:06.132Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 1.615 ms - 385[0m
+[2025-12-07T12:38:23.927Z] [INFO] User logged out: Ar
+[2025-12-07T12:38:23.928Z] [HTTP] [0mPOST /auth/logout [32m200[0m 1.172 ms - 41[0m
+[2025-12-07T12:38:23.957Z] [HTTP] [0mGET /auth/login [32m200[0m 16.316 ms - 1389[0m
+[2025-12-07T12:38:23.994Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.370 ms - -[0m
+[2025-12-07T12:38:23.997Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.071 ms - -[0m
+[2025-12-07T12:38:34.196Z] [HTTP] [0mPOST /auth/register [32m200[0m 59.699 ms - 76[0m
+[2025-12-07T12:38:34.196Z] [INFO] User registered: ger
+[2025-12-07T12:38:40.178Z] [INFO] User logged in: ger
+[2025-12-07T12:38:40.179Z] [HTTP] [0mPOST /auth/login [32m200[0m 57.030 ms - 56[0m
+[2025-12-07T12:38:40.195Z] [HTTP] [0mGET / [32m200[0m 2.166 ms - 1339[0m
+[2025-12-07T12:38:40.233Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.665 ms - -[0m
+[2025-12-07T12:38:40.235Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.550 ms - -[0m
+[2025-12-07T12:38:43.491Z] [INFO] User logged out: ger
+[2025-12-07T12:38:43.492Z] [HTTP] [0mPOST /auth/logout [32m200[0m 1.385 ms - 41[0m
+[2025-12-07T12:38:43.516Z] [HTTP] [0mGET /auth/login [32m200[0m 1.618 ms - 1389[0m
+[2025-12-07T12:38:43.553Z] [HTTP] [0mGET /css/styles.css [36m304[0m 0.931 ms - -[0m
+[2025-12-07T12:38:43.555Z] [HTTP] [0mGET /js/main.js [36m304[0m 0.909 ms - -[0m
+[2025-12-07T12:38:48.121Z] [HTTP] [0mPOST /auth/login [33m401[0m 1.289 ms - 61[0m
+[2025-12-07T12:38:57.774Z] [ERROR] Register error: SQLITE_CONSTRAINT: UNIQUE constraint failed: users.login
+[2025-12-07T12:38:57.775Z] [HTTP] [0mPOST /auth/register [33m400[0m 54.817 ms - 49[0m
+[2025-12-07T12:39:03.642Z] [INFO] User registered: Arkeb
+[2025-12-07T12:39:03.643Z] [HTTP] [0mPOST /auth/register [32m200[0m 74.935 ms - 76[0m
+[2025-12-07T12:39:12.126Z] [INFO] User logged in: Arkeb
+[2025-12-07T12:39:12.128Z] [HTTP] [0mPOST /auth/login [32m200[0m 57.425 ms - 54[0m
+[2025-12-07T12:39:12.145Z] [HTTP] [0mGET / [32m200[0m 1.218 ms - 4501[0m
+[2025-12-07T12:39:12.185Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.434 ms - -[0m
+[2025-12-07T12:39:12.187Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.192 ms - -[0m
+[2025-12-07T12:39:12.197Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 2.413 ms - 528[0m
+[2025-12-07T12:39:18.253Z] [HTTP] [0mGET /admin-room.html?roomId=1&roomName=345 [36m304[0m 1.063 ms - -[0m
+[2025-12-07T12:39:18.292Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.040 ms - -[0m
+[2025-12-07T12:39:18.295Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.006 ms - -[0m
+[2025-12-07T12:39:18.306Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 3.050 ms - 516[0m
+[2025-12-07T12:39:22.572Z] [HTTP] [0mPOST /admin/rooms/1/teachers [32m200[0m 22.568 ms - 79[0m
+[2025-12-07T12:39:23.623Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 2.027 ms - 658[0m
+[2025-12-07T12:39:30.151Z] [HTTP] [0mPOST /admin/rooms/1/equipment [32m200[0m 11.419 ms - 8[0m
+[2025-12-07T12:39:31.419Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 2.990 ms - 778[0m
+[2025-12-07T12:39:33.443Z] [HTTP] [0mPATCH /admin/equipment/1 [32m200[0m 1.217 ms - 57[0m
+[2025-12-07T12:39:33.449Z] [HTTP] [0mPATCH /admin/equipment/1/active [32m200[0m 1.201 ms - 68[0m
+[2025-12-07T12:39:38.645Z] [INFO] User logged out: Arkeb
+[2025-12-07T12:39:38.646Z] [HTTP] [0mPOST /auth/logout [32m200[0m 1.000 ms - 41[0m
+[2025-12-07T12:39:38.662Z] [HTTP] [0mGET /auth/login [32m200[0m 1.606 ms - 1389[0m
+[2025-12-07T12:39:38.699Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.149 ms - -[0m
+[2025-12-07T12:39:38.701Z] [HTTP] [0mGET /js/main.js [36m304[0m 0.869 ms - -[0m
+[2025-12-07T12:39:41.933Z] [INFO] User logged in: ger
+[2025-12-07T12:39:41.934Z] [HTTP] [0mPOST /auth/login [32m200[0m 56.033 ms - 56[0m
+[2025-12-07T12:39:41.950Z] [HTTP] [0mGET / [32m200[0m 1.336 ms - 1339[0m
+[2025-12-07T12:39:41.995Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.587 ms - -[0m
+[2025-12-07T12:39:41.996Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.781 ms - -[0m
+[2025-12-07T12:39:48.150Z] [INFO] User logged out: ger
+[2025-12-07T12:39:48.151Z] [HTTP] [0mPOST /auth/logout [32m200[0m 1.503 ms - 41[0m
+[2025-12-07T12:39:48.166Z] [HTTP] [0mGET /auth/login [32m200[0m 1.374 ms - 1389[0m
+[2025-12-07T12:39:48.207Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.035 ms - -[0m
+[2025-12-07T12:39:48.209Z] [HTTP] [0mGET /js/main.js [36m304[0m 0.726 ms - -[0m
+[2025-12-07T16:45:24.789Z] [INFO] Database schema ensured
+[2025-12-07T16:45:24.794Z] [INFO] Server started on http://localhost:3000
+[2025-12-07T16:45:24.795Z] [INFO] Connected to SQLite database
+[2025-12-07T16:45:32.615Z] [HTTP] [0mGET / [32m200[0m 17.522 ms - 1389[0m
+[2025-12-07T16:45:32.713Z] [HTTP] [0mGET /css/styles.css [32m200[0m 2.641 ms - 4051[0m
+[2025-12-07T16:45:32.720Z] [HTTP] [0mGET /js/main.js [32m200[0m 2.008 ms - 21121[0m
+[2025-12-07T16:45:32.850Z] [HTTP] [0mGET /favicon.ico [33m404[0m 2.053 ms - 150[0m
+[2025-12-07T16:45:37.785Z] [INFO] User logged in: Arkebana
+[2025-12-07T16:45:37.792Z] [HTTP] [0mPOST /auth/login [32m200[0m 82.734 ms - 54[0m
+[2025-12-07T16:45:37.807Z] [HTTP] [0mGET / [32m200[0m 2.996 ms - 4501[0m
+[2025-12-07T16:45:37.841Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.253 ms - -[0m
+[2025-12-07T16:45:37.843Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.355 ms - -[0m
+[2025-12-07T16:45:37.888Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 4.722 ms - 528[0m
+[2025-12-07T16:45:41.296Z] [HTTP] [0mGET /admin-room.html?roomId=1&roomName=345 [32m200[0m 1.514 ms - 2868[0m
+[2025-12-07T16:45:41.338Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.659 ms - -[0m
+[2025-12-07T16:45:41.341Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.167 ms - -[0m
+[2025-12-07T16:45:41.449Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 5.235 ms - 778[0m
+[2025-12-07T16:45:45.375Z] [HTTP] [0mGET / [36m304[0m 1.209 ms - -[0m
+[2025-12-07T16:45:45.415Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.069 ms - -[0m
+[2025-12-07T16:45:45.417Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.506 ms - -[0m
+[2025-12-07T16:45:45.426Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 2.887 ms - -[0m
+[2025-12-08T04:05:24.859Z] [INFO] Database schema ensured
+[2025-12-08T04:05:24.863Z] [INFO] Server started on http://localhost:3000
+[2025-12-08T04:05:24.864Z] [INFO] Connected to SQLite database
+[2025-12-08T04:05:28.414Z] [HTTP] [0mGET / [32m200[0m 8.175 ms - 1389[0m
+[2025-12-08T04:05:28.447Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.639 ms - -[0m
+[2025-12-08T04:05:28.451Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.346 ms - -[0m
+[2025-12-08T04:05:32.077Z] [INFO] User logged in: Arkebana
+[2025-12-08T04:05:32.080Z] [HTTP] [0mPOST /auth/login [32m200[0m 69.494 ms - 54[0m
+[2025-12-08T04:05:32.096Z] [HTTP] [0mGET / [32m200[0m 2.376 ms - 4501[0m
+[2025-12-08T04:05:32.128Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.177 ms - -[0m
+[2025-12-08T04:05:32.131Z] [HTTP] [0mGET /js/main.js [36m304[0m 5.206 ms - -[0m
+[2025-12-08T04:05:32.161Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 5.739 ms - -[0m
+[2025-12-08T04:06:09.416Z] [INFO] User logged out: Arkebana
+[2025-12-08T04:06:09.418Z] [HTTP] [0mPOST /auth/logout [32m200[0m 2.650 ms - 41[0m
+[2025-12-08T04:06:09.447Z] [HTTP] [0mGET /auth/login [32m200[0m 3.695 ms - 1389[0m
+[2025-12-08T04:06:09.502Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.464 ms - -[0m
+[2025-12-08T04:06:09.506Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.635 ms - -[0m
+[2025-12-08T04:06:14.110Z] [HTTP] [0mPOST /auth/login [33m401[0m 2.143 ms - 61[0m
+[2025-12-08T04:06:17.678Z] [HTTP] [0mPOST /auth/login [33m401[0m 1.513 ms - 61[0m
+[2025-12-08T04:06:21.737Z] [INFO] User logged in: Arkebana
+[2025-12-08T04:06:21.739Z] [HTTP] [0mPOST /auth/login [32m200[0m 66.737 ms - 54[0m
+[2025-12-08T04:06:21.762Z] [HTTP] [0mGET / [36m304[0m 1.443 ms - -[0m
+[2025-12-08T04:06:21.836Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.982 ms - -[0m
+[2025-12-08T04:06:21.842Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.750 ms - -[0m
+[2025-12-08T04:06:21.859Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 4.889 ms - -[0m
+[2025-12-08T04:09:25.508Z] [HTTP] [0mGET /admin-room.html?roomId=1&roomName=345 [36m304[0m 0.923 ms - -[0m
+[2025-12-08T04:09:25.559Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.827 ms - -[0m
+[2025-12-08T04:09:25.563Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.608 ms - -[0m
+[2025-12-08T04:09:25.722Z] [HTTP] [0mGET /admin/rooms/1/data [36m304[0m 6.497 ms - -[0m
+[2025-12-08T04:10:37.190Z] [INFO] User logged out: Arkebana
+[2025-12-08T04:10:37.192Z] [HTTP] [0mPOST /auth/logout [32m200[0m 2.215 ms - 41[0m
+[2025-12-08T04:10:37.215Z] [HTTP] [0mGET /auth/login [32m200[0m 2.983 ms - 1389[0m
+[2025-12-08T04:10:37.275Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.215 ms - -[0m
+[2025-12-08T04:10:37.280Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.094 ms - -[0m
+[2025-12-08T04:10:41.313Z] [INFO] User logged in: Arkebana
+[2025-12-08T04:10:41.315Z] [HTTP] [0mPOST /auth/login [32m200[0m 67.141 ms - 54[0m
+[2025-12-08T04:10:41.339Z] [HTTP] [0mGET / [36m304[0m 3.167 ms - -[0m
+[2025-12-08T04:10:41.393Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.337 ms - -[0m
+[2025-12-08T04:10:41.395Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.701 ms - -[0m
+[2025-12-08T04:10:41.419Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 5.329 ms - -[0m
+[2025-12-08T04:10:46.328Z] [HTTP] [0mPOST /admin/rooms [32m200[0m 15.908 ms - 21[0m
+[2025-12-08T04:10:47.839Z] [HTTP] [0mGET / [36m304[0m 1.175 ms - -[0m
+[2025-12-08T04:10:47.883Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.485 ms - -[0m
+[2025-12-08T04:10:47.886Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.886 ms - -[0m
+[2025-12-08T04:10:47.909Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 2.169 ms - 550[0m
+[2025-12-08T04:10:49.457Z] [HTTP] [0mGET /admin-room.html?roomId=2&roomName=207 [32m200[0m 2.215 ms - 2868[0m
+[2025-12-08T04:10:49.512Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.751 ms - -[0m
+[2025-12-08T04:10:49.513Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.351 ms - -[0m
+[2025-12-08T04:10:49.600Z] [HTTP] [0mGET /admin/rooms/2/data [32m200[0m 5.813 ms - 516[0m
+[2025-12-08T04:11:50.216Z] [HTTP] [0mPOST /admin/rooms/2/equipment [32m200[0m 9.333 ms - 8[0m
+[2025-12-08T04:11:51.366Z] [HTTP] [0mGET /admin/rooms/2/data [32m200[0m 3.427 ms - 636[0m
+[2025-12-08T04:15:35.835Z] [INFO] User logged out: Arkebana
+[2025-12-08T04:15:35.836Z] [HTTP] [0mPOST /auth/logout [32m200[0m 1.462 ms - 41[0m
+[2025-12-08T04:15:35.861Z] [HTTP] [0mGET /auth/login [32m200[0m 2.538 ms - 1389[0m
+[2025-12-08T04:15:35.907Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.803 ms - -[0m
+[2025-12-08T04:15:35.911Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.498 ms - -[0m
+[2025-12-08T04:15:40.672Z] [HTTP] [0mPOST /auth/login [33m401[0m 65.348 ms - 61[0m
+[2025-12-08T04:15:44.362Z] [INFO] User logged in: Arkebana
+[2025-12-08T04:15:44.364Z] [HTTP] [0mPOST /auth/login [32m200[0m 68.017 ms - 54[0m
+[2025-12-08T04:15:44.385Z] [HTTP] [0mGET / [36m304[0m 1.399 ms - -[0m
+[2025-12-08T04:15:44.443Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.343 ms - -[0m
+[2025-12-08T04:15:44.446Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.106 ms - -[0m
+[2025-12-08T04:15:44.464Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 4.064 ms - -[0m
+[2025-12-08T04:16:22.350Z] [INFO] User registered: Arkebana44
+[2025-12-08T04:16:22.352Z] [HTTP] [0mPOST /auth/register [32m200[0m 72.212 ms - 76[0m
+[2025-12-08T04:16:23.674Z] [HTTP] [0mGET / [36m304[0m 1.136 ms - -[0m
+[2025-12-08T04:16:23.720Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.606 ms - -[0m
+[2025-12-08T04:16:23.724Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.398 ms - -[0m
+[2025-12-08T04:16:23.740Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 3.773 ms - 735[0m
+[2025-12-08T04:23:19.317Z] [INFO] User logged out: Arkebana
+[2025-12-08T04:23:19.319Z] [HTTP] [0mPOST /auth/logout [32m200[0m 1.486 ms - 41[0m
+[2025-12-08T04:23:19.342Z] [HTTP] [0mGET /auth/login [32m200[0m 3.135 ms - 1389[0m
+[2025-12-08T04:23:19.395Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.616 ms - -[0m
+[2025-12-08T04:23:19.400Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.052 ms - -[0m
+[2025-12-08T04:23:25.598Z] [INFO] User registered: 12
+[2025-12-08T04:23:25.600Z] [HTTP] [0mPOST /auth/register [32m200[0m 73.645 ms - 77[0m
+[2025-12-08T04:23:28.729Z] [INFO] User logged in: 12
+[2025-12-08T04:23:28.731Z] [HTTP] [0mPOST /auth/login [32m200[0m 66.695 ms - 56[0m
+[2025-12-08T04:23:28.754Z] [HTTP] [0mGET / [32m200[0m 1.787 ms - 2280[0m
+[2025-12-08T04:23:28.810Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.473 ms - -[0m
+[2025-12-08T04:23:28.813Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.361 ms - -[0m
+[2025-12-08T04:23:28.830Z] [HTTP] [0mGET /user/rooms [33m404[0m 3.326 ms - 149[0m
+[2025-12-09T07:30:07.688Z] [INFO] Database schema ensured
+[2025-12-09T07:30:07.709Z] [INFO] Server started on http://localhost:3000
+[2025-12-09T07:30:07.715Z] [INFO] Connected to SQLite database
+[2025-12-09T07:30:20.510Z] [HTTP] [0mGET / [32m200[0m 15.371 ms - 1389[0m
+[2025-12-09T07:30:20.555Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.148 ms - -[0m
+[2025-12-09T07:30:20.561Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.225 ms - -[0m
+[2025-12-09T07:30:20.710Z] [HTTP] [0mGET /favicon.ico [33m404[0m 3.204 ms - 150[0m
+[2025-12-09T07:30:24.681Z] [INFO] User logged in: Arkebana
+[2025-12-09T07:30:24.688Z] [HTTP] [0mPOST /auth/login [32m200[0m 104.514 ms - 54[0m
+[2025-12-09T07:30:24.705Z] [HTTP] [0mGET / [32m200[0m 4.151 ms - 4501[0m
+[2025-12-09T07:30:24.748Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.437 ms - -[0m
+[2025-12-09T07:30:24.753Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.026 ms - -[0m
+[2025-12-09T07:30:24.798Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 5.880 ms - 927[0m
+[2025-12-09T07:32:05.482Z] [HTTP] [0mDELETE /admin/teachers/2 [32m200[0m 25.586 ms - 53[0m
+[2025-12-09T07:32:07.768Z] [HTTP] [0mDELETE /admin/teachers/6 [32m200[0m 23.180 ms - 53[0m
+[2025-12-09T07:32:09.516Z] [HTTP] [0mDELETE /admin/teachers/7 [32m200[0m 12.195 ms - 53[0m
+[2025-12-09T07:43:46.920Z] [HTTP] [0mPOST /admin/rooms [32m200[0m 13.004 ms - 21[0m
+[2025-12-09T07:43:48.128Z] [HTTP] [0mGET / [36m304[0m 2.364 ms - -[0m
+[2025-12-09T07:43:48.213Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.988 ms - -[0m
+[2025-12-09T07:43:48.218Z] [HTTP] [0mGET /js/main.js [36m304[0m 4.853 ms - -[0m
+[2025-12-09T07:43:48.273Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 4.624 ms - 483[0m
+[2025-12-09T07:43:49.036Z] [HTTP] [0mGET /admin-room.html?roomId=3&roomName=311 [32m200[0m 3.105 ms - 2868[0m
+[2025-12-09T07:43:49.132Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.860 ms - -[0m
+[2025-12-09T07:43:49.140Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.108 ms - -[0m
+[2025-12-09T07:43:49.281Z] [HTTP] [0mGET /admin/rooms/3/data [32m200[0m 8.258 ms - 427[0m
+[2025-12-09T07:43:56.613Z] [HTTP] [0mPOST /admin/rooms/3/equipment [32m200[0m 12.904 ms - 8[0m
+[2025-12-09T07:43:57.688Z] [HTTP] [0mGET /admin/rooms/3/data [32m200[0m 6.731 ms - 547[0m
+[2025-12-09T07:44:01.601Z] [HTTP] [0mPOST /admin/rooms/3/teachers [32m200[0m 26.921 ms - 79[0m
+[2025-12-09T07:44:02.635Z] [HTTP] [0mGET /admin/rooms/3/data [32m200[0m 5.625 ms - 738[0m
+[2025-12-09T07:44:04.103Z] [HTTP] [0mGET / [36m304[0m 1.671 ms - -[0m
+[2025-12-09T07:44:04.197Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.834 ms - -[0m
+[2025-12-09T07:44:04.207Z] [HTTP] [0mGET /js/main.js [36m304[0m 5.205 ms - -[0m
+[2025-12-09T07:44:04.232Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 4.954 ms - -[0m
+[2025-12-11T08:42:49.369Z] [INFO] Database schema ensured
+[2025-12-11T08:42:49.391Z] [INFO] Server started on http://localhost:3000
+[2025-12-11T08:42:49.392Z] [INFO] Connected to SQLite database
+[2025-12-11T08:43:04.120Z] [INFO] Database schema ensured
+[2025-12-11T08:43:04.127Z] [INFO] Server started on http://localhost:3000
+[2025-12-11T08:43:04.128Z] [INFO] Connected to SQLite database
+[2025-12-11T08:43:04.350Z] [HTTP] [0mGET / [32m200[0m 19.990 ms - 1389[0m
+[2025-12-11T08:43:04.456Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.627 ms - -[0m
+[2025-12-11T08:43:04.465Z] [HTTP] [0mGET /js/main.js [36m304[0m 10.601 ms - -[0m
+[2025-12-11T08:43:04.647Z] [HTTP] [0mGET /favicon.ico [33m404[0m 3.122 ms - 150[0m
+[2025-12-11T08:43:19.633Z] [INFO] User logged in: Arkebana
+[2025-12-11T08:43:19.642Z] [HTTP] [0mPOST /auth/login [32m200[0m 110.005 ms - 54[0m
+[2025-12-11T08:43:19.663Z] [HTTP] [0mGET / [32m200[0m 5.103 ms - 4501[0m
+[2025-12-11T08:43:19.704Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.941 ms - -[0m
+[2025-12-11T08:43:19.709Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.901 ms - -[0m
+[2025-12-11T08:43:19.769Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 8.265 ms - -[0m
+[2025-12-11T08:43:22.727Z] [HTTP] [0mGET /admin-room.html?roomId=1&roomName=345 [32m200[0m 2.257 ms - 2868[0m
+[2025-12-11T08:43:22.791Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.231 ms - -[0m
+[2025-12-11T08:43:22.793Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.854 ms - -[0m
+[2025-12-11T08:43:22.953Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 5.741 ms - 731[0m
+[2025-12-11T08:43:28.571Z] [HTTP] [0mPOST /admin/rooms/1/equipment [32m200[0m 15.468 ms - 8[0m
+[2025-12-11T08:43:29.880Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 4.294 ms - 852[0m
+[2025-12-11T08:43:33.170Z] [HTTP] [0mPOST /admin/rooms/1/teachers [32m200[0m 24.630 ms - 79[0m
+[2025-12-11T08:43:34.446Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 3.247 ms - 1044[0m
+[2025-12-11T08:44:12.608Z] [HTTP] [0mGET / [36m304[0m 1.798 ms - -[0m
+[2025-12-11T08:44:12.680Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.782 ms - -[0m
+[2025-12-11T08:44:12.683Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.517 ms - -[0m
+[2025-12-11T08:44:12.696Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 3.504 ms - -[0m
+[2025-12-14T10:22:20.647Z] [INFO] Server started on http://localhost:3000
+[2025-12-14T10:22:20.628Z] [INFO] Database schema ensured
+[2025-12-14T10:22:20.648Z] [INFO] Connected to SQLite database
+[2025-12-14T10:22:24.722Z] [HTTP] [0mGET / [32m200[0m 13.726 ms - 1389[0m
+[2025-12-14T10:22:24.813Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.071 ms - -[0m
+[2025-12-14T10:22:24.816Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.444 ms - -[0m
+[2025-12-14T10:22:24.949Z] [HTTP] [0mGET /favicon.ico [33m404[0m 1.720 ms - 150[0m
+[2025-12-14T10:22:30.601Z] [INFO] User logged in: Arkebana
+[2025-12-14T10:22:30.606Z] [HTTP] [0mPOST /auth/login [32m200[0m 80.619 ms - 54[0m
+[2025-12-14T10:22:30.620Z] [HTTP] [0mGET / [32m200[0m 3.655 ms - 4501[0m
+[2025-12-14T10:22:30.652Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.036 ms - -[0m
+[2025-12-14T10:22:30.654Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.643 ms - -[0m
+[2025-12-14T10:22:30.695Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 4.516 ms - -[0m

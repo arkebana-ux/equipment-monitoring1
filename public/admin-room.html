@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Аудитория</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <a href="/" class="back-link">← Назад к панеле администратора</a>
+      <h1 id="roomPageTitle">Аудитория</h1>
+    </div>
+    <button id="logoutBtn" class="btn">Выйти</button>
+  </header>
+
+  <main class="tabs-container">
+    <div class="room-layout">
+      <!-- Левая колонка: оборудование -->
+      <section class="card wide">
+        <h2>Оборудование аудитории</h2>
+        <table class="data-table" id="equipmentTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Название</th>
+              <th>Номер</th>
+              <th>Дата покупки</th>
+              <th>Активно</th>
+              <th>Действие</th>
+            </tr>
+          </thead>
+          <tbody id="equipmentTableBody">
+          </tbody>
+        </table>
+
+        <h3>Добавить оборудование</h3>
+        <form id="equipmentForm" class="form-vertical">
+          <label>
+            Название оборудования
+            <input type="text" name="name" required />
+          </label>
+          <label>
+            Номер оборудования
+            <input type="text" name="serial_number" />
+          </label>
+          <label>
+            Дата покупки
+            <input type="date" name="purchase_date" />
+          </label>
+          <button class="btn hover-highlight" type="submit">Добавить оборудование</button>
+        </form>
+      </section>
+
+      <!-- Правая колонка: преподаватели -->
+      <section class="card wide">
+        <h2>Преподаватели аудитории</h2>
+        <table class="data-table" id="roomTeachersTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>ФИО</th>
+              <th>Логин</th>
+              <th>Действие</th>
+            </tr>
+          </thead>
+          <tbody id="roomTeachersTableBody">
+          </tbody>
+        </table>
+
+        <h3>Добавить преподавателя в аудиторию</h3>
+        <form id="roomTeacherForm" class="form-vertical">
+          <label>
+            Преподаватель
+            <select name="teacher_id" id="roomTeacherSelect"></select>
+          </label>
+          <button class="btn hover-highlight" type="submit">Добавить</button>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Кабинет преподавателя</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Кабинет преподавателя</h1>
+    <button id="logoutBtn" class="btn">Выйти</button>
+  </header>
+
+  <main class="tabs-container">
+    <section class="user-center">
+      <div class="card wide user-rooms-card">
+        <h2>Мои аудитории</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Название аудитории</th>
+            </tr>
+          </thead>
+          <tbody id="userRoomsTableBody">
+            <!-- Строки для аудиторий добавляются динамически -->
+          </tbody>
+        </table>
+        <p class="hint">Нажмите на аудиторию, чтобы открыть оборудование и отправить сообщение об ошибке.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="user-footer">
+    Если у вас не указана аудитория, которая закреплена за Вами, свяжитесь с администратором по номеру:
+    <strong>7 (999) 999-99-99</strong>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Запрос данных о закрепленных аудиториях
+      const response = await fetch('/user/rooms');
+      const data = await response.json();
+      const roomsTableBody = document.getElementById('userRoomsTableBody');
+      
+      if (data.rooms && roomsTableBody) {
+        roomsTableBody.innerHTML = ''; // Очищаем таблицу
+        data.rooms.forEach(room => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${room.id}</td>
+            <td>${room.name}</td>
+          `;
+          roomsTableBody.appendChild(tr); // Добавляем строку с аудиторией в таблицу
+        });
+      }
+    });
+  </script>
+</body>
+</html>

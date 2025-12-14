@@ -1,0 +1,20 @@
+{
+  "name": "equipment-monitoring",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "morgan": "^1.10.0",
+    "multer": "1.4.4-lts.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
