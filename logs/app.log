@@ -3517,3 +3517,7 @@
 [2026-04-21T17:38:56.810Z] [HTTP] [0mGET /notifications [36m304[0m 1.369 ms - -[0m
 [2026-04-21T17:39:23.804Z] [HTTP] [0mGET /notifications [36m304[0m 1.493 ms - -[0m
 [2026-04-21T17:39:26.812Z] [HTTP] [0mGET /notifications [36m304[0m 2.115 ms - -[0m
+[2026-04-21T17:39:53.813Z] [HTTP] [0mGET /notifications [36m304[0m 1.833 ms - -[0m
+[2026-04-21T17:39:56.817Z] [HTTP] [0mGET /notifications [36m304[0m 1.867 ms - -[0m
+[2026-04-21T17:40:23.806Z] [HTTP] [0mGET /notifications [36m304[0m 1.495 ms - -[0m
+[2026-04-21T17:40:26.808Z] [HTTP] [0mGET /notifications [36m304[0m 1.786 ms - -[0m
