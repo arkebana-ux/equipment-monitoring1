@@ -14,6 +14,8 @@ exports.showLoginPage = (req, res) => {
 exports.register = (req, res, next) => {
   const { login, password, full_name, role, rooms } = req.body;
 
+  console.log('Register request received:', { login, full_name, role, rooms, password_length: password?.length });
+
   // Authorization for registration:
   // - To create an admin account, the requester must be the main admin (login 'admin', case-insensitive)
   // - To create a teacher account, the requester must be an admin (any admin)

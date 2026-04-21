@@ -49,6 +49,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (paramsInit.tab) {
         const tbtn = Array.from(tabs).find(x => x.dataset.tab === paramsInit.tab);
         if (tbtn) tbtn.click();
+      } else {
+        // fallback: try to restore last active tab saved in sessionStorage
+        try {
+          const last = sessionStorage.getItem('adminLastTab');
+          if (last) {
+            const tbtn2 = Array.from(tabs).find(x => x.dataset.tab === last);
+            if (tbtn2) {
+              tbtn2.click();
+              sessionStorage.removeItem('adminLastTab');
+            }
+          }
+        } catch (e) { /* ignore */ }
       }
     } catch (e) { /* ignore */ }
   }
@@ -426,7 +438,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Управление пользователями (таб "Пользователи")
   const adminTableBody = document.getElementById('adminTableBody');
   if (userRegisterForm) {
+    console.log('Found userRegisterForm, attaching event listener');
     userRegisterForm.addEventListener('submit', async (e) => {
+      console.log('userRegisterForm submit event fired');
       e.preventDefault();
       const formData = new FormData(userRegisterForm);
       const data = Object.fromEntries(formData.entries());
@@ -444,10 +458,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         const res = await postJSON('/auth/register', data);
+        console.log('Register response:', res);
         if (!res.ok) {
           return alert(res.data.message || 'Ошибка при регистрации');
         }
         alert(res.data.message || 'Пользователь добавлен');
+        try { sessionStorage.setItem('adminLastTab', 'teachers'); } catch (e) {}
         location.reload();
       } catch (err) {
         console.error('Register user error:', err);
@@ -827,4 +843,175 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
   }
+
+  // ============================================================
+  //              СИСТЕМА УВЕДОМЛЕНИЙ
+  // ============================================================
+
+  const notificationBtn = document.getElementById('notificationBtn');
+  const notificationDropdown = document.getElementById('notificationDropdown');
+  const notificationList = document.getElementById('notificationList');
+  const notificationBadge = document.getElementById('notificationBadge');
+  const markAllReadBtn = document.getElementById('markAllReadBtn');
+
+  if (notificationBtn) {
+    // Открыть/закрыть меню уведомлений
+    notificationBtn.addEventListener('click', () => {
+      notificationDropdown.classList.toggle('open');
+    });
+
+    // Закрыть меню при клике вне его
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.notification-bell')) {
+        notificationDropdown.classList.remove('open');
+      }
+    });
+
+    // Загрузить и отобразить уведомления
+    async function loadNotifications() {
+      try {
+        const res = await fetch('/notifications');
+        if (!res.ok) return;
+        const { notifications, unreadCount } = await res.json();
+
+        // Обновить счетчик
+        notificationBadge.textContent = unreadCount;
+        if (unreadCount > 0) {
+          notificationBadge.classList.add('has-unread');
+        } else {
+          notificationBadge.classList.remove('has-unread');
+        }
+
+        // Отобразить уведомления
+        if (!notifications || notifications.length === 0) {
+          notificationList.innerHTML = '<p class="notification-empty">Нет уведомлений</p>';
+          return;
+        }
+
+        notificationList.innerHTML = '';
+        notifications.forEach(notif => {
+          const div = document.createElement('div');
+          div.className = `notification-item ${notif.is_read === 0 ? 'unread' : ''}`;
+
+          const content = document.createElement('div');
+          content.className = 'notification-content';
+
+          const title = document.createElement('p');
+          title.className = 'notification-title';
+          title.textContent = notif.title;
+          content.appendChild(title);
+
+          const message = document.createElement('p');
+          message.className = 'notification-message';
+          message.textContent = notif.message;
+          content.appendChild(message);
+
+          const time = document.createElement('div');
+          time.className = 'notification-time';
+          // parse SQLite datetime like 'YYYY-MM-DD HH:MM:SS' into a JS Date reliably
+          let createdDate = new Date(notif.created_at);
+          try {
+            if (!createdDate || isNaN(createdDate.getTime())) {
+              if (notif.created_at && typeof notif.created_at === 'string') {
+                const iso = notif.created_at.replace(' ', 'T') + 'Z';
+                createdDate = new Date(iso);
+              }
+            }
+          } catch (e) { /* ignore parse errors */ }
+          time.textContent = formatTime(createdDate instanceof Date && !isNaN(createdDate.getTime()) ? createdDate : new Date());
+          content.appendChild(time);
+
+          const badge = document.createElement('div');
+          badge.className = `notification-type-badge ${notif.type || 'info'}`;
+          badge.textContent = notif.type === 'warning' ? 'Заявка' : (notif.type === 'success' ? 'Выполнено' : 'Обновление');
+          content.appendChild(badge);
+
+          div.appendChild(content);
+
+          // Кнопка удаления
+          const deleteBtn = document.createElement('button');
+          deleteBtn.className = 'notification-delete-btn';
+          deleteBtn.innerHTML = '×';
+          deleteBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            try {
+              await fetch(`/notifications/${notif.id}`, { method: 'DELETE' });
+              loadNotifications();
+            } catch (err) {
+              console.error('Delete notification error:', err);
+            }
+          });
+          div.appendChild(deleteBtn);
+
+          // Клик по уведомлению - отметить как прочитанное и перейти к жалобе
+          div.addEventListener('click', async () => {
+            try {
+              // preserve active admin tab so back can restore it
+              try {
+                const activeTabBtn = document.querySelector('.tab.active');
+                const tabName = activeTabBtn ? activeTabBtn.dataset.tab : '';
+                if (tabName) sessionStorage.setItem('adminLastTab', tabName);
+              } catch (e) {}
+
+              if (notif.is_read === 0) {
+                await fetch(`/notifications/${notif.id}/read`, { method: 'PUT' });
+              }
+
+              // if notification refers to a complaint — open its detail page
+              if (notif.complaint_id) {
+                window.location.href = `/admin-complaint.html?id=${encodeURIComponent(notif.complaint_id)}`;
+                return;
+              }
+
+              // otherwise just reload the list
+              loadNotifications();
+            } catch (err) {
+              console.error('Notification click error:', err);
+            }
+          });
+
+          notificationList.appendChild(div);
+        });
+      } catch (err) {
+        console.error('Load notifications error:', err);
+      }
+    }
+
+    // Отметить все как прочитанные
+    if (markAllReadBtn) {
+      markAllReadBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        try {
+          await fetch('/notifications/read/all', { method: 'PUT' });
+          loadNotifications();
+        } catch (err) {
+          console.error('Mark all as read error:', err);
+        }
+      });
+    }
+
+    // Загрузить уведомления при загрузке страницы
+    loadNotifications();
+
+    // Обновлять уведомления каждые 30 секунд
+    setInterval(loadNotifications, 30000);
+  }
+
+  // Функция для форматирования времени
+  function formatTime(date) {
+    const now = new Date();
+    const diffMs = now - date;
+    const diffSecs = Math.floor(diffMs / 1000);
+    const diffMins = Math.floor(diffSecs / 60);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffSecs < 60) return 'только что';
+    if (diffMins < 60) return `${diffMins}м назад`;
+    if (diffHours < 24) return `${diffHours}ч назад`;
+    if (diffDays < 7) return `${diffDays}д назад`;
+    
+    return date.toLocaleDateString('ru-RU');
+  }
 });
+

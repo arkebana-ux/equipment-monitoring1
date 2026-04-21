@@ -2,6 +2,8 @@ const path = require('path');
 const multer = require('multer');
 const Complaint = require('../models/Complaint');
 const Equipment = require('../models/Equipment');
+const Notification = require('../models/Notification');
+const User = require('../models/User');
 
 // Указываем директорию для загрузки файлов
 const uploadDir = path.join(__dirname, '..', '..', 'public', 'uploads');
@@ -81,6 +83,24 @@ exports.createComplaint = (req, res, next) => {
         // Пометим оборудование как 'на рассмотрении'
         Equipment.setStatus(equipment_id, 'на рассмотрении', (sErr) => {
           if (sErr) console.error('Set equipment status error:', sErr);
+          
+          // Создаём уведомление для всех админов
+          User.findAllAdmins((adminErr, admins) => {
+            if (!adminErr && admins && admins.length > 0) {
+              admins.forEach(admin => {
+                Notification.create({
+                  user_id: admin.id,
+                  complaint_id: id,
+                  title: 'Новая заявка о поломке',
+                  message: `Поступила новая заявка об оборудовании: ${equipment.name}. Описание: ${description.substring(0, 100)}...`,
+                  type: 'warning'
+                }, (notifErr) => {
+                  if (notifErr) console.error('Error creating notification:', notifErr);
+                });
+              });
+            }
+          });
+          
           // Возвращаем успех независимо от ошибки установки статуса
           res.json({ message: 'Жалоба отправлена', id });
         });

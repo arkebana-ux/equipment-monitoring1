@@ -2,6 +2,7 @@ const Room = require('../models/Room');
 const Equipment = require('../models/Equipment');
 const Complaint = require('../models/Complaint');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 const RoomTeacher = require('../models/RoomTeacher');
 const { db } = require('../config/db');
 const bcrypt = require('bcrypt');
@@ -138,13 +139,33 @@ exports.deleteEquipment = (req, res, next) => {
 exports.changeComplaintStatus = (req, res, next) => {
   const { id } = req.params;
   const { status } = req.body;
-  // Получаем жалобу, чтобы узнать equipment_id
+  // Получаем жалобу, чтобы узнать equipment_id и user_id
   Complaint.findById(id, (err, complaint) => {
     if (err) return next(err);
     if (!complaint) return res.status(404).json({ message: 'Жалоба не найдена' });
 
     Complaint.setStatus(id, status, (err2) => {
       if (err2) return next(err2);
+
+      // Создаём уведомление для преподавателя
+      const statusMessages = {
+        'на рассмотрении': 'Ваша заявка находится на рассмотрении',
+        'в ремонте': 'Оборудование в ремонте',
+        'исправлено': 'Оборудование успешно отремонтировано!'
+      };
+      
+      const title = 'Изменение статуса заявки';
+      const message = statusMessages[status] || `Статус изменён на: ${status}`;
+      
+      Notification.create({
+        user_id: complaint.user_id,
+        complaint_id: id,
+        title: title,
+        message: message,
+        type: status === 'исправлено' ? 'success' : (status === 'в ремонте' ? 'info' : 'warning')
+      }, (notifErr) => {
+        if (notifErr) console.error('Error creating notification:', notifErr);
+      });
 
       // Если отметили как исправлено — помечаем оборудование как активное
       const eqId = complaint.equipment_id;

@@ -2124,3 +2124,316 @@
 [2025-12-14T13:18:45.109Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.418 ms - -[0m
 [2025-12-14T13:18:45.122Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 5.493 ms - 3706[0m
 [2025-12-14T13:18:54.638Z] [HTTP] [0mGET /user/rooms/4/equipment [33m403[0m 1.082 ms - 35[0m
+[2026-04-21T07:05:24.902Z] [INFO] Database schema ensured
+[2026-04-21T07:05:24.908Z] [INFO] Server started on http://localhost:3000
+[2026-04-21T07:05:24.909Z] [INFO] Connected to SQLite database
+[2026-04-21T07:05:28.976Z] [HTTP] [0mGET / [32m200[0m 9.909 ms - 1104[0m
+[2026-04-21T07:05:28.998Z] [HTTP] [0mGET /css/styles.css [32m200[0m 2.804 ms - 5849[0m
+[2026-04-21T07:05:29.000Z] [HTTP] [0mGET /js/main.js [32m200[0m 3.009 ms - 37522[0m
+[2026-04-21T07:05:29.091Z] [HTTP] [0mGET /favicon.ico [33m404[0m 1.970 ms - 150[0m
+[2026-04-21T07:05:29.092Z] [HTTP] [0mGET /favicon.ico [33m404[0m 0.903 ms - 150[0m
+[2026-04-21T07:05:33.917Z] [HTTP] [0mPOST /auth/login [33m401[0m 14.507 ms - 61[0m
+[2026-04-21T07:05:33.918Z] [HTTP] [0mPOST /auth/login [33m401[0m 3.229 ms - 61[0m
+[2026-04-21T07:05:38.417Z] [HTTP] [0mPOST /auth/login [33m401[0m 1.726 ms - 61[0m
+[2026-04-21T07:06:32.647Z] [INFO] User logged in: Admin
+[2026-04-21T07:06:32.650Z] [HTTP] [0mPOST /auth/login [32m200[0m 57.697 ms - 54[0m
+[2026-04-21T07:06:32.661Z] [HTTP] [0mGET / [32m200[0m 2.284 ms - 5242[0m
+[2026-04-21T07:06:32.692Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.921 ms - -[0m
+[2026-04-21T07:06:32.693Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.061 ms - -[0m
+[2026-04-21T07:06:32.718Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 4.246 ms - 3706[0m
+[2026-04-21T07:06:41.905Z] [HTTP] [0mGET /admin-room.html?roomId=5&roomName=421 [32m200[0m 1.260 ms - 3537[0m
+[2026-04-21T07:06:41.937Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.363 ms - -[0m
+[2026-04-21T07:06:41.940Z] [HTTP] [0mGET /js/main.js [36m304[0m 0.959 ms - -[0m
+[2026-04-21T07:06:41.987Z] [HTTP] [0mGET /admin/rooms/5/data [32m200[0m 3.846 ms - 1113[0m
+[2026-04-21T07:06:49.694Z] [HTTP] [0mGET / [36m304[0m 0.917 ms - -[0m
+[2026-04-21T07:06:49.726Z] [HTTP] [0mGET /css/styles.css [36m304[0m 0.910 ms - -[0m
+[2026-04-21T07:06:49.729Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.028 ms - -[0m
+[2026-04-21T07:06:49.747Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 3.750 ms - -[0m
+[2026-04-21T07:06:55.610Z] [HTTP] [0mGET /admin-complaint.html?id=4 [32m200[0m 1.281 ms - 3764[0m
+[2026-04-21T07:06:55.646Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.015 ms - -[0m
+[2026-04-21T07:06:55.657Z] [HTTP] [0mGET /admin/complaints/4 [32m200[0m 2.599 ms - 1569[0m
+[2026-04-21T07:06:55.679Z] [HTTP] [0mGET /uploads/1765717706693-674566842-%C3%90%C2%9E%C3%91%C2%88%C3%90%C2%B8%C3%90%C2%B1%C3%90%C2%BA%C3%90%C2%B0.png [32m200[0m 1.819 ms - 940[0m
+[2026-04-21T07:07:03.500Z] [HTTP] [0mGET /admin-dashboard.html?tab=errors [32m200[0m 0.960 ms - 5242[0m
+[2026-04-21T07:07:03.533Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.168 ms - -[0m
+[2026-04-21T07:07:03.536Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.008 ms - -[0m
+[2026-04-21T07:07:03.553Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 2.544 ms - -[0m
+[2026-04-21T07:13:18.549Z] [INFO] Database schema ensured
+[2026-04-21T07:13:18.553Z] [INFO] Server started on http://localhost:3000
+[2026-04-21T07:13:18.553Z] [INFO] Connected to SQLite database
+[2026-04-21T07:13:28.265Z] [HTTP] [0mGET / [32m200[0m 7.579 ms - 1104[0m
+[2026-04-21T07:13:28.325Z] [HTTP] [0mGET /css/styles.css [32m200[0m 5.272 ms - 9911[0m
+[2026-04-21T07:13:28.328Z] [HTTP] [0mGET /js/main.js [32m200[0m 4.047 ms - 43276[0m
+[2026-04-21T07:13:28.429Z] [HTTP] [0mGET /favicon.ico [33m404[0m 3.580 ms - 150[0m
+[2026-04-21T07:13:28.432Z] [HTTP] [0mGET /css/styles.css [36m304[0m 4.869 ms - -[0m
+[2026-04-21T07:13:40.013Z] [INFO] User logged in: Admin
+[2026-04-21T07:13:40.017Z] [HTTP] [0mPOST /auth/login [32m200[0m 69.658 ms - 54[0m
+[2026-04-21T07:13:40.025Z] [HTTP] [0mGET / [32m200[0m 1.746 ms - 6383[0m
+[2026-04-21T07:13:40.035Z] [HTTP] [0mGET /css/styles.css [36m304[0m 0.883 ms - -[0m
+[2026-04-21T07:13:40.037Z] [HTTP] [0mGET /js/main.js [36m304[0m 0.784 ms - -[0m
+[2026-04-21T07:13:40.048Z] [ERROR] Error: SQLITE_ERROR: no such table: notifications
+[2026-04-21T07:13:40.050Z] [HTTP] [0mGET /notifications [31m500[0m 2.940 ms - 62[0m
+[2026-04-21T07:13:40.053Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 7.272 ms - 3706[0m
+[2026-04-21T07:14:02.533Z] [HTTP] [0mGET / [32m200[0m 2.488 ms - 1104[0m
+[2026-04-21T07:14:02.620Z] [HTTP] [0mGET /css/styles.css [32m200[0m 2.397 ms - 9911[0m
+[2026-04-21T07:14:02.629Z] [HTTP] [0mGET /js/main.js [32m200[0m 3.148 ms - 43276[0m
+[2026-04-21T07:14:10.052Z] [ERROR] Error: SQLITE_ERROR: no such table: notifications
+[2026-04-21T07:14:10.053Z] [HTTP] [0mGET /notifications [31m500[0m 2.015 ms - 62[0m
+[2026-04-21T07:14:19.833Z] [HTTP] [0mGET /?full_name=%D0%A2%D0%B5%D1%81%D1%82+%D1%82%D0%B5%D1%81%D1%82+%D1%82%D0%B5%D1%81%D1%82&login=test&password=000000&rooms=5&role=teacher [32m200[0m 1.952 ms - 6383[0m
+[2026-04-21T07:14:19.850Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.343 ms - -[0m
+[2026-04-21T07:14:19.854Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.585 ms - -[0m
+[2026-04-21T07:14:19.861Z] [ERROR] Error: SQLITE_ERROR: no such table: notifications
+[2026-04-21T07:14:19.863Z] [HTTP] [0mGET /notifications [31m500[0m 2.657 ms - 62[0m
+[2026-04-21T07:14:19.866Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 7.116 ms - -[0m
+[2026-04-21T07:14:38.107Z] [HTTP] [0mGET /?full_name=%D0%A2%D0%B5%D1%81%D1%82+%D1%82%D0%B5%D1%81%D1%82+%D1%82%D0%B5%D1%81%D1%82&login=test&password=000000&rooms=5&role=teacher [36m304[0m 1.369 ms - -[0m
+[2026-04-21T07:14:38.120Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.164 ms - -[0m
+[2026-04-21T07:14:38.123Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.291 ms - -[0m
+[2026-04-21T07:14:38.135Z] [ERROR] Error: SQLITE_ERROR: no such table: notifications
+[2026-04-21T07:14:38.136Z] [HTTP] [0mGET /notifications [31m500[0m 2.385 ms - 62[0m
+[2026-04-21T07:14:38.140Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 7.303 ms - -[0m
+[2026-04-21T07:14:50.172Z] [HTTP] [0mGET /?full_name=%D1%82%D0%B5%D1%81%D1%82+%D1%82%D0%B5%D1%81%D1%82+%D1%82%D0%B5%D1%81%D1%82+&login=test&password=000000&rooms=4&rooms=5&role=teacher [32m200[0m 1.540 ms - 6383[0m
+[2026-04-21T07:14:50.185Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.873 ms - -[0m
+[2026-04-21T07:14:50.187Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.961 ms - -[0m
+[2026-04-21T07:14:50.194Z] [ERROR] Error: SQLITE_ERROR: no such table: notifications
+[2026-04-21T07:14:50.196Z] [HTTP] [0mGET /notifications [31m500[0m 2.320 ms - 62[0m
+[2026-04-21T07:14:50.199Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 7.211 ms - -[0m
+[2026-04-21T07:15:20.201Z] [ERROR] Error: SQLITE_ERROR: no such table: notifications
+[2026-04-21T07:15:20.202Z] [HTTP] [0mGET /notifications [31m500[0m 3.565 ms - 62[0m
+[2026-04-21T07:15:57.760Z] [INFO] User logged in: Admin
+[2026-04-21T07:15:57.762Z] [HTTP] [0mPOST /auth/login [32m200[0m 55.823 ms - 54[0m
+[2026-04-21T07:15:57.777Z] [HTTP] [0mGET / [32m200[0m 1.671 ms - 6388[0m
+[2026-04-21T07:15:57.818Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.039 ms - -[0m
+[2026-04-21T07:15:57.821Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.695 ms - -[0m
+[2026-04-21T07:15:57.854Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 2.784 ms - -[0m
+[2026-04-21T07:15:57.860Z] [ERROR] Error: SQLITE_ERROR: no such table: notifications
+[2026-04-21T07:15:57.862Z] [HTTP] [0mGET /notifications [31m500[0m 3.426 ms - 62[0m
+[2026-04-21T07:16:53.601Z] [INFO] Database schema ensured
+[2026-04-21T07:16:53.605Z] [INFO] Server started on http://localhost:3000
+[2026-04-21T07:16:53.606Z] [INFO] Connected to SQLite database
+[2026-04-21T07:17:04.584Z] [INFO] Database schema ensured
+[2026-04-21T07:17:04.586Z] [INFO] Connected to SQLite database
+[2026-04-21T07:17:08.024Z] [HTTP] [0mGET / [32m200[0m 13.931 ms - 1104[0m
+[2026-04-21T07:17:08.094Z] [HTTP] [0mGET /css/styles.css [36m304[0m 5.121 ms - -[0m
+[2026-04-21T07:17:08.098Z] [HTTP] [0mGET /js/main.js [32m200[0m 4.817 ms - 43405[0m
+[2026-04-21T07:17:08.156Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.690 ms - -[0m
+[2026-04-21T07:17:15.788Z] [INFO] User logged in: Admin
+[2026-04-21T07:17:15.791Z] [HTTP] [0mPOST /auth/login [32m200[0m 69.772 ms - 54[0m
+[2026-04-21T07:17:15.799Z] [HTTP] [0mGET / [32m200[0m 1.524 ms - 6388[0m
+[2026-04-21T07:17:15.812Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.985 ms - -[0m
+[2026-04-21T07:17:15.813Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.838 ms - -[0m
+[2026-04-21T07:17:15.836Z] [ERROR] Error: SQLITE_ERROR: no such table: notifications
+[2026-04-21T07:17:15.839Z] [HTTP] [0mGET /notifications [31m500[0m 3.865 ms - 62[0m
+[2026-04-21T07:17:15.843Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 11.301 ms - 338[0m
+[2026-04-21T07:17:26.593Z] [HTTP] [0mGET / [32m200[0m 1.852 ms - 1104[0m
+[2026-04-21T07:17:26.620Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.156 ms - -[0m
+[2026-04-21T07:17:26.624Z] [HTTP] [0mGET /js/main.js [32m200[0m 1.988 ms - 43405[0m
+[2026-04-21T07:17:45.837Z] [ERROR] Error: SQLITE_ERROR: no such table: notifications
+[2026-04-21T07:17:45.838Z] [HTTP] [0mGET /notifications [31m500[0m 1.803 ms - 62[0m
+[2026-04-21T07:18:24.698Z] [INFO] Database schema ensured
+[2026-04-21T07:18:24.701Z] [INFO] Server started on http://localhost:3000
+[2026-04-21T07:18:24.702Z] [INFO] Connected to SQLite database
+[2026-04-21T07:18:36.185Z] [INFO] Database schema ensured
+[2026-04-21T07:18:36.188Z] [INFO] Connected to SQLite database
+[2026-04-21T07:19:24.529Z] [HTTP] [0mGET / [36m304[0m 8.933 ms - -[0m
+[2026-04-21T07:19:24.637Z] [HTTP] [0mGET /css/styles.css [36m304[0m 4.795 ms - -[0m
+[2026-04-21T07:19:24.647Z] [HTTP] [0mGET /js/main.js [32m200[0m 9.529 ms - 43454[0m
+[2026-04-21T07:19:31.389Z] [INFO] User logged in: Admin
+[2026-04-21T07:19:31.391Z] [HTTP] [0mPOST /auth/login [32m200[0m 72.141 ms - 54[0m
+[2026-04-21T07:19:31.407Z] [HTTP] [0mGET / [32m200[0m 2.779 ms - 6388[0m
+[2026-04-21T07:19:31.446Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.684 ms - -[0m
+[2026-04-21T07:19:31.450Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.631 ms - -[0m
+[2026-04-21T07:19:31.485Z] [HTTP] [0mGET /notifications [32m200[0m 5.703 ms - 36[0m
+[2026-04-21T07:19:31.488Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 11.129 ms - 338[0m
+[2026-04-21T07:19:42.251Z] [INFO] User registered: test
+[2026-04-21T07:19:42.253Z] [HTTP] [0mPOST /auth/register [32m200[0m 63.636 ms - 76[0m
+[2026-04-21T07:19:43.671Z] [HTTP] [0mGET / [36m304[0m 1.017 ms - -[0m
+[2026-04-21T07:19:43.720Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.412 ms - -[0m
+[2026-04-21T07:19:43.724Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.461 ms - -[0m
+[2026-04-21T07:19:43.740Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 7.231 ms - 516[0m
+[2026-04-21T07:19:43.741Z] [HTTP] [0mGET /notifications [36m304[0m 6.095 ms - -[0m
+[2026-04-21T07:19:48.468Z] [HTTP] [0mPOST /admin/rooms [32m200[0m 5.267 ms - 21[0m
+[2026-04-21T07:19:49.369Z] [HTTP] [0mGET / [36m304[0m 1.101 ms - -[0m
+[2026-04-21T07:19:49.415Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.319 ms - -[0m
+[2026-04-21T07:19:49.418Z] [HTTP] [0mGET /js/main.js [36m304[0m 0.894 ms - -[0m
+[2026-04-21T07:19:49.450Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 7.325 ms - 537[0m
+[2026-04-21T07:19:49.451Z] [HTTP] [0mGET /notifications [36m304[0m 6.001 ms - -[0m
+[2026-04-21T07:19:50.124Z] [HTTP] [0mGET /admin-room.html?roomId=1&roomName=207 [32m200[0m 2.521 ms - 3537[0m
+[2026-04-21T07:19:50.171Z] [HTTP] [0mGET /css/styles.css [36m304[0m 3.090 ms - -[0m
+[2026-04-21T07:19:50.173Z] [HTTP] [0mGET /js/main.js [36m304[0m 3.302 ms - -[0m
+[2026-04-21T07:19:50.211Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 5.193 ms - 229[0m
+[2026-04-21T07:19:52.609Z] [HTTP] [0mPOST /admin/rooms/1/teachers [32m200[0m 6.324 ms - 79[0m
+[2026-04-21T07:19:53.546Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 3.116 ms - 407[0m
+[2026-04-21T07:20:11.941Z] [HTTP] [0mPOST /admin/rooms/1/equipment [32m200[0m 6.734 ms - 8[0m
+[2026-04-21T07:20:12.948Z] [HTTP] [0mGET /admin/rooms/1/data [32m200[0m 1.945 ms - 548[0m
+[2026-04-21T07:20:15.370Z] [HTTP] [0mGET / [36m304[0m 1.386 ms - -[0m
+[2026-04-21T07:20:15.413Z] [HTTP] [0mGET /css/styles.css [36m304[0m 0.891 ms - -[0m
+[2026-04-21T07:20:15.418Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.244 ms - -[0m
+[2026-04-21T07:20:15.468Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 5.231 ms - -[0m
+[2026-04-21T07:20:15.470Z] [HTTP] [0mGET /notifications [36m304[0m 4.038 ms - -[0m
+[2026-04-21T07:20:17.158Z] [INFO] User logged out: Admin
+[2026-04-21T07:20:17.159Z] [HTTP] [0mPOST /auth/logout [32m200[0m 1.438 ms - 41[0m
+[2026-04-21T07:20:17.178Z] [HTTP] [0mGET /auth/login [32m200[0m 2.873 ms - 1104[0m
+[2026-04-21T07:20:17.222Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.516 ms - -[0m
+[2026-04-21T07:20:17.225Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.745 ms - -[0m
+[2026-04-21T07:20:27.905Z] [HTTP] [0mGET /auth/login [32m200[0m 2.233 ms - 1104[0m
+[2026-04-21T07:20:28.009Z] [HTTP] [0mGET /css/styles.css [32m200[0m 4.706 ms - 9911[0m
+[2026-04-21T07:20:28.010Z] [HTTP] [0mGET /js/main.js [32m200[0m 3.446 ms - 43454[0m
+[2026-04-21T07:20:32.070Z] [INFO] User logged in: test
+[2026-04-21T07:20:32.071Z] [HTTP] [0mPOST /auth/login [32m200[0m 57.042 ms - 56[0m
+[2026-04-21T07:20:32.089Z] [HTTP] [0mGET / [32m200[0m 1.263 ms - 3421[0m
+[2026-04-21T07:20:32.139Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.263 ms - -[0m
+[2026-04-21T07:20:32.142Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.573 ms - -[0m
+[2026-04-21T07:20:32.156Z] [HTTP] [0mGET /user/rooms [32m200[0m 2.903 ms - 33[0m
+[2026-04-21T07:20:32.157Z] [HTTP] [0mGET /notifications [36m304[0m 5.174 ms - -[0m
+[2026-04-21T07:20:34.093Z] [HTTP] [0mGET /user-room.html?roomId=1&roomName=207 [32m200[0m 1.104 ms - 3015[0m
+[2026-04-21T07:20:34.141Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.415 ms - -[0m
+[2026-04-21T07:20:34.143Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.112 ms - -[0m
+[2026-04-21T07:20:34.185Z] [HTTP] [0mGET /user/rooms/1/equipment [32m200[0m 3.345 ms - 157[0m
+[2026-04-21T07:20:42.168Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.242 ms - -[0m
+[2026-04-21T07:20:42.581Z] [HTTP] [0mPOST /complaints [32m200[0m 16.011 ms - 54[0m
+[2026-04-21T07:20:50.172Z] [HTTP] [0mGET /user/rooms/1/equipment [32m200[0m 1.732 ms - 171[0m
+[2026-04-21T07:20:53.843Z] [INFO] User logged in: Admin
+[2026-04-21T07:20:53.844Z] [HTTP] [0mPOST /auth/login [32m200[0m 54.959 ms - 54[0m
+[2026-04-21T07:20:53.861Z] [HTTP] [0mGET / [32m200[0m 1.365 ms - 6388[0m
+[2026-04-21T07:20:53.888Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.763 ms - -[0m
+[2026-04-21T07:20:53.891Z] [HTTP] [0mGET /js/main.js [36m304[0m 2.576 ms - -[0m
+[2026-04-21T07:20:53.920Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 4.628 ms - 852[0m
+[2026-04-21T07:20:53.927Z] [HTTP] [0mGET /notifications [32m200[0m 2.978 ms - 463[0m
+[2026-04-21T07:20:56.223Z] [HTTP] [0mPUT /notifications/1/read [32m200[0m 5.675 ms - 83[0m
+[2026-04-21T07:20:56.229Z] [HTTP] [0mGET /notifications [32m200[0m 2.011 ms - 463[0m
+[2026-04-21T07:20:58.171Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.645 ms - -[0m
+[2026-04-21T07:21:06.178Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.605 ms - -[0m
+[2026-04-21T07:21:14.172Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.511 ms - -[0m
+[2026-04-21T07:21:22.176Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.647 ms - -[0m
+[2026-04-21T07:21:23.921Z] [HTTP] [0mGET /notifications [36m304[0m 2.022 ms - -[0m
+[2026-04-21T07:21:30.184Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.478 ms - -[0m
+[2026-04-21T07:21:32.035Z] [HTTP] [0mPATCH /admin/complaints/1/status [32m200[0m 14.905 ms - 126[0m
+[2026-04-21T07:21:33.188Z] [HTTP] [0mGET / [36m304[0m 1.337 ms - -[0m
+[2026-04-21T07:21:33.210Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.248 ms - -[0m
+[2026-04-21T07:21:33.213Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.484 ms - -[0m
+[2026-04-21T07:21:33.226Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 5.941 ms - 840[0m
+[2026-04-21T07:21:33.228Z] [HTTP] [0mGET /notifications [32m200[0m 3.914 ms - 451[0m
+[2026-04-21T07:21:34.327Z] [HTTP] [0mGET / [36m304[0m 0.918 ms - -[0m
+[2026-04-21T07:21:34.377Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.285 ms - -[0m
+[2026-04-21T07:21:34.380Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.255 ms - -[0m
+[2026-04-21T07:21:34.421Z] [HTTP] [0mGET /user/rooms [36m304[0m 3.550 ms - -[0m
+[2026-04-21T07:21:34.422Z] [HTTP] [0mGET /notifications [32m200[0m 6.557 ms - 365[0m
+[2026-04-21T07:21:54.651Z] [HTTP] [0mPATCH /admin/complaints/1/status [32m200[0m 14.632 ms - 133[0m
+[2026-04-21T07:21:55.646Z] [HTTP] [0mGET / [36m304[0m 1.021 ms - -[0m
+[2026-04-21T07:21:55.672Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.991 ms - -[0m
+[2026-04-21T07:21:55.676Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.357 ms - -[0m
+[2026-04-21T07:21:55.686Z] [HTTP] [0mGET /notifications [32m200[0m 3.267 ms - 454[0m
+[2026-04-21T07:21:55.689Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 7.167 ms - 843[0m
+[2026-04-21T07:21:57.719Z] [HTTP] [0mGET /user-room.html?roomId=1&roomName=207 [36m304[0m 0.973 ms - -[0m
+[2026-04-21T07:21:57.774Z] [HTTP] [0mGET /css/styles.css [36m304[0m 0.955 ms - -[0m
+[2026-04-21T07:21:57.778Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.170 ms - -[0m
+[2026-04-21T07:21:57.820Z] [HTTP] [0mGET /user/rooms/1/equipment [32m200[0m 3.660 ms - 157[0m
+[2026-04-21T07:21:59.293Z] [HTTP] [0mGET / [36m304[0m 1.199 ms - -[0m
+[2026-04-21T07:21:59.345Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.314 ms - -[0m
+[2026-04-21T07:21:59.352Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.530 ms - -[0m
+[2026-04-21T07:21:59.394Z] [HTTP] [0mGET /notifications [32m200[0m 1.866 ms - 733[0m
+[2026-04-21T07:21:59.397Z] [HTTP] [0mGET /user/rooms [36m304[0m 1.515 ms - -[0m
+[2026-04-21T07:22:01.680Z] [HTTP] [0mPUT /notifications/3/read [32m200[0m 5.079 ms - 83[0m
+[2026-04-21T07:22:01.686Z] [HTTP] [0mGET /notifications [32m200[0m 1.647 ms - 733[0m
+[2026-04-21T07:22:02.357Z] [HTTP] [0mPUT /notifications/2/read [32m200[0m 6.175 ms - 83[0m
+[2026-04-21T07:22:02.363Z] [HTTP] [0mGET /notifications [32m200[0m 1.795 ms - 733[0m
+[2026-04-21T07:22:03.439Z] [HTTP] [0mPUT /notifications/read/all [32m200[0m 1.272 ms - 90[0m
+[2026-04-21T07:22:03.445Z] [HTTP] [0mGET /notifications [36m304[0m 1.558 ms - -[0m
+[2026-04-21T07:22:14.706Z] [HTTP] [0mGET /user-room.html?roomId=1&roomName=207 [36m304[0m 1.124 ms - -[0m
+[2026-04-21T07:22:14.757Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.194 ms - -[0m
+[2026-04-21T07:22:14.764Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.592 ms - -[0m
+[2026-04-21T07:22:14.810Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.717 ms - -[0m
+[2026-04-21T07:22:22.790Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.681 ms - -[0m
+[2026-04-21T07:22:25.700Z] [HTTP] [0mGET /notifications [36m304[0m 1.756 ms - -[0m
+[2026-04-21T07:22:30.803Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.571 ms - -[0m
+[2026-04-21T07:22:38.798Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.207 ms - -[0m
+[2026-04-21T07:22:46.795Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.332 ms - -[0m
+[2026-04-21T07:22:52.310Z] [HTTP] [0mPOST /complaints [32m200[0m 12.289 ms - 54[0m
+[2026-04-21T07:22:54.794Z] [HTTP] [0mGET /user/rooms/1/equipment [32m200[0m 1.750 ms - 171[0m
+[2026-04-21T07:22:55.697Z] [HTTP] [0mGET /notifications [32m200[0m 1.766 ms - 880[0m
+[2026-04-21T07:23:02.795Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.420 ms - -[0m
+[2026-04-21T07:23:11.248Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.199 ms - -[0m
+[2026-04-21T07:23:19.246Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.535 ms - -[0m
+[2026-04-21T07:23:27.253Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.393 ms - -[0m
+[2026-04-21T07:23:35.246Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 2.240 ms - -[0m
+[2026-04-21T07:23:43.251Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.704 ms - -[0m
+[2026-04-21T07:23:51.242Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 2.186 ms - -[0m
+[2026-04-21T07:23:59.244Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.036 ms - -[0m
+[2026-04-21T07:24:07.250Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.364 ms - -[0m
+[2026-04-21T07:24:15.252Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.670 ms - -[0m
+[2026-04-21T07:24:23.244Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.815 ms - -[0m
+[2026-04-21T07:24:31.250Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 0.993 ms - -[0m
+[2026-04-21T07:25:30.253Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.908 ms - -[0m
+[2026-04-21T07:26:30.248Z] [HTTP] [0mGET /user/rooms/1/equipment [36m304[0m 1.945 ms - -[0m
+[2026-04-21T07:26:49.431Z] [INFO] User logged out: test
+[2026-04-21T07:26:49.432Z] [HTTP] [0mPOST /auth/logout [32m200[0m 1.055 ms - 41[0m
+[2026-04-21T07:26:49.450Z] [HTTP] [0mGET /auth/login [32m200[0m 1.372 ms - 1104[0m
+[2026-04-21T07:26:49.501Z] [HTTP] [0mGET /css/styles.css [36m304[0m 2.420 ms - -[0m
+[2026-04-21T07:26:49.505Z] [HTTP] [0mGET /js/main.js [32m200[0m 1.647 ms - 45230[0m
+[2026-04-21T07:26:56.964Z] [INFO] User logged in: Admin
+[2026-04-21T07:26:56.965Z] [HTTP] [0mPOST /auth/login [32m200[0m 55.390 ms - 54[0m
+[2026-04-21T07:26:56.984Z] [HTTP] [0mGET / [32m200[0m 1.438 ms - 6388[0m
+[2026-04-21T07:26:57.042Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.578 ms - -[0m
+[2026-04-21T07:26:57.046Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.401 ms - -[0m
+[2026-04-21T07:26:57.097Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 3.387 ms - 1158[0m
+[2026-04-21T07:26:57.102Z] [HTTP] [0mGET /notifications [32m200[0m 2.735 ms - 880[0m
+[2026-04-21T07:27:14.372Z] [INFO] User registered: erp
+[2026-04-21T07:27:14.373Z] [HTTP] [0mPOST /auth/register [32m200[0m 58.796 ms - 76[0m
+[2026-04-21T07:27:15.171Z] [HTTP] [0mGET / [36m304[0m 0.646 ms - -[0m
+[2026-04-21T07:27:15.201Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.212 ms - -[0m
+[2026-04-21T07:27:15.203Z] [HTTP] [0mGET /js/main.js [36m304[0m 0.825 ms - -[0m
+[2026-04-21T07:27:15.217Z] [HTTP] [0mGET /admin/dashboard [32m200[0m 2.442 ms - 1337[0m
+[2026-04-21T07:27:15.221Z] [HTTP] [0mGET /notifications [36m304[0m 2.017 ms - -[0m
+[2026-04-21T07:27:19.191Z] [HTTP] [0mPUT /notifications/4/read [32m200[0m 3.566 ms - 83[0m
+[2026-04-21T07:27:19.205Z] [HTTP] [0mGET /admin-complaint.html?id=2 [32m200[0m 0.818 ms - 3764[0m
+[2026-04-21T07:27:19.238Z] [HTTP] [0mGET /css/styles.css [36m304[0m 0.720 ms - -[0m
+[2026-04-21T07:27:19.246Z] [HTTP] [0mGET /admin/complaints/2 [32m200[0m 2.075 ms - 382[0m
+[2026-04-21T07:27:21.135Z] [HTTP] [0mGET /admin-dashboard.html?tab=rooms [32m200[0m 1.551 ms - 6388[0m
+[2026-04-21T07:27:21.183Z] [HTTP] [0mGET /css/styles.css [36m304[0m 0.778 ms - -[0m
+[2026-04-21T07:27:21.187Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.137 ms - -[0m
+[2026-04-21T07:27:21.201Z] [HTTP] [0mGET /notifications [32m200[0m 3.159 ms - 880[0m
+[2026-04-21T07:27:21.204Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 7.432 ms - -[0m
+[2026-04-21T07:27:30.249Z] [HTTP] [0mGET /user/rooms/1/equipment [33m403[0m 0.891 ms - 35[0m
+[2026-04-21T07:27:38.324Z] [HTTP] [0mGET /user/rooms/1/equipment [33m403[0m 0.698 ms - 35[0m
+[2026-04-21T07:27:44.215Z] [HTTP] [0mGET /admin-dashboard.html?tab=rooms [36m304[0m 0.760 ms - -[0m
+[2026-04-21T07:27:44.253Z] [HTTP] [0mGET /css/styles.css [36m304[0m 0.993 ms - -[0m
+[2026-04-21T07:27:44.260Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.466 ms - -[0m
+[2026-04-21T07:27:44.290Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 5.520 ms - -[0m
+[2026-04-21T07:27:44.291Z] [HTTP] [0mGET /notifications [36m304[0m 3.951 ms - -[0m
+[2026-04-21T07:27:52.645Z] [INFO] User logged out: Admin
+[2026-04-21T07:27:52.646Z] [HTTP] [0mPOST /auth/logout [32m200[0m 1.671 ms - 41[0m
+[2026-04-21T07:27:52.665Z] [HTTP] [0mGET /auth/login [32m200[0m 1.819 ms - 1104[0m
+[2026-04-21T07:27:52.709Z] [HTTP] [0mGET /css/styles.css [36m304[0m 0.785 ms - -[0m
+[2026-04-21T07:27:52.714Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.123 ms - -[0m
+[2026-04-21T07:27:58.194Z] [INFO] User logged in: test
+[2026-04-21T07:27:58.195Z] [HTTP] [0mPOST /auth/login [32m200[0m 58.088 ms - 56[0m
+[2026-04-21T07:27:58.218Z] [HTTP] [0mGET / [32m200[0m 1.885 ms - 3421[0m
+[2026-04-21T07:27:58.273Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.004 ms - -[0m
+[2026-04-21T07:27:58.276Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.376 ms - -[0m
+[2026-04-21T07:27:58.325Z] [HTTP] [0mGET /user/rooms [36m304[0m 1.835 ms - -[0m
+[2026-04-21T07:27:58.327Z] [HTTP] [0mGET /notifications [32m200[0m 4.853 ms - 733[0m
+[2026-04-21T07:28:01.235Z] [HTTP] [0mGET /admin-complaint.html?id=1 [32m200[0m 2.081 ms - 3764[0m
+[2026-04-21T07:28:01.280Z] [HTTP] [0mGET /css/styles.css [36m304[0m 0.975 ms - -[0m
+[2026-04-21T07:28:01.292Z] [HTTP] [0mGET /admin/complaints/1 [33m403[0m 1.219 ms - 35[0m
+[2026-04-21T07:28:09.160Z] [HTTP] [0mGET /admin-complaint.html?id=1 [36m304[0m 0.916 ms - -[0m
+[2026-04-21T07:28:09.207Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.290 ms - -[0m
+[2026-04-21T07:28:09.225Z] [HTTP] [0mGET /admin/complaints/1 [33m403[0m 1.405 ms - 35[0m
+[2026-04-21T07:28:29.242Z] [HTTP] [0mGET /notifications [36m304[0m 2.040 ms - -[0m
+[2026-04-21T07:28:53.182Z] [INFO] User logged out: test
+[2026-04-21T07:28:53.183Z] [HTTP] [0mPOST /auth/logout [32m200[0m 1.315 ms - 41[0m
+[2026-04-21T07:28:53.203Z] [HTTP] [0mGET /auth/login [32m200[0m 2.313 ms - 1104[0m
+[2026-04-21T07:28:53.250Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.062 ms - -[0m
+[2026-04-21T07:28:53.253Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.008 ms - -[0m
+[2026-04-21T07:28:59.285Z] [INFO] User logged in: Admin
+[2026-04-21T07:28:59.287Z] [HTTP] [0mPOST /auth/login [32m200[0m 55.546 ms - 54[0m
+[2026-04-21T07:28:59.305Z] [HTTP] [0mGET / [32m200[0m 1.737 ms - 6388[0m
+[2026-04-21T07:28:59.350Z] [HTTP] [0mGET /css/styles.css [36m304[0m 1.518 ms - -[0m
+[2026-04-21T07:28:59.353Z] [HTTP] [0mGET /js/main.js [36m304[0m 1.158 ms - -[0m
+[2026-04-21T07:28:59.367Z] [HTTP] [0mGET /notifications [32m200[0m 1.945 ms - 880[0m
+[2026-04-21T07:28:59.370Z] [HTTP] [0mGET /admin/dashboard [36m304[0m 6.143 ms - -[0m
+[2026-04-21T07:29:22.420Z] [HTTP] [0mPATCH /admin/teachers/2 [32m200[0m 8.389 ms - 57[0m
+[2026-04-21T07:29:29.376Z] [HTTP] [0mGET /notifications [36m304[0m 2.012 ms - -[0m
+[2026-04-21T07:29:59.372Z] [HTTP] [0mGET /notifications [36m304[0m 1.758 ms - -[0m
+[2026-04-21T07:30:30.237Z] [HTTP] [0mGET /notifications [36m304[0m 1.570 ms - -[0m
+[2026-04-21T07:31:00.240Z] [HTTP] [0mGET /notifications [36m304[0m 2.009 ms - -[0m
+[2026-04-21T07:31:30.253Z] [HTTP] [0mGET /notifications [36m304[0m 1.847 ms - -[0m
+[2026-04-21T07:32:00.238Z] [HTTP] [0mGET /notifications [36m304[0m 1.635 ms - -[0m
