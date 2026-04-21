@@ -16,6 +16,7 @@ router.use(ensureRole('admin'));
 router.get('/dashboard', adminController.getDashboardData);
 
 router.post('/rooms', roomCreateRules, adminController.createRoom);
+router.patch('/rooms/:id', roomCreateRules, adminController.updateRoom);
 router.delete('/rooms/:id', adminController.deleteRoom);
 router.get('/rooms/:id/data', adminController.getRoomData);
 
@@ -26,7 +27,12 @@ router.delete('/equipment/:id', adminController.deleteEquipment);
 
 router.patch('/complaints/:id/status', changeComplaintStatusRules, adminController.changeComplaintStatus);
 router.get('/complaints/:id', adminController.getComplaintDetails);
+router.patch('/complaints/:id/assign', adminController.assignComplaintAdmin);
+router.post('/complaints/:id/comments', adminController.addComplaintComment);
 router.delete('/archive/:id', ensureMainAdmin, adminController.deleteArchivedComplaint);
+router.get('/export/archive.csv', ensureMainAdmin, adminController.exportArchiveCsv);
+router.get('/export/analytics.csv', ensureMainAdmin, adminController.exportAnalyticsCsv);
+router.get('/export/analytics-print', ensureMainAdmin, adminController.exportAnalyticsPrint);
 
 router.get('/teachers', adminController.listTeachers);
 router.patch('/teachers/:id', updateTeacherRules, adminController.updateTeacher);

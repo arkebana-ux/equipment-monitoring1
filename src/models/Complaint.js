@@ -15,10 +15,12 @@ class Complaint {
 
   static findById(id, cb) {
     const sql = `
-      SELECT c.*, u.full_name, u.login, e.name AS equipment_name, e.room_id, e.serial_number
+      SELECT c.*, u.full_name, u.login, e.name AS equipment_name, e.room_id, e.serial_number,
+             a.full_name AS assigned_admin_name
       FROM complaints c
       LEFT JOIN users u ON c.user_id = u.id
       LEFT JOIN equipment e ON c.equipment_id = e.id
+      LEFT JOIN users a ON c.assigned_admin_id = a.id
       WHERE c.id = ?
     `;
     db.get(sql, [id], cb);
@@ -46,10 +48,13 @@ class Complaint {
 
   static all(cb) {
     db.all(
-      `SELECT c.*, u.full_name, e.name AS equipment_name
+      `SELECT c.*, u.full_name, e.name AS equipment_name, r.name AS room_name,
+              a.full_name AS assigned_admin_name
        FROM complaints c
        JOIN users u ON c.user_id = u.id
-       JOIN equipment e ON c.equipment_id = e.id`,
+       JOIN equipment e ON c.equipment_id = e.id
+       LEFT JOIN rooms r ON r.id = e.room_id
+       LEFT JOIN users a ON a.id = c.assigned_admin_id`,
       cb
     );
   }

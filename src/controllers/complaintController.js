@@ -5,6 +5,7 @@ const Complaint = require('../models/Complaint');
 const Equipment = require('../models/Equipment');
 const Notification = require('../models/Notification');
 const User = require('../models/User');
+const { db } = require('../config/db');
 
 const uploadDir = path.join(__dirname, '..', '..', 'public', 'uploads');
 
@@ -60,6 +61,12 @@ exports.createComplaint = (req, res, next) => {
         if (createErr) return next(createErr);
 
         Equipment.setStatus(equipment_id, 'на рассмотрении', () => {});
+        db.run(
+          `INSERT INTO complaint_history (complaint_id, actor_user_id, action_type, comment)
+           VALUES (?, ?, 'created', ?)`,
+          [id, user_id, 'Создано новое обращение пользователем'],
+          () => {}
+        );
 
         User.findAllAdmins((adminErr, admins) => {
           if (!adminErr && admins?.length) {

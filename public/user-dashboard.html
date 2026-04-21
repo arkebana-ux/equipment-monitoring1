@@ -61,25 +61,5 @@
   </footer>
 
   <script src="/js/main.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Запрос данных о закрепленных аудиториях
-      const response = await fetch('/user/rooms');
-      const data = await response.json();
-      const roomsTableBody = document.getElementById('userRoomsTableBody');
-      
-      if (data.rooms && roomsTableBody) {
-        roomsTableBody.innerHTML = ''; // Очищаем таблицу
-        data.rooms.forEach(room => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${room.id}</td>
-            <td>${room.name}</td>
-          `;
-          roomsTableBody.appendChild(tr); // Добавляем строку с аудиторией в таблицу
-        });
-      }
-    });
-  </script>
 </body>
 </html>

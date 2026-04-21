@@ -1,10 +1,10 @@
 const { db } = require('../config/db');
 
 class User {
-  static create({ login, password_hash, full_name, role, is_super_admin = 0 }, cb) {
-    const sql = `INSERT INTO users (login, password_hash, full_name, role, is_super_admin)
-                 VALUES (?, ?, ?, ?, ?)`;
-    db.run(sql, [login, password_hash, full_name, role, is_super_admin], function (err) {
+  static create({ login, password_hash, full_name, role, is_super_admin = 0, email = null }, cb) {
+    const sql = `INSERT INTO users (login, password_hash, full_name, role, is_super_admin, email)
+                 VALUES (?, ?, ?, ?, ?, ?)`;
+    db.run(sql, [login, password_hash, full_name, role, is_super_admin, email], function (err) {
       cb(err, this?.lastID);
     });
   }

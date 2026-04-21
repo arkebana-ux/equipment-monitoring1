@@ -11,6 +11,14 @@ class Room {
     });
   }
 
+  static findById(id, cb) {
+    db.get('SELECT * FROM rooms WHERE id = ?', [id], cb);
+  }
+
+  static update(id, name, cb) {
+    db.run('UPDATE rooms SET name = ? WHERE id = ?', [name, id], cb);
+  }
+
   static delete(id, cb) {
     db.run('DELETE FROM rooms WHERE id = ?', [id], cb);
   }

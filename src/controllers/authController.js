@@ -12,7 +12,7 @@ exports.showLoginPage = (req, res) => {
 };
 
 exports.register = (req, res, next) => {
-  const { login, password, full_name, role, rooms } = req.body;
+  const { login, password, full_name, role, rooms, email } = req.body;
 
   if (!req.session || !req.session.user) {
     return res.status(403).json({ message: 'Требуется авторизация администратора' });
@@ -32,7 +32,7 @@ exports.register = (req, res, next) => {
   bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
     if (err) return next(err);
 
-    User.create({ login, password_hash: hash, full_name, role, is_super_admin: 0 }, (createErr, id) => {
+    User.create({ login, password_hash: hash, full_name, role, is_super_admin: 0, email: email || null }, (createErr, id) => {
       if (createErr) {
         logger.error('Register error: ' + createErr.message);
         if (createErr.message && /unique|constraint|UNIQUE/i.test(createErr.message)) {

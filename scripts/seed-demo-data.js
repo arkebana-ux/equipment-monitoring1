@@ -87,6 +87,34 @@ async function ensureNotification({ userId, complaintId, title, message, type, i
   return result.lastID;
 }
 
+async function ensureHistory({ complaintId, actorUserId, actionType, fieldName = null, oldValue = null, newValue = null, comment = null, createdAt }) {
+  const existing = await get(
+    'SELECT id FROM complaint_history WHERE complaint_id = ? AND action_type = ? AND IFNULL(comment, \'\') = IFNULL(?, \'\')',
+    [complaintId, actionType, comment]
+  );
+  if (existing) return existing.id;
+  const result = await run(
+    `INSERT INTO complaint_history (complaint_id, actor_user_id, action_type, field_name, old_value, new_value, comment, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [complaintId, actorUserId, actionType, fieldName, oldValue, newValue, comment, createdAt]
+  );
+  return result.lastID;
+}
+
+async function ensureComment({ complaintId, userId, comment, createdAt }) {
+  const existing = await get(
+    'SELECT id FROM complaint_comments WHERE complaint_id = ? AND user_id = ? AND comment = ?',
+    [complaintId, userId, comment]
+  );
+  if (existing) return existing.id;
+  const result = await run(
+    `INSERT INTO complaint_comments (complaint_id, user_id, comment, created_at)
+     VALUES (?, ?, ?, ?)`,
+    [complaintId, userId, comment, createdAt]
+  );
+  return result.lastID;
+}
+
 async function main() {
   initDb();
 
@@ -226,6 +254,48 @@ async function main() {
     type: 'success',
     isRead: 0,
     createdAt: '2026-04-15 17:50:00'
+  });
+
+  const mainAdminId = adminRows.find((row) => row.id)?.id || 1;
+  await ensureHistory({
+    complaintId: complaints.c1,
+    actorUserId: teacherIds.teacher_petrov,
+    actionType: 'created',
+    comment: 'Создано новое обращение пользователем',
+    createdAt: '2026-04-18 08:15:00'
+  });
+  await ensureHistory({
+    complaintId: complaints.c2,
+    actorUserId: mainAdminId,
+    actionType: 'status_changed',
+    fieldName: 'status',
+    oldValue: 'на рассмотрении',
+    newValue: 'в ремонте',
+    comment: 'Статус переведен в ремонт после осмотра',
+    createdAt: '2026-04-19 12:10:00'
+  });
+  await ensureHistory({
+    complaintId: complaints.c2,
+    actorUserId: mainAdminId,
+    actionType: 'assignee_changed',
+    fieldName: 'assigned_admin_id',
+    oldValue: null,
+    newValue: String(mainAdminId),
+    comment: 'Назначен ответственный администратор',
+    createdAt: '2026-04-19 12:12:00'
+  });
+
+  await ensureComment({
+    complaintId: complaints.c2,
+    userId: mainAdminId,
+    comment: 'Проверили системный блок, подтверждена нестабильная работа блока питания.',
+    createdAt: '2026-04-19 12:18:00'
+  });
+  await ensureComment({
+    complaintId: complaints.c1,
+    userId: mainAdminId,
+    comment: 'Ожидаем свободное окно в расписании, чтобы протестировать подключение проектора в аудитории 207.',
+    createdAt: '2026-04-18 09:05:00'
   });
 
   console.log('Demo data prepared successfully.');

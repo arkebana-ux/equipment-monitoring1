@@ -2,97 +2,266 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Жалоба</title>
+  <title>Карточка заявки</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
-<body>
-  <header class="topbar">
-    <button id="backBtn" class="back-link">← Назад</button>
-    <h1 id="complaintTitle">Жалоба</h1>
-    <button id="logoutBtn" class="btn">Выйти</button>
+<body class="complaint-page">
+  <header class="topbar topbar-modern">
+    <div class="topbar-left">
+      <button id="backBtn" class="back-link" type="button">← Назад к панели</button>
+      <h1 id="complaintTitle">Карточка заявки</h1>
+    </div>
+    <button id="logoutBtn" class="btn" type="button">Выйти</button>
   </header>
 
   <main class="tabs-container">
     <section class="card wide">
-      <h2>Детали жалобы</h2>
+      <div class="pane-header">
+        <div>
+          <p class="eyebrow">Заявка</p>
+          <h2>Основная информация</h2>
+        </div>
+      </div>
       <div id="complaintDetails"></div>
     </section>
 
+    <section class="room-layout">
+      <div class="card wide">
+        <div class="pane-header">
+          <div>
+            <p class="eyebrow">Ответственный</p>
+            <h2>Назначение администратора</h2>
+          </div>
+        </div>
+        <form id="assignAdminForm" class="form-inline">
+          <label>
+            Ответственный администратор
+            <select id="assignedAdminSelect" name="admin_id"></select>
+          </label>
+          <button class="btn hover-highlight" type="submit">Сохранить</button>
+        </form>
+      </div>
+
+      <div class="card wide">
+        <div class="pane-header">
+          <div>
+            <p class="eyebrow">Комментарии</p>
+            <h2>Рабочие заметки</h2>
+          </div>
+        </div>
+        <form id="commentForm">
+          <label>
+            Новый комментарий
+            <textarea id="commentInput" name="comment" placeholder="Например: связался с преподавателем, ждем доступ в аудиторию"></textarea>
+          </label>
+          <button class="btn hover-highlight" type="submit">Добавить комментарий</button>
+        </form>
+        <div id="commentsList" class="room-analytics-list"></div>
+      </div>
+    </section>
+
     <section class="card wide">
-      <h2>Вложения</h2>
-      <div id="attachments"></div>
+      <div class="pane-header">
+        <div>
+          <p class="eyebrow">История</p>
+          <h2>История изменений</h2>
+        </div>
+      </div>
+      <div id="historyList" class="room-analytics-list"></div>
+    </section>
+
+    <section class="card wide">
+      <div class="pane-header">
+        <div>
+          <p class="eyebrow">Вложения</p>
+          <h2>Прикрепленные файлы</h2>
+        </div>
+      </div>
+      <div id="attachments" class="attachments-grid"></div>
     </section>
   </main>
 
-  <script>
-  (function(){
-    function qp() { const u = new URL(window.location.href); return Object.fromEntries(u.searchParams.entries()); }
-    const params = qp();
-    const id = params.id;
-    if (!id) {
-      document.getElementById('complaintDetails').textContent = 'ID жалобы не задан.';
-    } else {
-      fetch(`/admin/complaints/${id}`)
-        .then(r => r.json())
-        .then(data => {
-          if (data.message) return document.getElementById('complaintDetails').textContent = data.message;
-          const c = data.complaint;
-          const d = document.getElementById('complaintDetails');
-          d.innerHTML = `
-            <p><strong>ID:</strong> ${c.id}</p>
-            <p><strong>Преподаватель:</strong> ${c.full_name || c.login || '-'}</p>
-            <p><strong>Оборудование:</strong> ${c.equipment_name || '-'}</p>
-            <p><strong>Описание:</strong><br/>${c.description || '-'}</p>
-            <p><strong>Статус:</strong> ${c.status}</p>
-            <p><strong>Дата подачи:</strong> ${c.created_at || '-'}</p>
-            <p><strong>Дата обновления:</strong> ${c.updated_at || '-'}</p>
-          `;
+  <div id="toastContainer" class="toast-container"></div>
 
-          const att = document.getElementById('attachments');
-          att.innerHTML = '';
-          (data.attachments || []).forEach(a => {
-            const name = a.split('/').pop().toLowerCase();
-            if (/\.(jpg|jpeg|png|gif)$/.test(name)) {
-              const img = document.createElement('img');
-              img.src = a;
-              img.className = 'attachment-img';
-              att.appendChild(img);
-            } else if (/\.(mp4|webm|ogg)$/.test(name)) {
-              const v = document.createElement('video');
-              v.controls = true;
-              v.src = a;
-              v.className = 'attachment-video';
-              att.appendChild(v);
-            } else {
-              const aEl = document.createElement('a');
-              aEl.href = a;
-              aEl.textContent = name;
-              aEl.download = name;
-              att.appendChild(aEl);
-            }
-            att.appendChild(document.createElement('br'));
-          });
-        })
-        .catch(err => {
-          console.error('Load complaint detail error', err);
-          document.getElementById('complaintDetails').textContent = 'Ошибка при загрузке жалобы';
-        });
-    }
-  })();
-  </script>
   <script>
-    document.getElementById('backBtn').addEventListener('click', () => {
-      try {
-        const last = sessionStorage.getItem('adminLastTab');
-        if (last) {
-          // remove stored value and go to dashboard with that tab
-          sessionStorage.removeItem('adminLastTab');
-          window.location.href = `/admin-dashboard.html?tab=${encodeURIComponent(last)}`;
-          return;
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    async function requestJSON(url, options = {}) {
+      const response = await fetch(url, options);
+      const data = await response.json().catch(() => ({}));
+      return { ok: response.ok, data };
+    }
+
+    function showToast(message, type = 'success', title = 'Готово') {
+      const toastContainer = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<p class="toast-title">${escapeHtml(title)}</p><p class="toast-message">${escapeHtml(message)}</p>`;
+      toastContainer.appendChild(toast);
+      setTimeout(() => toast.remove(), 3200);
+    }
+
+    function statusBadge(status) {
+      const value = String(status || '').toLowerCase();
+      if (value === 'на рассмотрении') return '<span class="status-badge status-review-badge">На рассмотрении</span>';
+      if (value === 'в ремонте') return '<span class="status-badge status-repair-badge">В ремонте</span>';
+      if (value === 'исправлено') return '<span class="status-badge status-fixed-badge">Исправлено</span>';
+      return `<span class="status-badge">${escapeHtml(status || 'Без статуса')}</span>`;
+    }
+
+    function queryParam(name) {
+      return new URL(window.location.href).searchParams.get(name);
+    }
+
+    async function loadComplaint() {
+      const id = queryParam('id');
+      if (!id) return;
+      const { ok, data } = await requestJSON(`/admin/complaints/${id}`);
+      if (!ok) {
+        document.getElementById('complaintDetails').textContent = data.message || 'Не удалось загрузить заявку';
+        return;
+      }
+
+      const complaint = data.complaint;
+      document.getElementById('complaintTitle').textContent = `Заявка #${complaint.id}`;
+      document.getElementById('complaintDetails').innerHTML = `
+        <div class="room-analytics-list">
+          <div class="room-analytics-item">
+            <div class="room-analytics-top">
+              <div class="room-analytics-name">${escapeHtml(complaint.room_name || 'Без аудитории')}</div>
+              <div class="room-analytics-meta">${statusBadge(complaint.status)}</div>
+            </div>
+            <div class="room-analytics-tags">
+              <span class="room-analytics-tag">Преподаватель: ${escapeHtml(complaint.full_name || complaint.login || '-')}</span>
+              <span class="room-analytics-tag">Оборудование: ${escapeHtml(complaint.equipment_name || '-')}</span>
+              <span class="room-analytics-tag">Серийный номер: ${escapeHtml(complaint.serial_number || '-')}</span>
+              <span class="room-analytics-tag">Ответственный: ${escapeHtml(complaint.assigned_admin_name || 'Не назначен')}</span>
+            </div>
+            <p style="margin-top:14px;">${escapeHtml(complaint.description || '-')}</p>
+            <p class="hint">Создано: ${escapeHtml(complaint.created_at || '-')} | Обновлено: ${escapeHtml(complaint.updated_at || '-')}</p>
+          </div>
+        </div>
+      `;
+
+      const adminSelect = document.getElementById('assignedAdminSelect');
+      adminSelect.innerHTML = '<option value="">Не назначен</option>' + (data.admins || []).map((admin) => `
+        <option value="${admin.id}" ${Number(admin.id) === Number(complaint.assigned_admin_id) ? 'selected' : ''}>
+          ${escapeHtml(admin.full_name)} (${escapeHtml(admin.login)})
+        </option>
+      `).join('');
+
+      const commentsList = document.getElementById('commentsList');
+      commentsList.innerHTML = (data.comments || []).length
+        ? data.comments.map((comment) => `
+          <div class="room-analytics-item">
+            <div class="room-analytics-top">
+              <div class="room-analytics-name">${escapeHtml(comment.full_name || comment.login || 'Пользователь')}</div>
+              <div class="room-analytics-meta">${escapeHtml(comment.created_at)}</div>
+            </div>
+            <p>${escapeHtml(comment.comment)}</p>
+          </div>
+        `).join('')
+        : '<div class="empty-state"><h3>Комментариев пока нет</h3><p>Добавьте первый рабочий комментарий по этой заявке.</p></div>';
+
+      const historyList = document.getElementById('historyList');
+      historyList.innerHTML = (data.history || []).length
+        ? data.history.map((entry) => `
+          <div class="room-analytics-item">
+            <div class="room-analytics-top">
+              <div class="room-analytics-name">${escapeHtml(entry.action_type)}</div>
+              <div class="room-analytics-meta">${escapeHtml(entry.created_at)}</div>
+            </div>
+            <p>${escapeHtml(entry.comment || '')}</p>
+            <p class="hint">
+              ${entry.full_name ? `Исполнитель: ${escapeHtml(entry.full_name)}. ` : ''}
+              ${entry.old_value ? `Было: ${escapeHtml(entry.old_value)}. ` : ''}
+              ${entry.new_value ? `Стало: ${escapeHtml(entry.new_value)}.` : ''}
+            </p>
+          </div>
+        `).join('')
+        : '<div class="empty-state"><h3>История пока пуста</h3><p>Изменения по заявке будут отображаться здесь.</p></div>';
+
+      const attachments = document.getElementById('attachments');
+      attachments.innerHTML = '';
+      (data.attachments || []).forEach((filePath) => {
+        const fileName = String(filePath).toLowerCase();
+        if (/\.(jpg|jpeg|png|gif|webp)$/.test(fileName)) {
+          const img = document.createElement('img');
+          img.src = filePath;
+          img.className = 'attachment-img';
+          attachments.appendChild(img);
+        } else if (/\.(mp4|webm|ogg)$/.test(fileName)) {
+          const video = document.createElement('video');
+          video.src = filePath;
+          video.controls = true;
+          video.className = 'attachment-video';
+          attachments.appendChild(video);
+        } else {
+          const link = document.createElement('a');
+          link.href = filePath;
+          link.textContent = filePath.split('/').pop();
+          attachments.appendChild(link);
         }
-      } catch (e) {}
-      if (window.history.length > 1) window.history.back(); else window.location.href = '/';
+      });
+      if (!attachments.children.length) {
+        attachments.innerHTML = '<div class="empty-state"><h3>Вложений нет</h3><p>Пользователь не прикреплял файлы к этой заявке.</p></div>';
+      }
+    }
+
+    document.getElementById('assignAdminForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const id = queryParam('id');
+      const admin_id = document.getElementById('assignedAdminSelect').value;
+      const { ok, data } = await requestJSON(`/admin/complaints/${id}/assign`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ admin_id: admin_id || null })
+      });
+      if (!ok) return showToast(data.message || 'Не удалось назначить администратора', 'error', 'Ошибка');
+      showToast('Ответственный администратор обновлен');
+      loadComplaint();
     });
+
+    document.getElementById('commentForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const id = queryParam('id');
+      const commentInput = document.getElementById('commentInput');
+      const comment = commentInput.value.trim();
+      if (!comment) return;
+      const { ok, data } = await requestJSON(`/admin/complaints/${id}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment })
+      });
+      if (!ok) return showToast(data.message || 'Не удалось добавить комментарий', 'error', 'Ошибка');
+      commentInput.value = '';
+      showToast('Комментарий добавлен');
+      loadComplaint();
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => {
+      const lastTab = sessionStorage.getItem('adminLastTab') || 'errors';
+      sessionStorage.removeItem('adminLastTab');
+      window.location.href = `/admin-dashboard.html?tab=${encodeURIComponent(lastTab)}`;
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await requestJSON('/auth/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      window.location.href = '/auth/login';
+    });
+
+    loadComplaint();
   </script>
 </body>
 </html>

@@ -25,6 +25,10 @@ const registerRules = [
     .optional()
     .isArray()
     .withMessage('rooms должен быть массивом'),
+  body('email')
+    .optional({ values: 'falsy' })
+    .isEmail()
+    .withMessage('Некорректный адрес электронной почты'),
   handleValidation
 ];
 
@@ -77,6 +81,10 @@ const assignTeacherRules = [
 const updateTeacherRules = [
   body('full_name').notEmpty().withMessage('ФИО обязательно'),
   body('login').notEmpty().withMessage('Логин обязателен'),
+  body('email')
+    .optional({ values: 'falsy' })
+    .isEmail()
+    .withMessage('Некорректный адрес электронной почты'),
   body('password')
     .optional({ values: 'falsy' })
     .isLength({ min: 6 })

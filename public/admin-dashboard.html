@@ -5,9 +5,13 @@
   <title>Панель администратора</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
-<body>
-  <header class="topbar">
-    <h1>Панель администратора</h1>
+<body class="dashboard-page">
+  <header class="topbar topbar-modern">
+    <div class="topbar-brand">
+      <p class="eyebrow">Equipment Monitoring</p>
+      <h1>Современная светлая админка</h1>
+      <p class="topbar-subtitle">Заявки, аналитика, архив и управление пользователями в одном рабочем пространстве.</p>
+    </div>
     <div class="topbar-actions">
       <div class="notification-bell">
         <button id="notificationBtn" class="notification-icon">
@@ -33,19 +37,27 @@
     </div>
   </header>
 
-  <nav class="tabs">
-    <button class="tab active" data-tab="rooms">Аудитории</button>
-    <button class="tab" data-tab="errors">Заявки</button>
-    <button class="tab" data-tab="archive">Архив</button>
-    <button class="tab" data-tab="teachers">Пользователи</button>
-    <button class="tab" data-tab="analytics">Аналитика</button>
+  <nav class="tabs accent-tabs">
+    <button class="tab active" data-tab="rooms" data-accent="rooms">Аудитории</button>
+    <button class="tab" data-tab="errors" data-accent="errors">Заявки</button>
+    <button class="tab" data-tab="archive" data-accent="archive">Архив</button>
+    <button class="tab" data-tab="teachers" data-accent="users">Пользователи</button>
+    <button class="tab" data-tab="analytics" data-accent="analytics">Аналитика</button>
   </nav>
 
   <main class="tabs-container">
-    <section id="tab-rooms" class="tab-content active">
-      <h2>Управление аудиториями</h2>
+    <section id="tab-rooms" class="tab-content active tab-pane pane-rooms">
+      <div class="pane-header">
+        <div>
+          <p class="eyebrow">Раздел аудиторий</p>
+          <h2>Управление аудиториями</h2>
+        </div>
+      </div>
 
       <div class="card wide">
+        <div class="toolbar">
+          <input id="roomsSearchInput" class="toolbar-input" type="search" placeholder="Поиск по аудиториям" />
+        </div>
         <table class="data-table">
           <thead>
             <tr>
@@ -55,7 +67,10 @@
           </thead>
           <tbody id="roomTableBody"></tbody>
         </table>
-        <p class="hint">Нажмите на строку, чтобы открыть аудиторию и управлять оборудованием.</p>
+        <div id="roomsEmptyState" class="empty-state" hidden>
+          <h3>Аудиторий пока нет</h3>
+          <p>Создайте первую аудиторию, чтобы начать наполнять систему оборудованием.</p>
+        </div>
       </div>
 
       <div class="card">
@@ -63,22 +78,44 @@
         <form id="roomForm" class="form-inline">
           <label>
             Название аудитории
-            <input type="text" name="name" placeholder="Например, Аудитория 207" required />
+            <input type="text" name="name" placeholder="Например, 207" required />
           </label>
           <button class="btn hover-highlight" type="submit">Создать аудиторию</button>
         </form>
       </div>
     </section>
 
-    <section id="tab-errors" class="tab-content">
-      <h2>Активные заявки</h2>
+    <section id="tab-errors" class="tab-content tab-pane pane-errors">
+      <div class="pane-header">
+        <div>
+          <p class="eyebrow">Раздел заявок</p>
+          <h2>Активные заявки</h2>
+        </div>
+      </div>
+
       <div class="card wide">
+        <div class="toolbar toolbar-grid">
+          <input id="complaintsSearchInput" class="toolbar-input" type="search" placeholder="Поиск по аудитории, преподавателю, описанию" />
+          <select id="complaintsStatusFilter" class="toolbar-input">
+            <option value="">Все статусы</option>
+            <option value="на рассмотрении">На рассмотрении</option>
+            <option value="в ремонте">В ремонте</option>
+            <option value="исправлено">Исправлено</option>
+          </select>
+          <select id="complaintsSortSelect" class="toolbar-input">
+            <option value="updated_desc">Сначала новые</option>
+            <option value="room_asc">По аудитории</option>
+            <option value="status_asc">По статусу</option>
+          </select>
+        </div>
         <table class="data-table">
           <thead>
             <tr>
               <th>ID</th>
+              <th>Аудитория</th>
               <th>Преподаватель</th>
               <th>Оборудование</th>
+              <th>Ответственный</th>
               <th>Описание</th>
               <th>Статус</th>
               <th>Действие</th>
@@ -86,17 +123,39 @@
           </thead>
           <tbody id="complaintTableBody"></tbody>
         </table>
+        <div id="complaintsEmptyState" class="empty-state" hidden>
+          <h3>Активных заявок нет</h3>
+          <p>Сейчас все обращения закрыты или находятся в архиве.</p>
+        </div>
       </div>
     </section>
 
-    <section id="tab-archive" class="tab-content">
-      <h2>Архив заявок</h2>
+    <section id="tab-archive" class="tab-content tab-pane pane-archive">
+      <div class="pane-header">
+        <div>
+          <p class="eyebrow">Раздел архива</p>
+          <h2>Архив заявок</h2>
+        </div>
+        <div class="pane-actions">
+          <a id="exportArchiveLink" class="btn" href="/admin/export/archive.csv">Экспорт CSV</a>
+        </div>
+      </div>
+
       <div class="card wide">
         <p id="archiveDeleteHint" class="hint" hidden>Удалять записи из архива может только главный администратор.</p>
+        <div class="toolbar toolbar-grid">
+          <input id="archiveSearchInput" class="toolbar-input" type="search" placeholder="Поиск по архиву" />
+          <select id="archiveRoomFilter" class="toolbar-input">
+            <option value="">Все аудитории</option>
+          </select>
+          <input id="archiveDateFrom" class="toolbar-input" type="date" />
+          <input id="archiveDateTo" class="toolbar-input" type="date" />
+        </div>
         <table class="data-table">
           <thead>
             <tr>
               <th>ID</th>
+              <th>Аудитория</th>
               <th>Преподаватель</th>
               <th>Оборудование</th>
               <th>Описание</th>
@@ -107,14 +166,26 @@
           </thead>
           <tbody id="archiveTableBody"></tbody>
         </table>
+        <div id="archiveEmptyState" class="empty-state" hidden>
+          <h3>В архиве пока нет заявок</h3>
+          <p>Как только появятся исправленные обращения, они будут отображаться здесь.</p>
+        </div>
       </div>
     </section>
 
-    <section id="tab-teachers" class="tab-content">
-      <h2>Пользователи</h2>
+    <section id="tab-teachers" class="tab-content tab-pane pane-users">
+      <div class="pane-header">
+        <div>
+          <p class="eyebrow">Раздел пользователей</p>
+          <h2>Пользователи</h2>
+        </div>
+      </div>
 
       <div class="admin-forms-grid">
         <div class="card wide">
+          <div class="toolbar">
+            <input id="teachersSearchInput" class="toolbar-input" type="search" placeholder="Поиск по преподавателям" />
+          </div>
           <h3>Преподаватели</h3>
           <table class="data-table">
             <thead>
@@ -127,6 +198,10 @@
             </thead>
             <tbody id="teacherTableBody"></tbody>
           </table>
+          <div id="teachersEmptyState" class="empty-state" hidden>
+            <h3>Преподаватели не найдены</h3>
+            <p>Попробуйте изменить фильтр или добавить нового преподавателя.</p>
+          </div>
         </div>
 
         <div class="card">
@@ -144,6 +219,10 @@
               Пароль
               <input type="password" name="password" required />
             </label>
+            <label>
+              Электронная почта
+              <input type="email" name="email" placeholder="name@example.com" />
+            </label>
             <input type="hidden" name="role" value="teacher" />
             <label>
               Закрепить за аудиториями
@@ -157,8 +236,10 @@
       <div id="mainAdminSection" hidden>
         <div class="admin-forms-grid">
           <div class="card wide">
+            <div class="toolbar">
+              <input id="adminsSearchInput" class="toolbar-input" type="search" placeholder="Поиск по администраторам" />
+            </div>
             <h3>Администраторы</h3>
-            <p class="hint">Этот раздел виден только главному администратору.</p>
             <table class="data-table">
               <thead>
                 <tr>
@@ -171,6 +252,10 @@
               </thead>
               <tbody id="adminTableBody"></tbody>
             </table>
+            <div id="adminsEmptyState" class="empty-state" hidden>
+              <h3>Администраторы не найдены</h3>
+              <p>Попробуйте очистить поиск или добавить нового администратора.</p>
+            </div>
           </div>
 
           <div class="card">
@@ -188,6 +273,10 @@
                 Пароль
                 <input type="password" name="password" required />
               </label>
+              <label>
+                Электронная почта
+                <input type="email" name="email" placeholder="name@example.com" />
+              </label>
               <input type="hidden" name="role" value="admin" />
               <button class="btn hover-highlight" type="submit">Добавить администратора</button>
             </form>
@@ -196,32 +285,60 @@
       </div>
     </section>
 
-    <section id="tab-analytics" class="tab-content">
-      <h2>Аналитика</h2>
+    <section id="tab-analytics" class="tab-content tab-pane pane-analytics">
+      <div class="pane-header">
+        <div>
+          <p class="eyebrow">Раздел аналитики</p>
+          <h2>Аналитика</h2>
+        </div>
+        <div class="pane-actions">
+          <a id="exportAnalyticsLink" class="btn" href="/admin/export/analytics.csv">Экспорт CSV</a>
+          <a id="printAnalyticsLink" class="btn" href="/admin/export/analytics-print" target="_blank" rel="noreferrer">Экспорт PDF</a>
+        </div>
+      </div>
+
       <div id="analyticsSummary" class="analytics-summary"></div>
 
       <div class="analytics-grid">
-        <div class="card wide">
+        <div class="card wide analytics-panel analytics-panel-status">
           <div class="analytics-card-header">
             <h3>Распределение заявок по статусам</h3>
-            <p>Показывает текущую загрузку по обработке обращений.</p>
+            <p>Цвета помогают сразу увидеть, что требует внимания, а что уже закрыто.</p>
           </div>
           <div id="analyticsStatusChart" class="analytics-bars"></div>
         </div>
 
-        <div class="card wide">
+        <div class="card wide analytics-panel analytics-panel-equipment">
           <div class="analytics-card-header">
             <h3>Состояние оборудования</h3>
-            <p>Сколько единиц техники сейчас в работе, на рассмотрении и в ремонте.</p>
+            <p>Наглядное распределение техники по текущему рабочему состоянию.</p>
           </div>
           <div id="analyticsEquipmentChart" class="analytics-bars"></div>
         </div>
       </div>
 
-      <div class="card wide">
+      <div class="analytics-grid">
+        <div class="card wide analytics-panel analytics-panel-top">
+          <div class="analytics-card-header">
+            <h3>Что ломается чаще всего</h3>
+            <p>Топ оборудования по количеству обращений.</p>
+          </div>
+          <div id="analyticsTopEquipmentChart" class="analytics-bars"></div>
+        </div>
+
+        <div class="card wide analytics-panel analytics-panel-reliability">
+          <div class="analytics-card-header">
+            <h3>Рейтинг аудиторий по надежности</h3>
+            <p>Чем выше балл, тем стабильнее аудитория по количеству техники и обращений.</p>
+          </div>
+          <div id="analyticsReliabilityChart" class="analytics-bars"></div>
+        </div>
+      </div>
+
+      <div class="card wide analytics-panel analytics-panel-roomload">
         <div class="analytics-card-header">
           <h3>Нагрузка по аудиториям</h3>
-          <p>Можно быстро увидеть проблемные аудитории, например 207 или 305, если по ним копятся обращения.</p>
+          <p>Можно быстро увидеть проблемные аудитории и их текущую загруженность заявками.</p>
         </div>
         <div id="analyticsRoomChart" class="room-analytics-list"></div>
       </div>
@@ -229,9 +346,12 @@
   </main>
 
   <div id="userEditModal" class="modal-backdrop hidden" aria-hidden="true">
-    <div class="modal-card">
+    <div class="modal-card modal-card-modern">
       <div class="modal-header">
-        <h3 id="userEditModalTitle">Редактирование пользователя</h3>
+        <div>
+          <p class="eyebrow">Карточка пользователя</p>
+          <h3 id="userEditModalTitle">Редактирование пользователя</h3>
+        </div>
         <button id="closeUserEditModal" class="modal-close" type="button">×</button>
       </div>
       <form id="userEditForm">
@@ -246,16 +366,38 @@
           <input type="text" name="login" required />
         </label>
         <label>
+          Электронная почта
+          <input type="email" name="email" placeholder="name@example.com" />
+        </label>
+        <label>
           Новый пароль
           <input type="password" name="password" placeholder="Оставьте пустым, если менять не нужно" />
         </label>
-        <div class="modal-actions">
+        <div class="modal-actions sticky-actions">
           <button id="cancelUserEditModal" class="btn" type="button">Отмена</button>
           <button class="btn hover-highlight" type="submit">Сохранить</button>
         </div>
       </form>
     </div>
   </div>
+
+  <div id="confirmModal" class="modal-backdrop hidden" aria-hidden="true">
+    <div class="modal-card confirm-card">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Подтверждение действия</p>
+          <h3 id="confirmModalTitle">Подтвердите действие</h3>
+        </div>
+      </div>
+      <p id="confirmModalMessage" class="confirm-message">Вы уверены?</p>
+      <div class="modal-actions sticky-actions">
+        <button id="confirmModalCancel" class="btn" type="button">Отмена</button>
+        <button id="confirmModalAccept" class="btn btn-danger" type="button">Подтвердить</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
 
   <script src="/js/main.js"></script>
 </body>

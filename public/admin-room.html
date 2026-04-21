@@ -8,7 +8,7 @@
 <body>
   <header class="topbar">
     <div class="topbar-left">
-      <a href="/" class="back-link">← Назад к панеле администратора</a>
+      <a href="/" class="back-link">← Назад к панели администратора</a>
       <h1 id="roomPageTitle">Аудитория</h1>
     </div>
     <button id="logoutBtn" class="btn">Выйти</button>
@@ -16,8 +16,15 @@
 
   <main class="tabs-container">
     <div class="room-layout">
-      <!-- Левая колонка: оборудование -->
       <section class="card wide">
+        <div class="pane-header">
+          <div>
+            <p class="eyebrow">Настройки аудитории</p>
+            <h2 id="roomNameHeading">Аудитория</h2>
+          </div>
+          <button id="editRoomBtn" class="btn hover-highlight" type="button">Редактировать аудиторию</button>
+        </div>
+
         <h2>Оборудование аудитории</h2>
         <table class="data-table" id="equipmentTable">
           <thead>
@@ -26,42 +33,43 @@
               <th>Название</th>
               <th>Номер</th>
               <th>Дата покупки</th>
-              <th>Активно</th>
+              <th>Статус</th>
               <th>Действие</th>
             </tr>
           </thead>
-          <tbody id="equipmentTableBody">
-          </tbody>
+          <tbody id="equipmentTableBody"></tbody>
         </table>
 
         <h3>Добавить оборудование</h3>
         <form id="equipmentForm" class="form-vertical">
           <label>
             Название оборудования
-            <input type="text" name="name" required placeholder="например: Проектор Epson X123" />
+            <input type="text" name="name" required placeholder="Например: Проектор Epson X123" />
             <div class="hint">Короткое понятное название оборудования</div>
           </label>
           <label>
             Номер оборудования
-            <input type="text" name="serial_number" placeholder="например: SN-12345-AB" />
-            <div class="hint">Серийный номер из наклейки (если есть)</div>
+            <input type="text" name="serial_number" placeholder="Например: SN-12345-AB" />
+            <div class="hint">Серийный номер из наклейки, если он есть</div>
           </label>
           <label>
             Дата покупки
             <input type="date" name="purchase_date" />
-            <div class="hint">Дата в формате ГГГГ-ММ-ДД (опционально)</div>
+            <div class="hint">Поле можно оставить пустым</div>
           </label>
           <button class="btn hover-highlight" type="submit">Добавить оборудование</button>
         </form>
       </section>
 
-      <!-- Правая колонка: преподаватели -->
       <section class="card wide">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <h2>Преподаватели аудитории</h2>
-          <button id="deleteRoomBtn" class="btn btn-danger">Удалить аудиторию</button>
+        <div class="pane-header">
+          <div>
+            <p class="eyebrow">Преподаватели аудитории</p>
+            <h2>Преподаватели</h2>
+          </div>
+          <button id="deleteRoomBtn" class="btn btn-danger" type="button">Удалить аудиторию</button>
         </div>
-        
+
         <table class="data-table" id="roomTeachersTable">
           <thead>
             <tr>
@@ -71,8 +79,7 @@
               <th>Действие</th>
             </tr>
           </thead>
-          <tbody id="roomTeachersTableBody">
-          </tbody>
+          <tbody id="roomTeachersTableBody"></tbody>
         </table>
 
         <h3>Добавить преподавателя в аудиторию</h3>
@@ -86,6 +93,85 @@
       </section>
     </div>
   </main>
+
+  <div id="equipmentEditModal" class="modal-backdrop hidden" aria-hidden="true">
+    <div class="modal-card modal-card-modern">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Оборудование</p>
+          <h3 id="equipmentEditModalTitle">Редактирование оборудования</h3>
+        </div>
+        <button id="closeEquipmentEditModal" class="modal-close" type="button">×</button>
+      </div>
+      <form id="equipmentEditForm">
+        <input type="hidden" name="id" />
+        <label>
+          Название оборудования
+          <input type="text" name="name" required />
+        </label>
+        <label>
+          Серийный номер
+          <input type="text" name="serial_number" />
+        </label>
+        <label>
+          Дата покупки
+          <input type="date" name="purchase_date" />
+        </label>
+        <label>
+          Статус оборудования
+          <select name="status">
+            <option value="в работе">В работе</option>
+            <option value="на рассмотрении">На рассмотрении</option>
+            <option value="в ремонте">В ремонте</option>
+          </select>
+        </label>
+        <div class="modal-actions sticky-actions">
+          <button id="cancelEquipmentEditModal" class="btn" type="button">Отмена</button>
+          <button class="btn hover-highlight" type="submit">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="roomEditModal" class="modal-backdrop hidden" aria-hidden="true">
+    <div class="modal-card modal-card-modern">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Аудитория</p>
+          <h3>Редактирование аудитории</h3>
+        </div>
+        <button id="closeRoomEditModal" class="modal-close" type="button">×</button>
+      </div>
+      <form id="roomEditForm">
+        <label>
+          Название аудитории
+          <input type="text" name="name" required />
+        </label>
+        <div class="modal-actions sticky-actions">
+          <button id="cancelRoomEditModal" class="btn" type="button">Отмена</button>
+          <button class="btn hover-highlight" type="submit">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal-backdrop hidden" aria-hidden="true">
+    <div class="modal-card confirm-card">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Подтверждение действия</p>
+          <h3 id="confirmModalTitle">Подтвердите действие</h3>
+        </div>
+      </div>
+      <p id="confirmModalMessage" class="confirm-message">Вы уверены?</p>
+      <div class="modal-actions sticky-actions">
+        <button id="confirmModalCancel" class="btn" type="button">Отмена</button>
+        <button id="confirmModalAccept" class="btn btn-danger" type="button">Подтвердить</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
 
   <script src="/js/main.js"></script>
 </body>
