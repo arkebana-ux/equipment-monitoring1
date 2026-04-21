@@ -74,7 +74,17 @@ const changeComplaintStatusRules = [
 ];
 
 const assignTeacherRules = [
-  body('teacher_id').isInt().withMessage('teacher_id должен быть числом'),
+  body('teacher_id').custom((value) => {
+    if (Array.isArray(value)) {
+      if (!value.length) throw new Error('teacher_id должен содержать хотя бы один элемент');
+      value.forEach((id) => {
+        if (!/^[0-9]+$/.test(String(id))) throw new Error('teacher_id должен содержать только числа');
+      });
+      return true;
+    }
+    if (!/^[0-9]+$/.test(String(value))) throw new Error('teacher_id должен быть числом');
+    return true;
+  }),
   handleValidation
 ];
 

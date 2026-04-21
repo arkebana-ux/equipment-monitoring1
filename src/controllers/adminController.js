@@ -572,9 +572,27 @@ exports.exportAnalyticsPrint = async (req, res, next) => {
 };
 
 exports.assignTeacherToRoom = (req, res, next) => {
-  RoomTeacher.assign(req.params.id, req.body.teacher_id, (err) => {
-    if (err) return next(err);
-    res.json({ message: 'Преподаватель добавлен в аудиторию' });
+  const teacherIds = Array.isArray(req.body.teacher_id) ? req.body.teacher_id : [req.body.teacher_id];
+  if (!teacherIds.length) {
+    return res.status(400).json({ message: 'Нужно выбрать хотя бы одного преподавателя' });
+  }
+
+  let completed = 0;
+  let finished = false;
+  const roomId = req.params.id;
+  teacherIds.forEach((teacherId) => {
+    RoomTeacher.assign(roomId, teacherId, (err) => {
+      if (finished) return;
+      if (err) {
+        finished = true;
+        return next(err);
+      }
+      completed += 1;
+      if (completed === teacherIds.length) {
+        finished = true;
+        res.json({ message: 'Преподаватели добавлены в аудиторию' });
+      }
+    });
   });
 };
 

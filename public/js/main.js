@@ -129,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const equipmentTableBody = document.getElementById('equipmentTableBody');
   const roomTeachersTableBody = document.getElementById('roomTeachersTableBody');
   const roomTeacherForm = document.getElementById('roomTeacherForm');
+  const roomTeacherSearch = document.getElementById('roomTeacherSearch');
   const roomTeacherSelect = document.getElementById('roomTeacherSelect');
   const deleteRoomBtn = document.getElementById('deleteRoomBtn');
   const equipmentEditModal = document.getElementById('equipmentEditModal');
@@ -163,7 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const roomPageState = {
     room: null,
-    equipment: []
+    equipment: [],
+    roomTeachers: [],
+    allTeachers: []
   };
 
   const isMainAdmin = () => Boolean(dashboardState.currentUser?.is_super_admin);
@@ -572,11 +575,9 @@ document.addEventListener('DOMContentLoaded', () => {
       `).join('');
     }
 
-    if (roomTeacherSelect) {
-      roomTeacherSelect.innerHTML = (data.allTeachers || []).map((teacher) => `
-        <option value="${teacher.id}">${escapeHtml(teacher.full_name)} (${escapeHtml(teacher.login)})</option>
-      `).join('');
-    }
+    roomPageState.roomTeachers = data.roomTeachers || [];
+    roomPageState.allTeachers = data.allTeachers || [];
+    renderRoomTeacherSelect();
   }
 
   function openEquipmentModal(equipment) {
@@ -593,6 +594,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!roomEditModal || !roomEditForm) return;
     roomEditForm.elements.name.value = roomPageState.room?.name || '';
     openModal(roomEditModal);
+  }
+
+  function renderRoomTeacherSelect() {
+    if (!roomTeacherSelect) return;
+    const query = roomTeacherSearch?.value.trim().toLowerCase() || '';
+    const assignedIds = new Set(roomPageState.roomTeachers.map((teacher) => String(teacher.id)));
+    const filtered = roomPageState.allTeachers.filter((teacher) => {
+      const haystack = `${teacher.full_name} ${teacher.login}`.toLowerCase();
+      return !assignedIds.has(String(teacher.id)) && (!query || haystack.includes(query));
+    });
+    const previouslySelected = new Set(Array.from(roomTeacherSelect.selectedOptions).map((option) => option.value));
+    roomTeacherSelect.innerHTML = filtered.map((teacher) => `
+      <option value="${teacher.id}">${escapeHtml(teacher.full_name)} (${escapeHtml(teacher.login)})</option>
+    `).join('');
+    Array.from(roomTeacherSelect.options).forEach((option) => {
+      if (previouslySelected.has(option.value)) option.selected = true;
+    });
   }
 
   async function loadUserRooms() {
@@ -731,6 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
     teachersSearchInput,
     adminsSearchInput
   ].forEach((input) => input?.addEventListener('input', applyDashboardFilters));
+  roomTeacherSearch?.addEventListener('input', renderRoomTeacherSelect);
   [complaintsStatusFilter, complaintsSortSelect, archiveDateFrom, archiveDateTo, archiveSortSelect].forEach((input) => input?.addEventListener('change', applyDashboardFilters));
 
   archiveRoomDropdownBtn?.addEventListener('click', () => {
@@ -1000,10 +1019,13 @@ document.addEventListener('DOMContentLoaded', () => {
     roomTeacherForm?.addEventListener('submit', async (event) => {
       event.preventDefault();
       const { roomId } = getQueryParams();
-      const payload = Object.fromEntries(new FormData(roomTeacherForm).entries());
-      const { ok, data } = await requestJSON(`/admin/rooms/${roomId}/teachers`, jsonOptions('POST', payload));
+      const formData = new FormData(roomTeacherForm);
+      const teacherIds = formData.getAll('teacher_id');
+      if (!teacherIds.length) return showToast('Выберите хотя бы одного преподавателя', 'warning', 'Внимание');
+      const { ok, data } = await requestJSON(`/admin/rooms/${roomId}/teachers`, jsonOptions('POST', { teacher_id: teacherIds }));
       if (!ok) return showToast(data.message || 'Не удалось назначить преподавателя', 'error', 'Ошибка');
-      showToast('Преподаватель добавлен в аудиторию');
+      showToast('Преподаватели добавлены в аудиторию');
+      if (roomTeacherSearch) roomTeacherSearch.value = '';
       await loadAdminRoomPage();
     });
 

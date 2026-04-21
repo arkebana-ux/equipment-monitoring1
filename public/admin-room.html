@@ -82,12 +82,14 @@
           <tbody id="roomTeachersTableBody"></tbody>
         </table>
 
-        <h3>Добавить преподавателя в аудиторию</h3>
+        <h3>Добавить преподавателей в аудиторию</h3>
         <form id="roomTeacherForm" class="form-vertical">
+          <input type="search" id="roomTeacherSearch" class="toolbar-input" placeholder="Поиск преподавателя" aria-label="Поиск преподавателя" />
           <label>
-            Преподаватель
-            <select name="teacher_id" id="roomTeacherSelect"></select>
+            Преподаватели
+            <select name="teacher_id" id="roomTeacherSelect" multiple size="6"></select>
           </label>
+          <div class="hint">Удерживайте Ctrl / Cmd для выбора нескольких преподавателей.</div>
           <button class="btn hover-highlight" type="submit">Добавить</button>
         </form>
       </section>

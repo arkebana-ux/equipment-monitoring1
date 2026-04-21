@@ -470,7 +470,7 @@ textarea {
 }
 
 .archive-toolbar {
-  align-items: start;
+  align-items: center;
 }
 
 .filter-field {
@@ -598,12 +598,18 @@ select.toolbar-input,
 }
 
 .checkbox-dropdown-trigger {
+  display: flex;
+  align-items: center;
   width: 100%;
   justify-content: space-between;
   text-align: left;
   appearance: none;
-  padding-right: 42px;
+  padding: 12px 42px 12px 14px;
   position: relative;
+  border: 1px solid #d7e3f1;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fbfdff 0%, #f6fbff 100%);
+  color: inherit;
 }
 
 .checkbox-dropdown-trigger::after {
