@@ -1,486 +1,74 @@
-// ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ JSON-запросов
-async function postJSON(url, data) {
+async function postJSON(url, data, method = 'POST') {
   const res = await fetch(url, {
-    method: 'POST',
+    method,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
   });
-  const json = await res.json();
-  return { ok: res.ok, data: json };
+  const json = await res.json().catch(() => ({}));
+  return { ok: res.ok, data: json, status: res.status };
 }
 
-// получить query-параметры (?roomId=1&roomName=207)
 function getQueryParams() {
   const params = new URLSearchParams(window.location.search);
-  const obj = {};
-  for (const [k, v] of params.entries()) {
-    obj[k] = v;
+  return Object.fromEntries(params.entries());
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function formatRelativeTime(dateValue) {
+  let date = new Date(dateValue);
+  if (Number.isNaN(date.getTime()) && typeof dateValue === 'string') {
+    date = new Date(dateValue.replace(' ', 'T') + 'Z');
   }
-  return obj;
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  const diffMs = Date.now() - date.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  const diffHour = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHour / 24);
+
+  if (diffMin < 1) return 'только что';
+  if (diffMin < 60) return `${diffMin} мин назад`;
+  if (diffHour < 24) return `${diffHour} ч назад`;
+  if (diffDay < 7) return `${diffDay} дн назад`;
+  return date.toLocaleDateString('ru-RU');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('loginForm');
-  const registerForm = document.getElementById('registerForm');
   const logoutBtn = document.getElementById('logoutBtn');
   const roomForm = document.getElementById('roomForm');
+  const teacherRegisterForm = document.getElementById('teacherRegisterForm');
+  const adminRegisterForm = document.getElementById('adminRegisterForm');
   const complaintForm = document.getElementById('complaintForm');
-  const userRegisterForm = document.getElementById('userRegisterForm');
-
-  // ---------- ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК В АДМИНКЕ (ТОЛЬКО НА admin-dashboard.html) ----------
-  const tabs = document.querySelectorAll('.tab');
-  const tabContents = document.querySelectorAll('.tab-content');
-
-  if (tabs.length) {
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const name = tab.dataset.tab;
-
-        tabs.forEach(t => t.classList.remove('active'));
-        tabContents.forEach(c => c.classList.remove('active'));
-
-        tab.classList.add('active');
-        document.getElementById(`tab-${name}`).classList.add('active');
-      });
-    });
-    // If URL contains ?tab=... activate that tab on load (useful when returning from detail page)
-    try {
-      const paramsInit = getQueryParams();
-      if (paramsInit.tab) {
-        const tbtn = Array.from(tabs).find(x => x.dataset.tab === paramsInit.tab);
-        if (tbtn) tbtn.click();
-      } else {
-        // fallback: try to restore last active tab saved in sessionStorage
-        try {
-          const last = sessionStorage.getItem('adminLastTab');
-          if (last) {
-            const tbtn2 = Array.from(tabs).find(x => x.dataset.tab === last);
-            if (tbtn2) {
-              tbtn2.click();
-              sessionStorage.removeItem('adminLastTab');
-            }
-          }
-        } catch (e) { /* ignore */ }
-      }
-    } catch (e) { /* ignore */ }
-  }
-
-  // ---------- ЛОГИН ----------
-  if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(loginForm);
-      const data = Object.fromEntries(formData.entries());
-
-      // Client-side validation
-      if (!data.login || data.login.length < 3) return alert('Логин минимум 3 символа');
-      if (!data.password || data.password.length < 6) return alert('Пароль минимум 6 символов');
-
-      try {
-        const res = await postJSON('/auth/login', data);
-        if (res.ok && res.data.role) {
-          window.location.href = '/';
-        } else {
-          alert(res.data.message || 'Ошибка входа');
-        }
-      } catch (err) {
-        console.error('Login error:', err);
-        alert('Ошибка сети при входе');
-      }
-    });
-  }
-
-  // ---------- РЕГИСТРАЦИЯ (общая, на index.html) ----------
-  if (registerForm) {
-    registerForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(registerForm);
-      const data = Object.fromEntries(formData.entries());
-
-      // Client-side validation
-      if (!data.full_name || data.full_name.length < 3) return alert('Введите корректное ФИО');
-      if (!data.login || !/^[A-Za-z0-9_]{3,30}$/.test(data.login)) return alert('Логин: 3-30 символов, буквы/цифры/_');
-      if (!data.password || data.password.length < 6) return alert('Пароль минимум 6 символов');
-
-      try {
-        const res = await postJSON('/auth/register', data);
-        if (!res.ok) {
-          if (res.data && res.data.errors && res.data.errors.length) {
-            const msg = res.data.errors.map(x => x.msg).join('\n');
-            return alert(msg);
-          }
-          return alert(res.data.message || 'Ошибка регистрации');
-        }
-        alert(res.data.message || 'Регистрация завершена');
-      } catch (err) {
-        console.error('Register error:', err);
-        alert('Ошибка сети при регистрации');
-      }
-    });
-  }
-
-  // ---------- ВЫХОД ----------
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', async () => {
-      try {
-        await postJSON('/auth/logout', {});
-        window.location.href = '/auth/login';
-      } catch (err) {
-        console.error('Logout error:', err);
-        alert('Ошибка сети при выходе');
-      }
-    });
-  }
-
-  // ============================================================
-  //                АДМИН-ПАНЕЛЬ (admin-dashboard.html)
-  // ============================================================
 
   const roomTableBody = document.getElementById('roomTableBody');
   const complaintTableBody = document.getElementById('complaintTableBody');
   const archiveTableBody = document.getElementById('archiveTableBody');
   const teacherTableBody = document.getElementById('teacherTableBody');
-  const teacherRoomsSelect = document.getElementById('teacherRoomsSelect');
-
-  if (roomTableBody || complaintTableBody || teacherTableBody) {
-    // мы на admin-dashboard.html
-    fetch('/admin/dashboard')
-      .then(r => r.json())
-      .then(data => {
-        // Аудитории
-        if (roomTableBody && Array.isArray(data.rooms)) {
-          roomTableBody.innerHTML = '';
-          data.rooms.forEach(room => {
-            const tr = document.createElement('tr');
-            tr.dataset.id = room.id;
-            tr.dataset.name = room.name;
-            tr.innerHTML = `
-              <td>${room.id}</td>
-              <td>${room.name}</td>
-            `;
-            roomTableBody.appendChild(tr);
-          });
-          // Позволяем админу кликнуть по строке аудитории и перейти на страницу управления аудиторией
-          roomTableBody.addEventListener('click', (e) => {
-            const tr = e.target.closest('tr');
-            if (!tr) return;
-            const id = tr.dataset.id || tr.children[0]?.textContent?.trim();
-            const name = tr.dataset.name || tr.children[1]?.textContent?.trim();
-            const encName = encodeURIComponent(name || '');
-            window.location.href = `/admin-room.html?roomId=${id}&roomName=${encName}`;
-          });
-        }
-
-        // Жалобы и архив
-        if (Array.isArray(data.complaints)) {
-          // разделяем на активные и исправленные
-          const active = data.complaints.filter(c => c.status !== 'исправлено');
-          const archived = data.complaints.filter(c => c.status === 'исправлено');
-
-          if (complaintTableBody) {
-            complaintTableBody.innerHTML = '';
-            active.forEach(c => {
-              const tr = document.createElement('tr');
-                tr.innerHTML = `
-                  <td>${c.id}</td>
-                  <td>${c.full_name || '-'}</td>
-                  <td>${c.equipment_name || '-'}</td>
-                  <td class="compl-desc">${c.description || '-'}</td>
-                  <td>
-                    <select class="status-select" data-id="${c.id}">
-                      <option value="на рассмотрении" ${c.status === 'на рассмотрении' ? 'selected' : ''}>на рассмотрении</option>
-                      <option value="в ремонте" ${c.status === 'в ремонте' ? 'selected' : ''}>в ремонте</option>
-                      <option value="исправлено" ${c.status === 'исправлено' ? 'selected' : ''}>исправлено</option>
-                    </select>
-                  </td>
-                  <td>
-                    <button class="btn hover-highlight btn-status-save" data-id="${c.id}">Сохранить</button>
-                    <button class="btn hover-highlight btn-open-complaint" data-id="${c.id}">Открыть</button>
-                  </td>
-                `;
-              complaintTableBody.appendChild(tr);
-            });
-
-            complaintTableBody.addEventListener('click', async (e) => {
-              const saveBtn = e.target.closest('.btn-status-save');
-              const openBtn = e.target.closest('.btn-open-complaint');
-              if (openBtn) {
-                const id = openBtn.dataset.id;
-                // preserve active admin tab so back can restore it
-                const activeTabBtn = document.querySelector('.tab.active');
-                const tabName = activeTabBtn ? activeTabBtn.dataset.tab : '';
-                try {
-                  if (tabName) sessionStorage.setItem('adminLastTab', tabName);
-                } catch (e) {}
-                window.location.href = `/admin-complaint.html?id=${encodeURIComponent(id)}`;
-                return;
-              }
-
-              if (!saveBtn) return;
-
-              const id = saveBtn.dataset.id;
-              const select = complaintTableBody.querySelector(`select.status-select[data-id="${id}"]`);
-              if (!select) return;
-
-              const newStatus = select.value;
-              try {
-                const res = await fetch(`/admin/complaints/${id}/status`, {
-                  method: 'PATCH',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ status: newStatus })
-                });
-                const json = await res.json();
-                alert(json.message || 'Статус обновлён');
-                // обновим страницу, чтобы архив/таблицы обновились
-                location.reload();
-              } catch (err) {
-                console.error('Change status error:', err);
-                alert('Ошибка при изменении статуса');
-              }
-            });
-          }
-
-          if (archiveTableBody) {
-            archiveTableBody.innerHTML = '';
-            archived.forEach(c => {
-              const tr = document.createElement('tr');
-              tr.innerHTML = `
-                <td>${c.id}</td>
-                <td>${c.full_name || '-'}</td>
-                <td>${c.equipment_name || '-'}</td>
-                <td>${c.description || '-'}</td>
-                <td>${c.created_at || '-'}</td>
-                <td>${c.updated_at || '-'}</td>
-              `;
-              archiveTableBody.appendChild(tr);
-            });
-          }
-        }
-
-        // Пользователи: преподаватели
-        if (teacherTableBody && Array.isArray(data.teachers)) {
-          teacherTableBody.innerHTML = '';
-          data.teachers.forEach(t => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${t.id}</td>
-              <td>${t.full_name}</td>
-              <td>${t.login}</td>
-              <td>
-                <button class="btn hover-highlight btn-user-edit" data-id="${t.id}">Редактировать</button>
-                <button class="btn hover-highlight btn-user-delete" data-id="${t.id}">Удалить</button>
-              </td>
-            `;
-            teacherTableBody.appendChild(tr);
-          });
-        }
-
-        // Администраторы
-        if (adminTableBody && Array.isArray(data.admins)) {
-          adminTableBody.innerHTML = '';
-          data.admins.forEach(a => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${a.id}</td>
-              <td>${a.full_name}</td>
-              <td>${a.login}</td>
-              <td>
-                <button class="btn hover-highlight btn-user-edit" data-id="${a.id}">Редактировать</button>
-                <button class="btn hover-highlight btn-user-delete" data-id="${a.id}">Удалить</button>
-              </td>
-            `;
-            adminTableBody.appendChild(tr);
-          });
-        }
-
-        // Обработчики редактирования/удаления для списков пользователей
-        const attachUserHandlers = (container) => {
-          if (!container) return;
-          container.addEventListener('click', async (e) => {
-            const editBtn = e.target.closest('.btn-user-edit');
-            const deleteBtn = e.target.closest('.btn-user-delete');
-
-            if (editBtn) {
-              const id = editBtn.dataset.id;
-              const tr = editBtn.closest('tr');
-              const nameCell = tr.children[1];
-              const loginCell = tr.children[2];
-
-              const currentName = nameCell.textContent;
-              const currentLogin = loginCell.textContent;
-
-              const newName = prompt('Новое ФИО пользователя:', currentName);
-              if (!newName) return;
-
-              const newLogin = prompt('Новый логин пользователя:', currentLogin);
-              if (!newLogin) return;
-
-              const newPassword = prompt('Новый пароль (оставьте пустым, чтобы не менять):', '');
-
-              try {
-                const res = await fetch(`/admin/teachers/${id}`, {
-                  method: 'PATCH',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ full_name: newName, login: newLogin, password: newPassword || '' })
-                });
-                const json = await res.json();
-                alert(json.message || 'Пользователь обновлён');
-                nameCell.textContent = newName;
-                loginCell.textContent = newLogin;
-              } catch (err) {
-                console.error('Update user error:', err);
-                alert('Ошибка при обновлении пользователя');
-              }
-            }
-
-            if (deleteBtn) {
-              const id = deleteBtn.dataset.id;
-              if (!confirm('Удалить пользователя?')) return;
-              try {
-                const res = await fetch(`/admin/teachers/${id}`, { method: 'DELETE' });
-                const json = await res.json();
-                alert(json.message || 'Пользователь удалён');
-                deleteBtn.closest('tr').remove();
-              } catch (err) {
-                console.error('Delete user error:', err);
-                alert('Ошибка при удалении пользователя');
-              }
-            }
-          });
-        };
-
-        attachUserHandlers(teacherTableBody);
-        attachUserHandlers(adminTableBody);
-
-        // Наполняем мультиселект аудиторий при добавлении преподавателя
-        if (teacherRoomsSelect && Array.isArray(data.rooms)) {
-          teacherRoomsSelect.innerHTML = '';
-          data.rooms.forEach(r => {
-            const opt = document.createElement('option');
-            opt.value = r.id;
-            opt.textContent = r.name;
-            teacherRoomsSelect.appendChild(opt);
-          });
-        }
-
-        // Insert role field according to current user: main admin -> select, others -> hidden role=teacher
-        try {
-          const roleContainer = document.getElementById('roleFieldContainer');
-          const current = data.currentUser;
-          if (roleContainer) {
-            roleContainer.innerHTML = '';
-            if (current && String(current.login || '').toLowerCase() === 'admin') {
-              const label = document.createElement('label');
-              label.textContent = 'Роль';
-
-              const select = document.createElement('select');
-              select.name = 'role';
-
-              const optTeacher = document.createElement('option');
-              optTeacher.value = 'teacher';
-              optTeacher.textContent = 'Преподаватель';
-              select.appendChild(optTeacher);
-
-              const optAdmin = document.createElement('option');
-              optAdmin.value = 'admin';
-              optAdmin.textContent = 'Администратор';
-              select.appendChild(optAdmin);
-
-              const hint = document.createElement('div');
-              hint.className = 'hint';
-              hint.textContent = 'Выберите роль пользователя в системе';
-
-              label.appendChild(select);
-              label.appendChild(hint);
-              roleContainer.appendChild(label);
-            } else {
-              const hidden = document.createElement('input');
-              hidden.type = 'hidden';
-              hidden.name = 'role';
-              hidden.value = 'teacher';
-              roleContainer.appendChild(hidden);
-            }
-          }
-        } catch (e) {
-          console.error('Adjust role field error:', e);
-        }
-      })
-      .catch(err => {
-        console.error('Load admin dashboard error:', err);
-      });
-  }
-
-  // Создание аудитории
-  if (roomForm) {
-    roomForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(roomForm);
-      const data = Object.fromEntries(formData.entries());
-      if (!data.name || data.name.trim().length === 0) return alert('Название аудитории обязательно');
-
-      try {
-        const res = await fetch('/admin/rooms', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-        const json = await res.json();
-        alert(json.message || 'Аудитория создана');
-        // Перезагрузим страницу, чтобы в списке появилась новая аудитория
-        location.reload();
-      } catch (err) {
-        console.error('Create room error:', err);
-        alert('Ошибка при создании аудитории');
-      }
-    });
-  }
-
-  // Управление пользователями (таб "Пользователи")
   const adminTableBody = document.getElementById('adminTableBody');
-  if (userRegisterForm) {
-    console.log('Found userRegisterForm, attaching event listener');
-    userRegisterForm.addEventListener('submit', async (e) => {
-      console.log('userRegisterForm submit event fired');
-      e.preventDefault();
-      const formData = new FormData(userRegisterForm);
-      const data = Object.fromEntries(formData.entries());
+  const mainAdminSection = document.getElementById('mainAdminSection');
+  const teacherRoomsSelect = document.getElementById('teacherRoomsSelect');
+  const archiveDeleteHint = document.getElementById('archiveDeleteHint');
+  const analyticsSummary = document.getElementById('analyticsSummary');
+  const analyticsStatusChart = document.getElementById('analyticsStatusChart');
+  const analyticsEquipmentChart = document.getElementById('analyticsEquipmentChart');
+  const analyticsRoomChart = document.getElementById('analyticsRoomChart');
 
-      const roomsSelect = document.getElementById('teacherRoomsSelect');
-      if (roomsSelect) {
-        const selectedRooms = Array.from(roomsSelect.selectedOptions).map(o => o.value);
-        data.rooms = selectedRooms;
-      }
-
-      // client-side validation
-      if (!data.full_name || data.full_name.length < 3) return alert('Введите корректное ФИО');
-      if (!data.login || !/^[A-Za-z0-9_]{3,30}$/.test(data.login)) return alert('Логин: 3-30 символов, буквы/цифры/_');
-      if (!data.password || data.password.length < 6) return alert('Пароль минимум 6 символов');
-
-      try {
-        const res = await postJSON('/auth/register', data);
-        console.log('Register response:', res);
-        if (!res.ok) {
-          return alert(res.data.message || 'Ошибка при регистрации');
-        }
-        alert(res.data.message || 'Пользователь добавлен');
-        try { sessionStorage.setItem('adminLastTab', 'teachers'); } catch (e) {}
-        location.reload();
-      } catch (err) {
-        console.error('Register user error:', err);
-        alert('Ошибка при добавлении пользователя');
-      }
-    });
-  }
-
-  // действия над списками преподавателей и админов
-  if (teacherTableBody || adminTableBody) {
-    const tableContainer = document.getElementById('teacherTableBody');
-    // обработчики редактирования/удаления находятся дальше при отрисовке таблиц
-  }
-
-  // ============================================================
-  //              СТРАНИЦА АУДИТОРИИ (admin-room.html)
-  // ============================================================
+  const userEditModal = document.getElementById('userEditModal');
+  const userEditForm = document.getElementById('userEditForm');
+  const userEditModalTitle = document.getElementById('userEditModalTitle');
+  const closeUserEditModal = document.getElementById('closeUserEditModal');
+  const cancelUserEditModal = document.getElementById('cancelUserEditModal');
 
   const roomPageTitle = document.getElementById('roomPageTitle');
   const equipmentForm = document.getElementById('equipmentForm');
@@ -488,365 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const roomTeachersTableBody = document.getElementById('roomTeachersTableBody');
   const roomTeacherForm = document.getElementById('roomTeacherForm');
   const roomTeacherSelect = document.getElementById('roomTeacherSelect');
+  const deleteRoomBtn = document.getElementById('deleteRoomBtn');
 
-  if (roomPageTitle) {
-    // Мы на странице admin-room.html
-    const { roomId, roomName } = getQueryParams();
-    if (!roomId) {
-      roomPageTitle.textContent = 'Аудитория (ID не задан)';
-    } else {
-      roomPageTitle.textContent = `Аудитория ${roomName || roomId}`;
-      loadRoomData();
-    }
-
-    async function loadRoomData() {
-      const res = await fetch(`/admin/rooms/${roomId}/data`);
-      const data = await res.json();
-
-      // Оборудование
-      equipmentTableBody.innerHTML = '';
-      (data.equipment || []).forEach(eq => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${eq.id}</td>
-          <td><input type="text" value="${eq.name}" data-field="name" data-id="${eq.id}" /></td>
-          <td><input type="text" value="${eq.serial_number || ''}" data-field="serial_number" data-id="${eq.id}" /></td>
-          <td><input type="date" value="${eq.purchase_date || ''}" data-field="purchase_date" data-id="${eq.id}" /></td>
-          <td>
-            <select data-status-id="${eq.id}">
-              <option value="в работе" ${eq.status === 'в работе' ? 'selected' : ''}>в работе</option>
-              <option value="на рассмотрении" ${eq.status === 'на рассмотрении' ? 'selected' : ''}>на рассмотрении</option>
-              <option value="в ремонте" ${eq.status === 'в ремонте' ? 'selected' : ''}>в ремонте</option>
-              <option value="исправлено" ${eq.status === 'исправлено' ? 'selected' : ''}>исправлено</option>
-            </select>
-          </td>
-          <td>
-            <button class="btn btn-sm hover-highlight btn-eq-save" data-id="${eq.id}" aria-label="Сохранить">
-              ✓
-            </button>
-            <button class="btn btn-sm btn-danger btn-eq-delete" data-id="${eq.id}">Удалить</button>
-          </td>
-        `;
-        equipmentTableBody.appendChild(tr);
-      });
-
-      // Преподаватели в аудитории
-      roomTeachersTableBody.innerHTML = '';
-      const assigned = data.roomTeachers || [];
-      assigned.forEach(t => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${t.id}</td>
-          <td>${t.full_name}</td>
-          <td>${t.login}</td>
-          <td>
-            <button class="btn hover-highlight btn-room-teacher-remove" data-id="${t.id}">Удалить</button>
-          </td>
-        `;
-        roomTeachersTableBody.appendChild(tr);
-      });
-
-      // Селект "Добавить преподавателя в аудиторию"
-      roomTeacherSelect.innerHTML = '';
-      const assignedIds = new Set(assigned.map(t => String(t.id)));
-      (data.allTeachers || []).forEach(t => {
-        if (!assignedIds.has(String(t.id))) {
-          const opt = document.createElement('option');
-          opt.value = t.id;
-          opt.textContent = t.full_name + ' (' + t.login + ')';
-          roomTeacherSelect.appendChild(opt);
-        }
-      });
-    }
-
-    // Добавление оборудования
-    if (equipmentForm) {
-      equipmentForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(equipmentForm);
-        const data = Object.fromEntries(formData.entries());
-
-        try {
-          const res = await fetch(`/admin/rooms/${roomId}/equipment`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          });
-          await res.json();
-          alert('Оборудование добавлено');
-          equipmentForm.reset();
-          await loadRoomData();
-        } catch (err) {
-          console.error('Add equipment error:', err);
-          alert('Ошибка при добавлении оборудования');
-        }
-      });
-    }
-
-    // Сохранение изменений оборудования
-    if (equipmentTableBody) {
-      equipmentTableBody.addEventListener('click', async (e) => {
-        const btn = e.target.closest('.btn-eq-save');
-        if (!btn) return;
-
-        const id = btn.dataset.id;
-        const row = btn.closest('tr');
-        const nameInput = row.querySelector('input[data-field="name"]');
-        const numberInput = row.querySelector('input[data-field="serial_number"]');
-        const dateInput = row.querySelector('input[data-field="purchase_date"]');
-        const statusSelect = row.querySelector('select[data-status-id]');
-
-        const payload = {
-          name: nameInput.value,
-          serial_number: numberInput.value,
-          purchase_date: dateInput.value,
-          status: statusSelect ? statusSelect.value : undefined
-        };
-
-        try {
-          const res = await fetch(`/admin/equipment/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          const json = await res.json();
-          alert(json.message || 'Оборудование обновлено');
-        } catch (err) {
-          console.error('Update equipment error:', err);
-          alert('Ошибка при обновлении оборудования');
-        }
-      });
-    }
-
-    // Удаление оборудования
-    equipmentTableBody.addEventListener('click', async (e) => {
-      const delBtn = e.target.closest('.btn-eq-delete');
-      if (!delBtn) return;
-      const id = delBtn.dataset.id;
-      if (!confirm('Удалить оборудование?')) return;
-      try {
-        const res = await fetch(`/admin/equipment/${id}`, { method: 'DELETE' });
-        const json = await res.json();
-        alert(json.message || 'Оборудование удалено');
-        await loadRoomData();
-      } catch (err) {
-        console.error('Delete equipment error:', err);
-        alert('Ошибка при удалении оборудования');
-      }
-    });
-
-    // Добавление преподавателя в аудиторию
-    if (roomTeacherForm) {
-      roomTeacherForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(roomTeacherForm);
-        const data = Object.fromEntries(formData.entries());
-
-        try {
-          const res = await fetch(`/admin/rooms/${roomId}/teachers`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          });
-          const json = await res.json();
-          alert(json.message || 'Преподаватель добавлен');
-          await loadRoomData();
-        } catch (err) {
-          console.error('Assign teacher error:', err);
-          alert('Ошибка при добавлении преподавателя в аудиторию');
-        }
-      });
-    }
-
-    // Удаление преподавателя из аудитории
-    if (roomTeachersTableBody) {
-      roomTeachersTableBody.addEventListener('click', async (e) => {
-        const btn = e.target.closest('.btn-room-teacher-remove');
-        if (!btn) return;
-        const teacherId = btn.dataset.id;
-        if (!confirm('Удалить преподавателя из аудитории?')) return;
-
-        try {
-          const res = await fetch(`/admin/rooms/${roomId}/teachers/${teacherId}`, {
-            method: 'DELETE'
-          });
-          const json = await res.json();
-          alert(json.message || 'Преподаватель удалён из аудитории');
-          await loadRoomData();
-        } catch (err) {
-          console.error('Remove teacher from room error:', err);
-          alert('Ошибка при удалении преподавателя из аудитории');
-        }
-      });
-    }
-
-    // Удалить аудиторию целиком
-    const deleteRoomBtn = document.getElementById('deleteRoomBtn');
-    if (deleteRoomBtn) {
-      deleteRoomBtn.addEventListener('click', async () => {
-        if (!confirm('Удалить аудиторию и все связанные данные (оборудование, жалобы, привязки преподавателей)?')) return;
-        try {
-          const res = await fetch(`/admin/rooms/${roomId}`, { method: 'DELETE' });
-          const json = await res.json();
-          alert(json.message || 'Аудитория удалена');
-          // вернёмся в админ-панель
-          window.location.href = '/';
-        } catch (err) {
-          console.error('Delete room error:', err);
-          alert('Ошибка при удалении аудитории');
-        }
-      });
-    }
-  }
-
-  // ============================================================
-  //                СТРАНИЦА ПРЕПОДА (user-dashboard.html)
-  // ============================================================
-
-  // Навигация: клик по аудитории в списке пользователя → открывает страницу аудитории
   const userRoomsTableBody = document.getElementById('userRoomsTableBody');
-  if (userRoomsTableBody) {
-    userRoomsTableBody.addEventListener('click', (e) => {
-      const tr = e.target.closest('tr');
-      if (!tr) return;
-      const id = tr.dataset.id || tr.children[0]?.textContent?.trim();
-      const name = tr.dataset.name || tr.children[1]?.textContent?.trim();
-      const encName = encodeURIComponent(name || '');
-      window.location.href = `/user-room.html?roomId=${id}&roomName=${encName}`;
-    });
-  }
-
-  // Страница аудитории (user-room.html): загрузка оборудования и выбор для жалобы
   const userEquipmentTableBody = document.getElementById('userEquipmentTableBody');
   const userRoomTitle = document.getElementById('userRoomTitle');
-  if (userEquipmentTableBody) {
-    const { roomId, roomName } = getQueryParams();
-    const initialRoomName = roomName || roomId;
-    if (userRoomTitle) userRoomTitle.textContent = `Аудитория ${initialRoomName}`;
-    // keep initial room name on body so it can't become undefined if URL changes
-    try { document.body.dataset.roomName = initialRoomName; } catch (e) {}
-
-    async function loadUserRoomEquipment() {
-      try {
-        const res = await fetch(`/user/rooms/${roomId}/equipment`);
-        const json = await res.json();
-        userEquipmentTableBody.innerHTML = '';
-        (json.equipment || []).forEach(eq => {
-          const tr = document.createElement('tr');
-          tr.dataset.id = eq.id;
-          tr.dataset.name = eq.name;
-          // add classes based on status to visually mark and block selection
-          const statusText = (eq.status || (eq.is_active ? 'в работе' : 'неисправно')) || '';
-          const lower = String(statusText).toLowerCase();
-          if (lower === 'на рассмотрении') tr.classList.add('status-review');
-          if (lower === 'в ремонте') tr.classList.add('status-repair');
-          tr.innerHTML = `
-            <td>${eq.id}</td>
-            <td>${eq.name}</td>
-            <td>${eq.serial_number || ''}</td>
-            <td>${eq.purchase_date || ''}</td>
-            <td>${statusText}</td>
-          `;
-          userEquipmentTableBody.appendChild(tr);
-        });
-      } catch (err) {
-        console.error('Load user room equipment error:', err);
-      }
-    }
-
-    // Авто-обновление оборудования на странице пользователя
-    // (удалён вызов `loadRoomData()` — он относится к админской странице и вызывал ошибку)
-
-    // Выбор оборудования — заполняет форму жалобы
-    userEquipmentTableBody.addEventListener('click', (e) => {
-      const tr = e.target.closest('tr');
-      if (!tr) return;
-      // don't allow selecting rows that are under review or in repair
-      if (tr.classList.contains('status-review') || tr.classList.contains('status-repair')) {
-        alert('По этому оборудованию жалоба уже принимается или оно в ремонте');
-        return;
-      }
-      const eqId = tr.dataset.id;
-      const eqName = tr.dataset.name;
-      const roomIdInput = document.getElementById('complaintRoomId');
-      const eqIdInput = document.getElementById('complaintEquipmentId');
-      const eqNameInput = document.getElementById('complaintEquipmentName');
-      if (roomIdInput) roomIdInput.value = getQueryParams().roomId || '';
-      if (eqIdInput) eqIdInput.value = eqId || '';
-      if (eqNameInput) eqNameInput.value = eqName || '';
-
-      // Визуально выделяем выбранную строку
-      Array.from(userEquipmentTableBody.querySelectorAll('tr')).forEach(r => r.classList.remove('selected'));
-      tr.classList.add('selected');
-    });
-
-    loadUserRoomEquipment();
-    // автоперезагрузка оборудования на странице пользователя чтобы отражать изменения статуса
-    let userRoomInterval = null;
-    if (!userRoomInterval) {
-      userRoomInterval = setInterval(() => {
-        loadUserRoomEquipment().catch(err => console.error('Auto refresh user room equipment error:', err));
-      }, 8000);
-    }
-  }
-
-  if (complaintForm) {
-    complaintForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(complaintForm);
-      // client-side validation: ensure equipment selected and description length
-      const roomIdVal = document.getElementById('complaintRoomId')?.value;
-      const equipmentIdVal = document.getElementById('complaintEquipmentId')?.value;
-      const desc = complaintForm.querySelector('textarea[name="description"]')?.value || '';
-      if (!roomIdVal || !equipmentIdVal) return alert('Выберите аудиторию и оборудование перед отправкой');
-      if (desc.length < 5) return alert('Описание должно быть минимум 5 символов');
-
-      try {
-          // ensure no native form submit
-          e.preventDefault();
-          e.stopPropagation();
-
-          const res = await fetch('/complaints', {
-            method: 'POST',
-            body: formData
-          });
-
-          // Пытаемся распарсить JSON — если статус не OK, покажем сообщение об ошибке
-          const json = await res.json().catch(() => null);
-          if (!res.ok) {
-            const msg = (json && json.message) || `Ошибка сервера (${res.status})`;
-            alert(msg);
-            return;
-          }
-
-          alert(json?.message || 'Жалоба отправлена');
-          complaintForm.reset();
-
-          // Визуально помечаем выбранную строку оборудования и ставим статус 'на рассмотрении'
-          const selected = document.querySelector('#userEquipmentTableBody tr.selected');
-          if (selected) {
-            selected.classList.add('sent');
-            const statusCell = selected.children[4];
-            if (statusCell) statusCell.textContent = 'на рассмотрении';
-          }
-
-          // restore room title from stored value (avoid 'undefined') and refresh equipment list from server
-          try {
-            const rn = document.body.dataset.roomName || initialRoomName;
-            if (userRoomTitle) userRoomTitle.textContent = `Аудитория ${rn}`;
-          } catch (e) {}
-          // reload equipment to reflect server-side state
-          try { await loadUserRoomEquipment(); } catch (e) { console.error('Refresh after complaint error', e); }
-        } catch (err) {
-          console.error('Create complaint error:', err);
-          alert('Ошибка сети при отправке жалобы');
-        }
-    });
-  }
-
-  // ============================================================
-  //              СИСТЕМА УВЕДОМЛЕНИЙ
-  // ============================================================
 
   const notificationBtn = document.getElementById('notificationBtn');
   const notificationDropdown = document.getElementById('notificationDropdown');
@@ -854,164 +88,711 @@ document.addEventListener('DOMContentLoaded', () => {
   const notificationBadge = document.getElementById('notificationBadge');
   const markAllReadBtn = document.getElementById('markAllReadBtn');
 
-  if (notificationBtn) {
-    // Открыть/закрыть меню уведомлений
-    notificationBtn.addEventListener('click', () => {
-      notificationDropdown.classList.toggle('open');
-    });
+  let currentAdminUser = null;
+  const isMainAdmin = () => Boolean(currentAdminUser && currentAdminUser.is_super_admin);
 
-    // Закрыть меню при клике вне его
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.notification-bell')) {
-        notificationDropdown.classList.remove('open');
-      }
-    });
+  function closeEditModal() {
+    if (!userEditModal || !userEditForm) return;
+    userEditModal.classList.add('hidden');
+    userEditModal.setAttribute('aria-hidden', 'true');
+    userEditForm.reset();
+  }
 
-    // Загрузить и отобразить уведомления
-    async function loadNotifications() {
-      try {
-        const res = await fetch('/notifications');
-        if (!res.ok) return;
-        const { notifications, unreadCount } = await res.json();
+  function openEditModal({ id, userType, fullName, login }) {
+    if (!userEditModal || !userEditForm) return;
+    userEditForm.elements.id.value = id;
+    userEditForm.elements.user_type.value = userType;
+    userEditForm.elements.full_name.value = fullName;
+    userEditForm.elements.login.value = login;
+    userEditForm.elements.password.value = '';
+    if (userEditModalTitle) {
+      userEditModalTitle.textContent = userType === 'admin'
+        ? 'Редактирование администратора'
+        : 'Редактирование преподавателя';
+    }
+    userEditModal.classList.remove('hidden');
+    userEditModal.setAttribute('aria-hidden', 'false');
+  }
 
-        // Обновить счетчик
-        notificationBadge.textContent = unreadCount;
-        if (unreadCount > 0) {
-          notificationBadge.classList.add('has-unread');
-        } else {
-          notificationBadge.classList.remove('has-unread');
+  function renderAnalyticsBars(container, items, getValue) {
+    if (!container) return;
+    if (!Array.isArray(items) || items.length === 0) {
+      container.innerHTML = '<p class="hint">Пока данных нет.</p>';
+      return;
+    }
+    const max = Math.max(...items.map(getValue), 1);
+    container.innerHTML = items.map((item) => {
+      const value = getValue(item);
+      const width = Math.max(8, Math.round((value / max) * 100));
+      return `
+        <div class="analytics-bar-row">
+          <div class="analytics-bar-label">${escapeHtml(item.label)}</div>
+          <div class="analytics-bar-track">
+            <div class="analytics-bar-fill" style="width:${width}%"></div>
+          </div>
+          <div class="analytics-bar-value">${value}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderAnalytics(analytics) {
+    if (!analytics) return;
+
+    if (analyticsSummary) {
+      const summary = analytics.summary || {};
+      const cards = [
+        ['Аудиторий', summary.totalRooms || 0],
+        ['Оборудования', summary.totalEquipment || 0],
+        ['Преподавателей', summary.totalTeachers || 0],
+        ['Администраторов', summary.totalAdmins || 0],
+        ['Всего заявок', summary.totalComplaints || 0],
+        ['Закрыто заявок', summary.archivedComplaints || 0]
+      ];
+      analyticsSummary.innerHTML = cards.map(([label, value]) => `
+        <div class="analytics-stat">
+          <div class="analytics-stat-label">${label}</div>
+          <div class="analytics-stat-value">${value}</div>
+        </div>
+      `).join('');
+    }
+
+    renderAnalyticsBars(analyticsStatusChart, analytics.complaintStatuses || [], (item) => Number(item.value || 0));
+    renderAnalyticsBars(analyticsEquipmentChart, analytics.equipmentStatuses || [], (item) => Number(item.value || 0));
+
+    if (analyticsRoomChart) {
+      const rows = Array.isArray(analytics.roomLoad) ? analytics.roomLoad : [];
+      analyticsRoomChart.innerHTML = rows.length ? rows.map((room) => `
+        <div class="room-analytics-item">
+          <div class="room-analytics-top">
+            <div class="room-analytics-name">${escapeHtml(room.roomName)}</div>
+            <div class="room-analytics-meta">Открытых заявок: ${Number(room.activeComplaints || 0)}</div>
+          </div>
+          <div class="room-analytics-tags">
+            <span class="room-analytics-tag">Оборудование: ${Number(room.equipmentCount || 0)}</span>
+            <span class="room-analytics-tag">Всего заявок: ${Number(room.totalComplaints || 0)}</span>
+            <span class="room-analytics-tag">В архиве: ${Number(room.archivedComplaints || 0)}</span>
+          </div>
+        </div>
+      `).join('') : '<p class="hint">Пока нет данных по аудиториям.</p>';
+    }
+  }
+
+  async function loadAdminDashboard() {
+    const res = await fetch('/admin/dashboard');
+    const data = await res.json();
+    currentAdminUser = data.currentUser || null;
+
+    if (mainAdminSection) mainAdminSection.hidden = !isMainAdmin();
+    if (archiveDeleteHint) archiveDeleteHint.hidden = isMainAdmin();
+
+    if (roomTableBody) {
+      roomTableBody.innerHTML = (data.rooms || []).map((room) => `
+        <tr data-id="${room.id}" data-name="${escapeHtml(room.name)}">
+          <td>${room.id}</td>
+          <td>${escapeHtml(room.name)}</td>
+        </tr>
+      `).join('');
+    }
+
+    if (teacherRoomsSelect) {
+      teacherRoomsSelect.innerHTML = (data.rooms || []).map((room) => `
+        <option value="${room.id}">${escapeHtml(room.name)}</option>
+      `).join('');
+    }
+
+    const complaints = Array.isArray(data.complaints) ? data.complaints : [];
+    const activeComplaints = complaints.filter((item) => item.status !== 'исправлено');
+    const archivedComplaints = complaints.filter((item) => item.status === 'исправлено');
+
+    if (complaintTableBody) {
+      complaintTableBody.innerHTML = activeComplaints.map((item) => `
+        <tr>
+          <td>${item.id}</td>
+          <td>${escapeHtml(item.full_name || '-')}</td>
+          <td>${escapeHtml(item.equipment_name || '-')}</td>
+          <td class="compl-desc">${escapeHtml(item.description || '-')}</td>
+          <td>
+            <select class="status-select" data-id="${item.id}">
+              <option value="на рассмотрении" ${item.status === 'на рассмотрении' ? 'selected' : ''}>на рассмотрении</option>
+              <option value="в ремонте" ${item.status === 'в ремонте' ? 'selected' : ''}>в ремонте</option>
+              <option value="исправлено" ${item.status === 'исправлено' ? 'selected' : ''}>исправлено</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn hover-highlight btn-status-save" data-id="${item.id}">Сохранить</button>
+            <button class="btn hover-highlight btn-open-complaint" data-id="${item.id}">Открыть</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    if (archiveTableBody) {
+      archiveTableBody.innerHTML = archivedComplaints.map((item) => `
+        <tr>
+          <td>${item.id}</td>
+          <td>${escapeHtml(item.full_name || '-')}</td>
+          <td>${escapeHtml(item.equipment_name || '-')}</td>
+          <td>${escapeHtml(item.description || '-')}</td>
+          <td>${escapeHtml(item.created_at || '-')}</td>
+          <td>${escapeHtml(item.updated_at || '-')}</td>
+          <td>
+            ${isMainAdmin()
+              ? `<button class="btn hover-highlight btn-archive-delete" data-id="${item.id}">Удалить</button>`
+              : '<span class="hint">Только главный админ</span>'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    if (teacherTableBody) {
+      teacherTableBody.innerHTML = (data.teachers || []).map((teacher) => `
+        <tr data-id="${teacher.id}" data-user-type="teacher" data-full-name="${escapeHtml(teacher.full_name)}" data-login="${escapeHtml(teacher.login)}">
+          <td>${teacher.id}</td>
+          <td>${escapeHtml(teacher.full_name)}</td>
+          <td>${escapeHtml(teacher.login)}</td>
+          <td>
+            <button class="btn hover-highlight btn-user-edit" data-id="${teacher.id}" data-user-type="teacher">Редактировать</button>
+            <button class="btn hover-highlight btn-user-delete" data-id="${teacher.id}" data-user-type="teacher">Удалить</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    if (adminTableBody) {
+      adminTableBody.innerHTML = (data.admins || []).map((admin) => `
+        <tr data-id="${admin.id}" data-user-type="admin" data-full-name="${escapeHtml(admin.full_name)}" data-login="${escapeHtml(admin.login)}">
+          <td>${admin.id}</td>
+          <td>${escapeHtml(admin.full_name)}</td>
+          <td>${escapeHtml(admin.login)}</td>
+          <td>${admin.is_super_admin ? 'Главный' : 'Обычный'}</td>
+          <td>
+            ${admin.is_super_admin
+              ? '<span class="hint">Недоступно</span>'
+              : `
+                <button class="btn hover-highlight btn-user-edit" data-id="${admin.id}" data-user-type="admin">Редактировать</button>
+                <button class="btn hover-highlight btn-user-delete" data-id="${admin.id}" data-user-type="admin">Удалить</button>
+              `}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    renderAnalytics(data.analytics);
+  }
+
+  async function submitUserCreate(form, role) {
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
+    payload.role = role;
+
+    if (role === 'teacher' && teacherRoomsSelect) {
+      payload.rooms = Array.from(teacherRoomsSelect.selectedOptions).map((option) => option.value);
+    } else {
+      payload.rooms = [];
+    }
+
+    if (!payload.full_name || payload.full_name.length < 3) {
+      return alert('Введите корректное ФИО');
+    }
+    if (!payload.login || !/^[A-Za-z0-9_]{3,30}$/.test(payload.login)) {
+      return alert('Логин: 3-30 символов, буквы/цифры/_');
+    }
+    if (!payload.password || payload.password.length < 6) {
+      return alert('Пароль минимум 6 символов');
+    }
+
+    const res = await postJSON('/auth/register', payload);
+    if (!res.ok) {
+      return alert(res.data.message || 'Ошибка при сохранении пользователя');
+    }
+
+    alert(res.data.message || (role === 'admin' ? 'Администратор добавлен' : 'Преподаватель добавлен'));
+    form.reset();
+    if (teacherRoomsSelect && role === 'teacher') {
+      Array.from(teacherRoomsSelect.options).forEach((option) => { option.selected = false; });
+    }
+    await loadAdminDashboard();
+  }
+
+  async function loadAdminRoomPage() {
+    const { roomId, roomName } = getQueryParams();
+    if (!roomId) return;
+    if (roomPageTitle) roomPageTitle.textContent = `Аудитория ${roomName || roomId}`;
+
+    const res = await fetch(`/admin/rooms/${roomId}/data`);
+    const data = await res.json();
+
+    if (equipmentTableBody) {
+      equipmentTableBody.innerHTML = (data.equipment || []).map((eq) => `
+        <tr data-id="${eq.id}">
+          <td>${eq.id}</td>
+          <td>${escapeHtml(eq.name)}</td>
+          <td>${escapeHtml(eq.serial_number || '')}</td>
+          <td>${escapeHtml(eq.purchase_date || '')}</td>
+          <td>${escapeHtml(eq.status || '')}</td>
+          <td>
+            <button class="btn btn-sm hover-highlight btn-equipment-edit" data-id="${eq.id}">Редактировать</button>
+            <button class="btn btn-sm hover-highlight btn-equipment-status" data-id="${eq.id}">Статус</button>
+            <button class="btn btn-sm btn-danger btn-equipment-delete" data-id="${eq.id}">Удалить</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    if (roomTeachersTableBody) {
+      roomTeachersTableBody.innerHTML = (data.roomTeachers || []).map((teacher) => `
+        <tr>
+          <td>${teacher.id}</td>
+          <td>${escapeHtml(teacher.full_name)}</td>
+          <td>${escapeHtml(teacher.login)}</td>
+          <td><button class="btn btn-sm btn-danger btn-room-teacher-remove" data-id="${teacher.id}">Удалить</button></td>
+        </tr>
+      `).join('');
+    }
+
+    if (roomTeacherSelect) {
+      roomTeacherSelect.innerHTML = (data.allTeachers || []).map((teacher) => `
+        <option value="${teacher.id}">${escapeHtml(teacher.full_name)} (${escapeHtml(teacher.login)})</option>
+      `).join('');
+    }
+  }
+
+  async function loadUserRooms() {
+    const res = await fetch('/user/rooms');
+    const data = await res.json();
+    if (userRoomsTableBody) {
+      userRoomsTableBody.innerHTML = (data.rooms || []).map((room) => `
+        <tr data-id="${room.id}" data-name="${escapeHtml(room.name)}">
+          <td>${room.id}</td>
+          <td>${escapeHtml(room.name)}</td>
+        </tr>
+      `).join('');
+    }
+  }
+
+  async function loadUserRoomEquipment() {
+    const { roomId, roomName } = getQueryParams();
+    if (!roomId || !userEquipmentTableBody) return;
+    if (userRoomTitle) userRoomTitle.textContent = `Аудитория ${roomName || roomId}`;
+
+    const res = await fetch(`/user/rooms/${roomId}/equipment`);
+    const data = await res.json();
+    userEquipmentTableBody.innerHTML = (data.equipment || []).map((eq) => {
+      const lower = String(eq.status || '').toLowerCase();
+      const rowClass = lower === 'на рассмотрении'
+        ? 'status-review'
+        : (lower === 'в ремонте' ? 'status-repair' : '');
+      return `
+        <tr class="${rowClass}" data-id="${eq.id}" data-name="${escapeHtml(eq.name)}">
+          <td>${eq.id}</td>
+          <td>${escapeHtml(eq.name)}</td>
+          <td>${escapeHtml(eq.serial_number || '')}</td>
+          <td>${escapeHtml(eq.purchase_date || '')}</td>
+          <td>${escapeHtml(eq.status || '')}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function loadNotifications() {
+    if (!notificationBtn) return;
+    const res = await fetch('/notifications');
+    if (!res.ok) return;
+    const { notifications, unreadCount } = await res.json();
+    const isTeacherPage = Boolean(userRoomsTableBody || userEquipmentTableBody);
+
+    if (notificationBadge) {
+      notificationBadge.textContent = unreadCount || 0;
+      notificationBadge.classList.toggle('has-unread', Number(unreadCount) > 0);
+    }
+
+    if (!notificationList) return;
+    if (!notifications || notifications.length === 0) {
+      notificationList.innerHTML = '<p class="notification-empty">Нет уведомлений</p>';
+      return;
+    }
+
+    notificationList.innerHTML = '';
+    notifications.forEach((notif) => {
+      const div = document.createElement('div');
+      div.className = `notification-item ${notif.is_read === 0 ? 'unread' : ''} ${isTeacherPage ? 'static-note' : ''}`;
+
+      div.innerHTML = `
+        <div class="notification-content">
+          <p class="notification-title">${escapeHtml(notif.title)}</p>
+          <p class="notification-message">${escapeHtml(notif.message)}</p>
+          <div class="notification-time">${escapeHtml(formatRelativeTime(notif.created_at))}</div>
+          <div class="notification-type-badge ${escapeHtml(notif.type || 'info')}">
+            ${notif.type === 'warning' ? 'Заявка' : (notif.type === 'success' ? 'Выполнено' : 'Обновление')}
+          </div>
+        </div>
+      `;
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'notification-delete-btn';
+      deleteBtn.type = 'button';
+      deleteBtn.innerHTML = '×';
+      deleteBtn.addEventListener('click', async (event) => {
+        event.stopPropagation();
+        await fetch(`/notifications/${notif.id}`, { method: 'DELETE' });
+        loadNotifications();
+      });
+      div.appendChild(deleteBtn);
+
+      div.addEventListener('click', async () => {
+        if (notif.is_read === 0) {
+          await fetch(`/notifications/${notif.id}/read`, { method: 'PUT' });
         }
 
-        // Отобразить уведомления
-        if (!notifications || notifications.length === 0) {
-          notificationList.innerHTML = '<p class="notification-empty">Нет уведомлений</p>';
+        if (!isTeacherPage && notif.complaint_id) {
+          try {
+            const activeTabBtn = document.querySelector('.tab.active');
+            if (activeTabBtn?.dataset?.tab) {
+              sessionStorage.setItem('adminLastTab', activeTabBtn.dataset.tab);
+            }
+          } catch (e) {
+            console.error(e);
+          }
+          window.location.href = `/admin-complaint.html?id=${encodeURIComponent(notif.complaint_id)}`;
           return;
         }
 
-        notificationList.innerHTML = '';
-        notifications.forEach(notif => {
-          const div = document.createElement('div');
-          div.className = `notification-item ${notif.is_read === 0 ? 'unread' : ''}`;
+        loadNotifications();
+      });
 
-          const content = document.createElement('div');
-          content.className = 'notification-content';
+      notificationList.appendChild(div);
+    });
+  }
 
-          const title = document.createElement('p');
-          title.className = 'notification-title';
-          title.textContent = notif.title;
-          content.appendChild(title);
-
-          const message = document.createElement('p');
-          message.className = 'notification-message';
-          message.textContent = notif.message;
-          content.appendChild(message);
-
-          const time = document.createElement('div');
-          time.className = 'notification-time';
-          // parse SQLite datetime like 'YYYY-MM-DD HH:MM:SS' into a JS Date reliably
-          let createdDate = new Date(notif.created_at);
-          try {
-            if (!createdDate || isNaN(createdDate.getTime())) {
-              if (notif.created_at && typeof notif.created_at === 'string') {
-                const iso = notif.created_at.replace(' ', 'T') + 'Z';
-                createdDate = new Date(iso);
-              }
-            }
-          } catch (e) { /* ignore parse errors */ }
-          time.textContent = formatTime(createdDate instanceof Date && !isNaN(createdDate.getTime()) ? createdDate : new Date());
-          content.appendChild(time);
-
-          const badge = document.createElement('div');
-          badge.className = `notification-type-badge ${notif.type || 'info'}`;
-          badge.textContent = notif.type === 'warning' ? 'Заявка' : (notif.type === 'success' ? 'Выполнено' : 'Обновление');
-          content.appendChild(badge);
-
-          div.appendChild(content);
-
-          // Кнопка удаления
-          const deleteBtn = document.createElement('button');
-          deleteBtn.className = 'notification-delete-btn';
-          deleteBtn.innerHTML = '×';
-          deleteBtn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            try {
-              await fetch(`/notifications/${notif.id}`, { method: 'DELETE' });
-              loadNotifications();
-            } catch (err) {
-              console.error('Delete notification error:', err);
-            }
-          });
-          div.appendChild(deleteBtn);
-
-          // Клик по уведомлению - отметить как прочитанное и перейти к жалобе
-          div.addEventListener('click', async () => {
-            try {
-              // preserve active admin tab so back can restore it
-              try {
-                const activeTabBtn = document.querySelector('.tab.active');
-                const tabName = activeTabBtn ? activeTabBtn.dataset.tab : '';
-                if (tabName) sessionStorage.setItem('adminLastTab', tabName);
-              } catch (e) {}
-
-              if (notif.is_read === 0) {
-                await fetch(`/notifications/${notif.id}/read`, { method: 'PUT' });
-              }
-
-              // if notification refers to a complaint — open its detail page
-              if (notif.complaint_id) {
-                window.location.href = `/admin-complaint.html?id=${encodeURIComponent(notif.complaint_id)}`;
-                return;
-              }
-
-              // otherwise just reload the list
-              loadNotifications();
-            } catch (err) {
-              console.error('Notification click error:', err);
-            }
-          });
-
-          notificationList.appendChild(div);
-        });
-      } catch (err) {
-        console.error('Load notifications error:', err);
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const payload = Object.fromEntries(new FormData(loginForm).entries());
+      const res = await postJSON('/auth/login', payload);
+      if (!res.ok) {
+        return alert(res.data.message || 'Ошибка входа');
       }
-    }
+      window.location.href = '/';
+    });
+  }
 
-    // Отметить все как прочитанные
-    if (markAllReadBtn) {
-      markAllReadBtn.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        try {
-          await fetch('/notifications/read/all', { method: 'PUT' });
-          loadNotifications();
-        } catch (err) {
-          console.error('Mark all as read error:', err);
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      await postJSON('/auth/logout', {});
+      window.location.href = '/auth/login';
+    });
+  }
+
+  const tabs = document.querySelectorAll('.tab');
+  const tabContents = document.querySelectorAll('.tab-content');
+  if (tabs.length) {
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const name = tab.dataset.tab;
+        tabs.forEach((item) => item.classList.remove('active'));
+        tabContents.forEach((content) => content.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(`tab-${name}`)?.classList.add('active');
+      });
+    });
+
+    const initialTab = getQueryParams().tab || sessionStorage.getItem('adminLastTab');
+    if (initialTab) {
+      const tab = Array.from(tabs).find((item) => item.dataset.tab === initialTab);
+      if (tab) tab.click();
+      sessionStorage.removeItem('adminLastTab');
+    }
+  }
+
+  if (roomTableBody) {
+    loadAdminDashboard().catch((err) => console.error(err));
+
+    roomTableBody.addEventListener('click', (event) => {
+      const tr = event.target.closest('tr');
+      if (!tr) return;
+      window.location.href = `/admin-room.html?roomId=${encodeURIComponent(tr.dataset.id)}&roomName=${encodeURIComponent(tr.dataset.name || '')}`;
+    });
+
+    complaintTableBody?.addEventListener('click', async (event) => {
+      const openBtn = event.target.closest('.btn-open-complaint');
+      const saveBtn = event.target.closest('.btn-status-save');
+
+      if (openBtn) {
+        const activeTab = document.querySelector('.tab.active')?.dataset?.tab;
+        if (activeTab) sessionStorage.setItem('adminLastTab', activeTab);
+        window.location.href = `/admin-complaint.html?id=${encodeURIComponent(openBtn.dataset.id)}`;
+        return;
+      }
+
+      if (saveBtn) {
+        const select = complaintTableBody.querySelector(`.status-select[data-id="${saveBtn.dataset.id}"]`);
+        const res = await postJSON(`/admin/complaints/${saveBtn.dataset.id}/status`, { status: select.value }, 'PATCH');
+        if (!res.ok) {
+          return alert(res.data.message || 'Ошибка при изменении статуса');
+        }
+        alert(res.data.message || 'Статус обновлён');
+        await loadAdminDashboard();
+      }
+    });
+
+    archiveTableBody?.addEventListener('click', async (event) => {
+      const deleteBtn = event.target.closest('.btn-archive-delete');
+      if (!deleteBtn) return;
+      if (!confirm('Удалить запись из архива?')) return;
+
+      const res = await fetch(`/admin/archive/${deleteBtn.dataset.id}`, { method: 'DELETE' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        return alert(json.message || 'Ошибка при удалении записи');
+      }
+      await loadAdminDashboard();
+    });
+
+    function attachUserTableHandlers(container) {
+      container?.addEventListener('click', async (event) => {
+        const editBtn = event.target.closest('.btn-user-edit');
+        const deleteBtn = event.target.closest('.btn-user-delete');
+
+        if (editBtn) {
+          const row = editBtn.closest('tr');
+          openEditModal({
+            id: editBtn.dataset.id,
+            userType: editBtn.dataset.userType || row.dataset.userType,
+            fullName: row.dataset.fullName,
+            login: row.dataset.login
+          });
+          return;
+        }
+
+        if (deleteBtn) {
+          if (!confirm('Удалить пользователя?')) return;
+          const userType = deleteBtn.dataset.userType;
+          const endpoint = userType === 'admin'
+            ? `/admin/admins/${deleteBtn.dataset.id}`
+            : `/admin/teachers/${deleteBtn.dataset.id}`;
+          const res = await fetch(endpoint, { method: 'DELETE' });
+          const json = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            return alert(json.message || 'Ошибка при удалении');
+          }
+          await loadAdminDashboard();
         }
       });
     }
 
-    // Загрузить уведомления при загрузке страницы
-    loadNotifications();
-
-    // Обновлять уведомления каждые 30 секунд
-    setInterval(loadNotifications, 30000);
+    attachUserTableHandlers(teacherTableBody);
+    attachUserTableHandlers(adminTableBody);
   }
 
-  // Функция для форматирования времени
-  function formatTime(date) {
-    const now = new Date();
-    const diffMs = now - date;
-    const diffSecs = Math.floor(diffMs / 1000);
-    const diffMins = Math.floor(diffSecs / 60);
-    const diffHours = Math.floor(diffMins / 60);
-    const diffDays = Math.floor(diffHours / 24);
+  if (roomForm) {
+    roomForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const payload = Object.fromEntries(new FormData(roomForm).entries());
+      const res = await postJSON('/admin/rooms', payload);
+      if (!res.ok) {
+        return alert(res.data.message || 'Ошибка при создании аудитории');
+      }
+      roomForm.reset();
+      await loadAdminDashboard();
+    });
+  }
 
-    if (diffSecs < 60) return 'только что';
-    if (diffMins < 60) return `${diffMins}м назад`;
-    if (diffHours < 24) return `${diffHours}ч назад`;
-    if (diffDays < 7) return `${diffDays}д назад`;
-    
-    return date.toLocaleDateString('ru-RU');
+  if (teacherRegisterForm) {
+    teacherRegisterForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      await submitUserCreate(teacherRegisterForm, 'teacher');
+    });
+  }
+
+  if (adminRegisterForm) {
+    adminRegisterForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      await submitUserCreate(adminRegisterForm, 'admin');
+    });
+  }
+
+  if (userEditForm) {
+    closeUserEditModal?.addEventListener('click', closeEditModal);
+    cancelUserEditModal?.addEventListener('click', closeEditModal);
+    userEditModal?.addEventListener('click', (event) => {
+      if (event.target === userEditModal) closeEditModal();
+    });
+
+    userEditForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const payload = Object.fromEntries(new FormData(userEditForm).entries());
+      const endpoint = payload.user_type === 'admin'
+        ? `/admin/admins/${payload.id}`
+        : `/admin/teachers/${payload.id}`;
+      const res = await postJSON(endpoint, {
+        full_name: payload.full_name,
+        login: payload.login,
+        password: payload.password || ''
+      }, 'PATCH');
+      if (!res.ok) {
+        return alert(res.data.message || 'Ошибка при сохранении');
+      }
+      closeEditModal();
+      await loadAdminDashboard();
+    });
+  }
+
+  if (roomPageTitle) {
+    loadAdminRoomPage().catch((err) => console.error(err));
+
+    equipmentForm?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const { roomId } = getQueryParams();
+      const payload = Object.fromEntries(new FormData(equipmentForm).entries());
+      const res = await postJSON(`/admin/rooms/${roomId}/equipment`, payload);
+      if (!res.ok) {
+        return alert(res.data.message || 'Ошибка при добавлении оборудования');
+      }
+      equipmentForm.reset();
+      await loadAdminRoomPage();
+    });
+
+    equipmentTableBody?.addEventListener('click', async (event) => {
+      const editBtn = event.target.closest('.btn-equipment-edit');
+      const statusBtn = event.target.closest('.btn-equipment-status');
+      const deleteBtn = event.target.closest('.btn-equipment-delete');
+
+      if (editBtn) {
+        const row = editBtn.closest('tr');
+        const currentName = row.children[1].textContent;
+        const currentSerial = row.children[2].textContent;
+        const currentDate = row.children[3].textContent;
+        const name = prompt('Название оборудования:', currentName);
+        if (!name) return;
+        const serial_number = prompt('Серийный номер:', currentSerial) ?? '';
+        const purchase_date = prompt('Дата покупки (YYYY-MM-DD):', currentDate) ?? '';
+        const res = await postJSON(`/admin/equipment/${editBtn.dataset.id}`, { name, serial_number, purchase_date }, 'PATCH');
+        if (!res.ok) return alert(res.data.message || 'Ошибка обновления');
+        await loadAdminRoomPage();
+      }
+
+      if (statusBtn) {
+        const status = prompt('Новый статус: в работе / на рассмотрении / в ремонте / исправлено', 'в работе');
+        if (!status) return;
+        const res = await postJSON(`/admin/equipment/${statusBtn.dataset.id}/active`, { status }, 'PATCH');
+        if (!res.ok) return alert(res.data.message || 'Ошибка обновления статуса');
+        await loadAdminRoomPage();
+      }
+
+      if (deleteBtn) {
+        if (!confirm('Удалить оборудование?')) return;
+        const res = await fetch(`/admin/equipment/${deleteBtn.dataset.id}`, { method: 'DELETE' });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) return alert(json.message || 'Ошибка удаления');
+        await loadAdminRoomPage();
+      }
+    });
+
+    roomTeacherForm?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const { roomId } = getQueryParams();
+      const payload = Object.fromEntries(new FormData(roomTeacherForm).entries());
+      const res = await postJSON(`/admin/rooms/${roomId}/teachers`, payload);
+      if (!res.ok) return alert(res.data.message || 'Ошибка назначения преподавателя');
+      await loadAdminRoomPage();
+    });
+
+    roomTeachersTableBody?.addEventListener('click', async (event) => {
+      const removeBtn = event.target.closest('.btn-room-teacher-remove');
+      if (!removeBtn) return;
+      if (!confirm('Удалить преподавателя из аудитории?')) return;
+      const { roomId } = getQueryParams();
+      const res = await fetch(`/admin/rooms/${roomId}/teachers/${removeBtn.dataset.id}`, { method: 'DELETE' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) return alert(json.message || 'Ошибка удаления преподавателя');
+      await loadAdminRoomPage();
+    });
+
+    deleteRoomBtn?.addEventListener('click', async () => {
+      const { roomId } = getQueryParams();
+      if (!confirm('Удалить аудиторию и связанные данные?')) return;
+      const res = await fetch(`/admin/rooms/${roomId}`, { method: 'DELETE' });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) return alert(json.message || 'Ошибка удаления аудитории');
+      window.location.href = '/';
+    });
+  }
+
+  if (userRoomsTableBody) {
+    loadUserRooms().catch((err) => console.error(err));
+    userRoomsTableBody.addEventListener('click', (event) => {
+      const tr = event.target.closest('tr');
+      if (!tr) return;
+      window.location.href = `/user-room.html?roomId=${encodeURIComponent(tr.dataset.id)}&roomName=${encodeURIComponent(tr.dataset.name || '')}`;
+    });
+  }
+
+  if (userEquipmentTableBody) {
+    loadUserRoomEquipment().catch((err) => console.error(err));
+    setInterval(() => {
+      loadUserRoomEquipment().catch((err) => console.error(err));
+    }, 8000);
+
+    userEquipmentTableBody.addEventListener('click', (event) => {
+      const row = event.target.closest('tr');
+      if (!row) return;
+      if (row.classList.contains('status-review') || row.classList.contains('status-repair')) {
+        return alert('По этому оборудованию уже есть активная заявка или оно находится в ремонте');
+      }
+
+      document.getElementById('complaintRoomId').value = getQueryParams().roomId || '';
+      document.getElementById('complaintEquipmentId').value = row.dataset.id || '';
+      document.getElementById('complaintEquipmentName').value = row.dataset.name || '';
+      Array.from(userEquipmentTableBody.querySelectorAll('tr')).forEach((tr) => tr.classList.remove('selected'));
+      row.classList.add('selected');
+    });
+  }
+
+  if (complaintForm) {
+    complaintForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const roomId = document.getElementById('complaintRoomId')?.value;
+      const equipmentId = document.getElementById('complaintEquipmentId')?.value;
+      const description = complaintForm.querySelector('textarea[name="description"]')?.value || '';
+      if (!roomId || !equipmentId) return alert('Сначала выберите оборудование');
+      if (description.length < 5) return alert('Описание должно быть минимум 5 символов');
+
+      const res = await fetch('/complaints', {
+        method: 'POST',
+        body: new FormData(complaintForm)
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        return alert(json.message || `Ошибка сервера (${res.status})`);
+      }
+
+      alert(json.message || 'Жалоба отправлена');
+      complaintForm.reset();
+      await loadUserRoomEquipment();
+    });
+  }
+
+  if (notificationBtn) {
+    notificationBtn.addEventListener('click', () => {
+      notificationDropdown?.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.notification-bell')) {
+        notificationDropdown?.classList.remove('open');
+      }
+    });
+
+    markAllReadBtn?.addEventListener('click', async (event) => {
+      event.stopPropagation();
+      await fetch('/notifications/read/all', { method: 'PUT' });
+      loadNotifications();
+    });
+
+    loadNotifications().catch((err) => console.error(err));
+    setInterval(() => {
+      loadNotifications().catch((err) => console.error(err));
+    }, 30000);
   }
 });
-

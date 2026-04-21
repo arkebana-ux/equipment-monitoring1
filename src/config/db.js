@@ -19,9 +19,46 @@ function initDb() {
         login TEXT UNIQUE NOT NULL,
         password_hash TEXT NOT NULL,
         full_name TEXT NOT NULL,
-        role TEXT NOT NULL
+        role TEXT NOT NULL,
+        is_super_admin INTEGER NOT NULL DEFAULT 0
       )`
     );
+
+    db.run(
+      `ALTER TABLE users ADD COLUMN is_super_admin INTEGER NOT NULL DEFAULT 0`,
+      (err) => {
+        if (err && !/duplicate column name/i.test(err.message)) {
+          logger.error('Alter users table error: ' + err.message);
+        }
+      }
+    );
+
+    db.get(`SELECT COUNT(*) AS count FROM users WHERE is_super_admin = 1`, (countErr, row) => {
+      if (countErr) {
+        logger.error('Check super admin error: ' + countErr.message);
+        return;
+      }
+
+      if (row && row.count > 0) {
+        return;
+      }
+
+      db.run(
+        `UPDATE users
+         SET is_super_admin = 1
+         WHERE id = (
+           SELECT id FROM users
+           WHERE role = 'admin'
+           ORDER BY CASE WHEN lower(login) = 'admin' THEN 0 ELSE 1 END, id
+           LIMIT 1
+         )`,
+        (updateErr) => {
+          if (updateErr) {
+            logger.error('Init super admin error: ' + updateErr.message);
+          }
+        }
+      );
+    });
 
     db.run(
       `CREATE TABLE IF NOT EXISTS rooms (

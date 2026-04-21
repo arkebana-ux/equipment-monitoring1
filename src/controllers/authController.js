@@ -1,12 +1,12 @@
 const bcrypt = require('bcrypt');
 const path = require('path');
+
 const User = require('../models/User');
 const logger = require('../config/logger');
 const RoomTeacher = require('../models/RoomTeacher');
 
 const SALT_ROUNDS = 10;
 
-// показываем страницу авторизации (index.html в /public)
 exports.showLoginPage = (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'public', 'index.html'));
 };
@@ -14,43 +14,33 @@ exports.showLoginPage = (req, res) => {
 exports.register = (req, res, next) => {
   const { login, password, full_name, role, rooms } = req.body;
 
-  console.log('Register request received:', { login, full_name, role, rooms, password_length: password?.length });
-
-  // Authorization for registration:
-  // - To create an admin account, the requester must be the main admin (login 'admin', case-insensitive)
-  // - To create a teacher account, the requester must be an admin (any admin)
-  // If no session or insufficient rights — reject.
   if (!req.session || !req.session.user) {
     return res.status(403).json({ message: 'Требуется авторизация администратора' });
   }
 
-  const requesterLogin = String(req.session.user.login || '').toLowerCase();
   const requesterRole = req.session.user.role;
+  const requesterIsMainAdmin = Boolean(req.session.user.is_super_admin);
 
   if (role === 'admin') {
-    if (requesterLogin !== 'admin') {
+    if (!requesterIsMainAdmin) {
       return res.status(403).json({ message: 'Только главный администратор может создавать админов' });
     }
-  } else {
-    // creating non-admin (teacher)
-    if (requesterRole !== 'admin') {
-      return res.status(403).json({ message: 'Только администраторы могут создавать преподавателей' });
-    }
+  } else if (requesterRole !== 'admin') {
+    return res.status(403).json({ message: 'Только администраторы могут создавать преподавателей' });
   }
 
   bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
     if (err) return next(err);
-    User.create({ login, password_hash: hash, full_name, role }, (err, id) => {
-      if (err) {
-        logger.error('Register error: ' + err.message);
-        // Если ошибка уникальности логина в SQLite
-        if (err.message && /unique|constraint|UNIQUE/i.test(err.message)) {
+
+    User.create({ login, password_hash: hash, full_name, role, is_super_admin: 0 }, (createErr, id) => {
+      if (createErr) {
+        logger.error('Register error: ' + createErr.message);
+        if (createErr.message && /unique|constraint|UNIQUE/i.test(createErr.message)) {
           return res.status(409).json({ message: 'Логин уже занят' });
         }
-        return res.status(400).json({ message: 'Ошибка регистрации', detail: err.message });
+        return res.status(400).json({ message: 'Ошибка регистрации', detail: createErr.message });
       }
 
-      // если создаём преподавателя и есть аудитории — привязываем
       if (role === 'teacher' && Array.isArray(rooms) && rooms.length > 0) {
         rooms.forEach((roomId) => {
           RoomTeacher.assign(roomId, id, () => {});
@@ -72,8 +62,8 @@ exports.login = (req, res, next) => {
       return res.status(401).json({ message: 'Неверный логин или пароль' });
     }
 
-    bcrypt.compare(password, user.password_hash, (err, isMatch) => {
-      if (err) return next(err);
+    bcrypt.compare(password, user.password_hash, (compareErr, isMatch) => {
+      if (compareErr) return next(compareErr);
       if (!isMatch) {
         return res.status(401).json({ message: 'Неверный логин или пароль' });
       }
@@ -82,11 +72,16 @@ exports.login = (req, res, next) => {
         id: user.id,
         login: user.login,
         role: user.role,
-        full_name: user.full_name
+        full_name: user.full_name,
+        is_super_admin: Boolean(user.is_super_admin)
       };
 
       logger.info(`User logged in: ${user.login}`);
-      res.json({ message: 'Успешный вход', role: user.role });
+      res.json({
+        message: 'Успешный вход',
+        role: user.role,
+        is_super_admin: Boolean(user.is_super_admin)
+      });
     });
   });
 };

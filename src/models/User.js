@@ -1,10 +1,10 @@
 const { db } = require('../config/db');
 
 class User {
-  static create({ login, password_hash, full_name, role }, cb) {
-    const sql = `INSERT INTO users (login, password_hash, full_name, role)
-                 VALUES (?, ?, ?, ?)`;
-    db.run(sql, [login, password_hash, full_name, role], function (err) {
+  static create({ login, password_hash, full_name, role, is_super_admin = 0 }, cb) {
+    const sql = `INSERT INTO users (login, password_hash, full_name, role, is_super_admin)
+                 VALUES (?, ?, ?, ?, ?)`;
+    db.run(sql, [login, password_hash, full_name, role, is_super_admin], function (err) {
       cb(err, this?.lastID);
     });
   }
@@ -13,12 +13,16 @@ class User {
     db.get('SELECT * FROM users WHERE login = ?', [login], cb);
   }
 
+  static findById(id, cb) {
+    db.get('SELECT * FROM users WHERE id = ?', [id], cb);
+  }
+
   static findAllTeachers(cb) {
     db.all('SELECT * FROM users WHERE role = "teacher"', cb);
   }
 
   static findAllAdmins(cb) {
-    db.all('SELECT * FROM users WHERE role = "admin"', cb);
+    db.all('SELECT * FROM users WHERE role = "admin" ORDER BY is_super_admin DESC, id ASC', cb);
   }
 
   static update(id, fields, cb) {

@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS users (
     login TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     full_name TEXT NOT NULL,
-    role TEXT NOT NULL CHECK(role IN ('admin','teacher'))
+    role TEXT NOT NULL CHECK(role IN ('admin','teacher')),
+    is_super_admin INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS rooms (

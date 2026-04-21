@@ -9,7 +9,6 @@
   <header class="topbar">
     <h1>Панель администратора</h1>
     <div class="topbar-actions">
-      <!-- Иконка уведомлений -->
       <div class="notification-bell">
         <button id="notificationBtn" class="notification-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -18,8 +17,7 @@
           </svg>
           <span id="notificationBadge" class="notification-badge">0</span>
         </button>
-        
-        <!-- Выпадающее меню уведомлений -->
+
         <div id="notificationDropdown" class="notification-dropdown">
           <div class="notification-header">
             <h3>Уведомления</h3>
@@ -30,25 +28,23 @@
           </div>
         </div>
       </div>
-      
+
       <button id="logoutBtn" class="btn">Выйти</button>
     </div>
   </header>
 
-  <!-- Вкладки -->
   <nav class="tabs">
-    <button class="tab active" data-tab="rooms">Изменение аудиторий</button>
-    <button class="tab" data-tab="errors">Обработка ошибок</button>
+    <button class="tab active" data-tab="rooms">Аудитории</button>
+    <button class="tab" data-tab="errors">Заявки</button>
     <button class="tab" data-tab="archive">Архив</button>
-    <button class="tab" data-tab="teachers">Добавление преподавателей</button>
+    <button class="tab" data-tab="teachers">Пользователи</button>
+    <button class="tab" data-tab="analytics">Аналитика</button>
   </nav>
 
   <main class="tabs-container">
-    <!-- Вкладка: Изменение аудиторий -->
     <section id="tab-rooms" class="tab-content active">
-      <h2>Изменение аудиторий</h2>
+      <h2>Управление аудиториями</h2>
 
-      <!-- Список аудиторий -->
       <div class="card wide">
         <table class="data-table">
           <thead>
@@ -57,30 +53,25 @@
               <th>Название аудитории</th>
             </tr>
           </thead>
-          <tbody id="roomTableBody">
-          <!-- строки подставляет JS -->
-          </tbody>
+          <tbody id="roomTableBody"></tbody>
         </table>
-        <p class="hint">Нажмите на строку, чтобы войти в аудиторию.</p>
+        <p class="hint">Нажмите на строку, чтобы открыть аудиторию и управлять оборудованием.</p>
       </div>
 
-      <!-- Создание аудитории (внизу) -->
       <div class="card">
         <h3>Создать новую аудиторию</h3>
         <form id="roomForm" class="form-inline">
           <label>
             Название аудитории
-            <input type="text" name="name" placeholder="Например, Аудитория 101" required />
+            <input type="text" name="name" placeholder="Например, Аудитория 207" required />
           </label>
           <button class="btn hover-highlight" type="submit">Создать аудиторию</button>
         </form>
       </div>
     </section>
 
-    <!-- Вкладка: Обработка ошибок (жалобы преподавателей) -->
     <section id="tab-errors" class="tab-content">
-      <h2>Обработка ошибок</h2>
-
+      <h2>Активные заявки</h2>
       <div class="card wide">
         <table class="data-table">
           <thead>
@@ -93,17 +84,15 @@
               <th>Действие</th>
             </tr>
           </thead>
-          <tbody id="complaintTableBody">
-            <!-- строки подставляет JS -->
-          </tbody>
+          <tbody id="complaintTableBody"></tbody>
         </table>
       </div>
     </section>
 
-    <!-- Вкладка: Архив исправленных заявок -->
     <section id="tab-archive" class="tab-content">
       <h2>Архив заявок</h2>
       <div class="card wide">
+        <p id="archiveDeleteHint" class="hint" hidden>Удалять записи из архива может только главный администратор.</p>
         <table class="data-table">
           <thead>
             <tr>
@@ -113,6 +102,7 @@
               <th>Описание</th>
               <th>Дата подачи</th>
               <th>Дата закрытия</th>
+              <th>Действие</th>
             </tr>
           </thead>
           <tbody id="archiveTableBody"></tbody>
@@ -120,53 +110,152 @@
       </div>
     </section>
 
-    <!-- Вкладка: Добавление преподавателей -->
     <section id="tab-teachers" class="tab-content">
-      <h2>Добавление преподавателей</h2>
+      <h2>Пользователи</h2>
 
-      <!-- Список преподавателей -->
-      <div class="card wide">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>ФИО</th>
-              <th>Логин</th>
-              <th>Действия</th>
-            </tr>
-          </thead>
-          <tbody id="teacherTableBody">
-            <!-- строки подставляет JS -->
-          </tbody>
-        </table>
+      <div class="admin-forms-grid">
+        <div class="card wide">
+          <h3>Преподаватели</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>ФИО</th>
+                <th>Логин</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="teacherTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h3>Добавить преподавателя</h3>
+          <form id="teacherRegisterForm">
+            <label>
+              ФИО
+              <input type="text" name="full_name" required />
+            </label>
+            <label>
+              Логин
+              <input type="text" name="login" required />
+            </label>
+            <label>
+              Пароль
+              <input type="password" name="password" required />
+            </label>
+            <input type="hidden" name="role" value="teacher" />
+            <label>
+              Закрепить за аудиториями
+              <select name="rooms" id="teacherRoomsSelect" multiple></select>
+            </label>
+            <button class="btn hover-highlight" type="submit">Добавить преподавателя</button>
+          </form>
+        </div>
       </div>
 
-      <!-- Форма добавления преподавателя -->
-      <div class="card">
-        <h3>Новый преподаватель</h3>
-        <form id="userRegisterForm">
-          <label>
-            ФИО
-            <input type="text" name="full_name" required />
-          </label>
-          <label>
-            Логин
-            <input type="text" name="login" required />
-          </label>
-          <label>
-            Пароль
-            <input type="password" name="password" required />
-          </label>
-          <label>
-            Закрепить за аудиториями
-            <select name="rooms" id="teacherRoomsSelect" multiple></select>
-          </label>
-          <input type="hidden" name="role" value="teacher" />
-          <button class="btn hover-highlight" type="submit">Добавить преподавателя</button>
-        </form>
+      <div id="mainAdminSection" hidden>
+        <div class="admin-forms-grid">
+          <div class="card wide">
+            <h3>Администраторы</h3>
+            <p class="hint">Этот раздел виден только главному администратору.</p>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>ФИО</th>
+                  <th>Логин</th>
+                  <th>Тип</th>
+                  <th>Действия</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <h3>Добавить администратора</h3>
+            <form id="adminRegisterForm">
+              <label>
+                ФИО
+                <input type="text" name="full_name" required />
+              </label>
+              <label>
+                Логин
+                <input type="text" name="login" required />
+              </label>
+              <label>
+                Пароль
+                <input type="password" name="password" required />
+              </label>
+              <input type="hidden" name="role" value="admin" />
+              <button class="btn hover-highlight" type="submit">Добавить администратора</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-analytics" class="tab-content">
+      <h2>Аналитика</h2>
+      <div id="analyticsSummary" class="analytics-summary"></div>
+
+      <div class="analytics-grid">
+        <div class="card wide">
+          <div class="analytics-card-header">
+            <h3>Распределение заявок по статусам</h3>
+            <p>Показывает текущую загрузку по обработке обращений.</p>
+          </div>
+          <div id="analyticsStatusChart" class="analytics-bars"></div>
+        </div>
+
+        <div class="card wide">
+          <div class="analytics-card-header">
+            <h3>Состояние оборудования</h3>
+            <p>Сколько единиц техники сейчас в работе, на рассмотрении и в ремонте.</p>
+          </div>
+          <div id="analyticsEquipmentChart" class="analytics-bars"></div>
+        </div>
+      </div>
+
+      <div class="card wide">
+        <div class="analytics-card-header">
+          <h3>Нагрузка по аудиториям</h3>
+          <p>Можно быстро увидеть проблемные аудитории, например 207 или 305, если по ним копятся обращения.</p>
+        </div>
+        <div id="analyticsRoomChart" class="room-analytics-list"></div>
       </div>
     </section>
   </main>
+
+  <div id="userEditModal" class="modal-backdrop hidden" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="userEditModalTitle">Редактирование пользователя</h3>
+        <button id="closeUserEditModal" class="modal-close" type="button">×</button>
+      </div>
+      <form id="userEditForm">
+        <input type="hidden" name="id" />
+        <input type="hidden" name="user_type" />
+        <label>
+          ФИО
+          <input type="text" name="full_name" required />
+        </label>
+        <label>
+          Логин
+          <input type="text" name="login" required />
+        </label>
+        <label>
+          Новый пароль
+          <input type="password" name="password" placeholder="Оставьте пустым, если менять не нужно" />
+        </label>
+        <div class="modal-actions">
+          <button id="cancelUserEditModal" class="btn" type="button">Отмена</button>
+          <button class="btn hover-highlight" type="submit">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="/js/main.js"></script>
 </body>

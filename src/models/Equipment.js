@@ -11,10 +11,11 @@ class Equipment {
 
   static create(fields, cb) {
     const { room_id, name, serial_number, purchase_date } = fields;
-    // default status 'в работе' for newly created equipment
     const status = fields.status || 'в работе';
-    const sql = `INSERT INTO equipment (room_id, name, serial_number, purchase_date, status)
-                 VALUES (?, ?, ?, ?, ?)`;
+    const sql = `
+      INSERT INTO equipment (room_id, name, serial_number, purchase_date, status)
+      VALUES (?, ?, ?, ?, ?)
+    `;
     db.run(sql, [room_id, name, serial_number, purchase_date, status], function (err) {
       cb(err, this?.lastID);
     });
@@ -33,7 +34,8 @@ class Equipment {
     const sql = `
       UPDATE equipment
       SET name = ?, serial_number = ?, purchase_date = ?, status = COALESCE(?, status)
-      WHERE id = ?`;
+      WHERE id = ?
+    `;
     db.run(sql, [name, serial_number, purchase_date, status, id], cb);
   }
 }
