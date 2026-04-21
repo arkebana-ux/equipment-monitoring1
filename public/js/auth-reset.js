@@ -42,6 +42,20 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  function resolveResetError(status, data, fallbackMessage) {
+    if (status === 404 && !data?.message) {
+      return {
+        titleText: 'Нужно обновление',
+        message: 'Сервер работает на старой версии. Перезапустите приложение и повторите попытку.'
+      };
+    }
+
+    return {
+      titleText: 'Ошибка',
+      message: data?.message || fallbackMessage
+    };
+  }
+
   function showToast(message, type = 'success', titleText = 'Готово') {
     if (!toastContainer) return;
     const toast = document.createElement('div');
@@ -97,10 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const { ok, status, data } = await requestJSON('/auth/forgot-password/start', jsonOptions('POST', { email }));
       if (!ok) {
-        if (status === 404) {
-          return showToast('Сервер работает на старой версии. Перезапустите приложение и повторите попытку.', 'error', 'Нужно обновление');
-        }
-        return showToast(data.message || 'Не удалось начать восстановление пароля', 'error', 'Ошибка');
+        const errorState = resolveResetError(status, data, 'Не удалось начать восстановление пароля');
+        return showToast(errorState.message, 'error', errorState.titleText);
       }
 
       state.email = email;
@@ -122,10 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
         code
       }));
       if (!ok) {
-        if (status === 404) {
-          return showToast('Сервер работает на старой версии. Перезапустите приложение и повторите попытку.', 'error', 'Нужно обновление');
-        }
-        return showToast(data.message || 'Неверный код', 'error', 'Ошибка');
+        const errorState = resolveResetError(status, data, 'Неверный код');
+        return showToast(errorState.message, 'error', errorState.titleText);
       }
 
       state.code = code;
@@ -153,10 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
         password
       }));
       if (!ok) {
-        if (status === 404) {
-          return showToast('Сервер работает на старой версии. Перезапустите приложение и повторите попытку.', 'error', 'Нужно обновление');
-        }
-        return showToast(data.message || 'Не удалось обновить пароль', 'error', 'Ошибка');
+        const errorState = resolveResetError(status, data, 'Не удалось обновить пароль');
+        return showToast(errorState.message, 'error', errorState.titleText);
       }
 
       showToast('Пароль обновлен. Теперь можно войти с новым паролем.', 'success', 'Готово');
