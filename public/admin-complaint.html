@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Карточка заявки</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
@@ -25,20 +26,28 @@
       <div id="complaintDetails"></div>
     </section>
 
-    <section class="room-layout">
+    <section class="room-layout complaint-layout">
       <div class="card wide">
         <div class="pane-header">
           <div>
-            <p class="eyebrow">Ответственный</p>
-            <h2>Назначение администратора</h2>
+            <p class="eyebrow">Статус и ответственный</p>
+            <h2>Управление заявкой</h2>
           </div>
         </div>
-        <form id="assignAdminForm" class="form-inline">
+        <form id="complaintManageForm" class="form-vertical">
+          <label>
+            Статус заявки
+            <select id="complaintStatusSelect" name="status">
+              <option value="на рассмотрении">На рассмотрении</option>
+              <option value="в ремонте">В ремонте</option>
+              <option value="исправлено">Исправлено</option>
+            </select>
+          </label>
           <label>
             Ответственный администратор
             <select id="assignedAdminSelect" name="admin_id"></select>
           </label>
-          <button class="btn hover-highlight" type="submit">Сохранить</button>
+          <button class="btn hover-highlight" type="submit">Сохранить изменения</button>
         </form>
       </div>
 
@@ -52,7 +61,7 @@
         <form id="commentForm">
           <label>
             Новый комментарий
-            <textarea id="commentInput" name="comment" placeholder="Например: связался с преподавателем, ждем доступ в аудиторию"></textarea>
+            <textarea id="commentInput" name="comment" placeholder="Например: согласовали время проверки оборудования"></textarea>
           </label>
           <button class="btn hover-highlight" type="submit">Добавить комментарий</button>
         </form>
@@ -120,9 +129,22 @@
       return new URL(window.location.href).searchParams.get(name);
     }
 
+    function humanizeAction(actionType) {
+      const map = {
+        created: 'Создана заявка',
+        status_changed: 'Изменен статус',
+        assignee_changed: 'Назначен ответственный',
+        comment_added: 'Добавлен комментарий'
+      };
+      return map[actionType] || actionType;
+    }
+
+    let initialized = false;
+
     async function loadComplaint() {
       const id = queryParam('id');
       if (!id) return;
+
       const { ok, data } = await requestJSON(`/admin/complaints/${id}`);
       if (!ok) {
         document.getElementById('complaintDetails').textContent = data.message || 'Не удалось загрузить заявку';
@@ -138,13 +160,25 @@
               <div class="room-analytics-name">${escapeHtml(complaint.room_name || 'Без аудитории')}</div>
               <div class="room-analytics-meta">${statusBadge(complaint.status)}</div>
             </div>
-            <div class="room-analytics-tags">
-              <span class="room-analytics-tag">Преподаватель: ${escapeHtml(complaint.full_name || complaint.login || '-')}</span>
-              <span class="room-analytics-tag">Оборудование: ${escapeHtml(complaint.equipment_name || '-')}</span>
-              <span class="room-analytics-tag">Серийный номер: ${escapeHtml(complaint.serial_number || '-')}</span>
-              <span class="room-analytics-tag">Ответственный: ${escapeHtml(complaint.assigned_admin_name || 'Не назначен')}</span>
+            <div class="complaint-info-grid">
+              <div class="complaint-info-card">
+                <span class="complaint-info-label">Преподаватель</span>
+                <span class="complaint-info-value">${escapeHtml(complaint.full_name || complaint.login || '-')}</span>
+              </div>
+              <div class="complaint-info-card">
+                <span class="complaint-info-label">Оборудование</span>
+                <span class="complaint-info-value">${escapeHtml(complaint.equipment_name || '-')}</span>
+              </div>
+              <div class="complaint-info-card">
+                <span class="complaint-info-label">Серийный номер</span>
+                <span class="complaint-info-value">${escapeHtml(complaint.serial_number || 'Не указан')}</span>
+              </div>
+              <div class="complaint-info-card">
+                <span class="complaint-info-label">Ответственный</span>
+                <span class="complaint-info-value">${escapeHtml(complaint.assigned_admin_name || 'Не назначен')}</span>
+              </div>
             </div>
-            <p style="margin-top:14px;">${escapeHtml(complaint.description || '-')}</p>
+            <p>${escapeHtml(complaint.description || '-')}</p>
             <p class="hint">Создано: ${escapeHtml(complaint.created_at || '-')} | Обновлено: ${escapeHtml(complaint.updated_at || '-')}</p>
           </div>
         </div>
@@ -156,6 +190,8 @@
           ${escapeHtml(admin.full_name)} (${escapeHtml(admin.login)})
         </option>
       `).join('');
+
+      document.getElementById('complaintStatusSelect').value = complaint.status || 'на рассмотрении';
 
       const commentsList = document.getElementById('commentsList');
       commentsList.innerHTML = (data.comments || []).length
@@ -175,10 +211,10 @@
         ? data.history.map((entry) => `
           <div class="room-analytics-item">
             <div class="room-analytics-top">
-              <div class="room-analytics-name">${escapeHtml(entry.action_type)}</div>
+              <div class="room-analytics-name">${escapeHtml(humanizeAction(entry.action_type))}</div>
               <div class="room-analytics-meta">${escapeHtml(entry.created_at)}</div>
             </div>
-            <p>${escapeHtml(entry.comment || '')}</p>
+            <p>${escapeHtml(entry.comment || 'Изменение сохранено в журнале заявки.')}</p>
             <p class="hint">
               ${entry.full_name ? `Исполнитель: ${escapeHtml(entry.full_name)}. ` : ''}
               ${entry.old_value ? `Было: ${escapeHtml(entry.old_value)}. ` : ''}
@@ -210,58 +246,78 @@
           attachments.appendChild(link);
         }
       });
+
       if (!attachments.children.length) {
         attachments.innerHTML = '<div class="empty-state"><h3>Вложений нет</h3><p>Пользователь не прикреплял файлы к этой заявке.</p></div>';
       }
     }
 
-    document.getElementById('assignAdminForm').addEventListener('submit', async (event) => {
+    document.getElementById('complaintManageForm').onsubmit = async (event) => {
       event.preventDefault();
       const id = queryParam('id');
+      const status = document.getElementById('complaintStatusSelect').value;
       const admin_id = document.getElementById('assignedAdminSelect').value;
-      const { ok, data } = await requestJSON(`/admin/complaints/${id}/assign`, {
+
+      const statusResponse = await requestJSON(`/admin/complaints/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+      if (!statusResponse.ok) {
+        return showToast(statusResponse.data.message || 'Не удалось сохранить статус', 'error', 'Ошибка');
+      }
+
+      const assignResponse = await requestJSON(`/admin/complaints/${id}/assign`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ admin_id: admin_id || null })
       });
-      if (!ok) return showToast(data.message || 'Не удалось назначить администратора', 'error', 'Ошибка');
-      showToast('Ответственный администратор обновлен');
-      loadComplaint();
-    });
+      if (!assignResponse.ok) {
+        return showToast(assignResponse.data.message || 'Не удалось сохранить ответственного', 'error', 'Ошибка');
+      }
 
-    document.getElementById('commentForm').addEventListener('submit', async (event) => {
+      showToast('Изменения по заявке сохранены');
+      await loadComplaint();
+    };
+
+    document.getElementById('commentForm').onsubmit = async (event) => {
       event.preventDefault();
       const id = queryParam('id');
       const commentInput = document.getElementById('commentInput');
       const comment = commentInput.value.trim();
       if (!comment) return;
+
       const { ok, data } = await requestJSON(`/admin/complaints/${id}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ comment })
       });
       if (!ok) return showToast(data.message || 'Не удалось добавить комментарий', 'error', 'Ошибка');
+
       commentInput.value = '';
       showToast('Комментарий добавлен');
-      loadComplaint();
-    });
+      await loadComplaint();
+    };
 
-    document.getElementById('backBtn').addEventListener('click', () => {
+    document.getElementById('backBtn').onclick = () => {
       const lastTab = sessionStorage.getItem('adminLastTab') || 'errors';
       sessionStorage.removeItem('adminLastTab');
       window.location.href = `/admin-dashboard.html?tab=${encodeURIComponent(lastTab)}`;
-    });
+    };
 
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
+    document.getElementById('logoutBtn').onclick = async () => {
       await requestJSON('/auth/logout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
       });
       window.location.href = '/auth/login';
-    });
+    };
 
-    loadComplaint();
+    if (!initialized) {
+      initialized = true;
+      loadComplaint();
+    }
   </script>
 </body>
 </html>

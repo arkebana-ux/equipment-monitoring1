@@ -8,5 +8,8 @@ router.get('/login', authController.showLoginPage);  // Путь и контро
 router.post('/login', loginRules, authController.login);
 router.post('/register', registerRules, authController.register);
 router.post('/logout', authController.logout);
+router.post('/forgot-password/start', authController.startPasswordReset);
+router.post('/forgot-password/verify', authController.verifyPasswordResetCode);
+router.post('/forgot-password/reset', authController.resetPassword);
 
 module.exports = router;

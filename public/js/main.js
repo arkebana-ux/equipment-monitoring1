@@ -91,9 +91,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const complaintsStatusFilter = document.getElementById('complaintsStatusFilter');
   const complaintsSortSelect = document.getElementById('complaintsSortSelect');
   const archiveSearchInput = document.getElementById('archiveSearchInput');
-  const archiveRoomFilter = document.getElementById('archiveRoomFilter');
+  const archiveRoomDropdown = document.getElementById('archiveRoomDropdown');
+  const archiveRoomDropdownBtn = document.getElementById('archiveRoomDropdownBtn');
+  const archiveRoomDropdownPanel = document.getElementById('archiveRoomDropdownPanel');
   const archiveDateFrom = document.getElementById('archiveDateFrom');
   const archiveDateTo = document.getElementById('archiveDateTo');
+  const archiveSortSelect = document.getElementById('archiveSortSelect');
+  const archiveBulkDeleteBtn = document.getElementById('archiveBulkDeleteBtn');
+  const archiveSelectHeader = document.getElementById('archiveSelectHeader');
+  const archiveSelectAll = document.getElementById('archiveSelectAll');
   const teachersSearchInput = document.getElementById('teachersSearchInput');
   const adminsSearchInput = document.getElementById('adminsSearchInput');
 
@@ -150,7 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
     complaints: [],
     teachers: [],
     admins: [],
-    analytics: null
+    analytics: null,
+    archiveRoomFilters: [],
+    archiveSelectedIds: new Set()
   };
 
   const roomPageState = {
@@ -242,6 +250,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
+  function getArchiveRoomFilters() {
+    return dashboardState.archiveRoomFilters || [];
+  }
+
+  function updateArchiveRoomButtonLabel() {
+    if (!archiveRoomDropdownBtn) return;
+    const selected = getArchiveRoomFilters();
+    if (!selected.length) {
+      archiveRoomDropdownBtn.textContent = 'Аудитории: все';
+      return;
+    }
+    if (selected.length <= 2) {
+      archiveRoomDropdownBtn.textContent = `Аудитории: ${selected.join(', ')}`;
+      return;
+    }
+    archiveRoomDropdownBtn.textContent = `Аудитории: выбрано ${selected.length}`;
+  }
+
+  function renderArchiveRoomDropdown() {
+    if (!archiveRoomDropdownPanel) return;
+    archiveRoomDropdownPanel.innerHTML = `
+      <div class="checkbox-list">
+        ${dashboardState.rooms.map((room) => `
+          <label class="checkbox-item">
+            <input class="archive-room-checkbox" type="checkbox" value="${escapeHtml(room.name)}" ${getArchiveRoomFilters().includes(String(room.name)) ? 'checked' : ''} />
+            <span></span>
+            <strong class="checkbox-item-label">${escapeHtml(room.name)}</strong>
+          </label>
+        `).join('')}
+      </div>
+    `;
+    updateArchiveRoomButtonLabel();
+  }
+
   function renderAnalytics() {
     const analytics = dashboardState.analytics;
     if (!analytics) return;
@@ -269,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAnalyticsBars(analyticsEquipmentChart, analytics.equipmentStatuses || [], {
       classNameFor: (item) => item.label === 'на рассмотрении' ? 'warning' : (item.label === 'в ремонте' ? 'danger' : 'success')
     });
-    renderAnalyticsBars(analyticsTopEquipmentChart, analytics.topBrokenEquipment || [], { classNameFor: () => 'dark' });
+    renderAnalyticsBars(analyticsTopEquipmentChart, analytics.topBrokenEquipment || [], { classNameFor: () => 'accent' });
     renderAnalyticsBars((analyticsReliabilityChart), (analytics.roomReliability || []).slice(0, 6).map((item) => ({
       label: item.roomName,
       score: item.score
@@ -302,9 +344,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const complaintsStatus = complaintsStatusFilter?.value || '';
     const complaintsSort = complaintsSortSelect?.value || 'updated_desc';
     const archiveQuery = archiveSearchInput?.value?.trim().toLowerCase() || '';
-    const archiveRoom = archiveRoomFilter?.value || '';
+    const archiveRooms = getArchiveRoomFilters();
     const archiveFrom = archiveDateFrom?.value || '';
     const archiveTo = archiveDateTo?.value || '';
+    const archiveSort = archiveSortSelect?.value || 'closed_desc';
     const teachersQuery = teachersSearchInput?.value?.trim().toLowerCase() || '';
     const adminsQuery = adminsSearchInput?.value?.trim().toLowerCase() || '';
 
@@ -329,12 +372,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const updatedDate = String(item.updated_at || '').slice(0, 10);
         const fromMatch = !archiveFrom || (updatedDate && updatedDate >= archiveFrom);
         const toMatch = !archiveTo || (updatedDate && updatedDate <= archiveTo);
-        return (!archiveQuery || haystack.includes(archiveQuery)) && (!archiveRoom || item.room_name === archiveRoom) && fromMatch && toMatch;
+        const roomMatch = !archiveRooms.length || archiveRooms.includes(item.room_name);
+        return (!archiveQuery || haystack.includes(archiveQuery)) && roomMatch && fromMatch && toMatch;
       })
-      .sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
+      .sort((a, b) => {
+        if (archiveSort === 'closed_asc') return new Date(a.updated_at || 0) - new Date(b.updated_at || 0);
+        if (archiveSort === 'created_desc') return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+        if (archiveSort === 'room_asc') return String(a.room_name || '').localeCompare(String(b.room_name || ''), 'ru');
+        return new Date(b.updated_at || 0) - new Date(a.updated_at || 0);
+      });
 
     const filteredTeachers = dashboardState.teachers.filter((item) => `${item.full_name} ${item.login} ${item.email || ''}`.toLowerCase().includes(teachersQuery));
     const filteredAdmins = dashboardState.admins.filter((item) => `${item.full_name} ${item.login} ${item.email || ''}`.toLowerCase().includes(adminsQuery));
+
+    const visibleArchiveIds = new Set(archivedComplaints.map((item) => Number(item.id)));
+    dashboardState.archiveSelectedIds = new Set(
+      Array.from(dashboardState.archiveSelectedIds).filter((id) => visibleArchiveIds.has(Number(id)))
+    );
 
     if (roomTableBody) {
       roomTableBody.innerHTML = filteredRooms.map((room) => `
@@ -356,14 +410,16 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${escapeHtml(item.assigned_admin_name || 'Не назначен')}</td>
           <td class="compl-desc">${escapeHtml(item.description || '-')}</td>
           <td>${statusBadge(item.status)}</td>
-          <td>
-            <select class="status-select" data-id="${item.id}">
-              <option value="на рассмотрении" ${item.status === 'на рассмотрении' ? 'selected' : ''}>На рассмотрении</option>
-              <option value="в ремонте" ${item.status === 'в ремонте' ? 'selected' : ''}>В ремонте</option>
-              <option value="исправлено" ${item.status === 'исправлено' ? 'selected' : ''}>Исправлено</option>
-            </select>
-            <button class="btn btn-sm hover-highlight btn-status-save" data-id="${item.id}">Сохранить</button>
-            <button class="btn btn-sm hover-highlight btn-open-complaint" data-id="${item.id}">Открыть</button>
+          <td class="table-actions-cell">
+            <div class="action-stack">
+              <select class="status-select toolbar-input" data-id="${item.id}">
+                <option value="на рассмотрении" ${item.status === 'на рассмотрении' ? 'selected' : ''}>На рассмотрении</option>
+                <option value="в ремонте" ${item.status === 'в ремонте' ? 'selected' : ''}>В ремонте</option>
+                <option value="исправлено" ${item.status === 'исправлено' ? 'selected' : ''}>Исправлено</option>
+              </select>
+              <button class="btn btn-sm hover-highlight btn-status-save" data-id="${item.id}">Сохранить</button>
+              <button class="btn btn-sm hover-highlight btn-open-complaint" data-id="${item.id}">Открыть</button>
+            </div>
           </td>
         </tr>
       `).join('');
@@ -374,18 +430,35 @@ document.addEventListener('DOMContentLoaded', () => {
       archiveTableBody.innerHTML = archivedComplaints.map((item) => `
         <tr>
           <td>${item.id}</td>
+          ${isMainAdmin() ? `
+            <td>
+              <label class="check-cell">
+                <input class="archive-row-checkbox" type="checkbox" data-id="${item.id}" ${dashboardState.archiveSelectedIds.has(Number(item.id)) ? 'checked' : ''} />
+                <span></span>
+              </label>
+            </td>
+          ` : ''}
           <td>${escapeHtml(item.room_name || '-')}</td>
           <td>${escapeHtml(item.full_name || '-')}</td>
           <td>${escapeHtml(item.equipment_name || '-')}</td>
           <td>${escapeHtml(item.description || '-')}</td>
           <td>${escapeHtml(item.created_at || '-')}</td>
           <td>${escapeHtml(item.updated_at || '-')}</td>
-          <td>
-            <button class="btn btn-sm hover-highlight btn-open-complaint" data-id="${item.id}">Открыть</button>
-            ${isMainAdmin() ? `<button class="btn btn-sm hover-highlight btn-archive-delete" data-id="${item.id}">Удалить</button>` : '<span class="hint">Только главный админ</span>'}
+          <td class="table-actions-cell">
+            <div class="action-stack">
+              <button class="btn btn-sm hover-highlight btn-open-complaint" data-id="${item.id}">Открыть</button>
+              ${isMainAdmin() ? `<button class="btn btn-sm btn-danger btn-archive-delete" data-id="${item.id}">Удалить</button>` : '<span class="hint">Только главный админ</span>'}
+            </div>
           </td>
         </tr>
       `).join('');
+    }
+    if (archiveSelectHeader) archiveSelectHeader.hidden = !isMainAdmin();
+    if (archiveBulkDeleteBtn) archiveBulkDeleteBtn.hidden = !isMainAdmin();
+    if (archiveSelectAll) {
+      const visibleCount = archivedComplaints.length;
+      const selectedVisibleCount = archivedComplaints.filter((item) => dashboardState.archiveSelectedIds.has(Number(item.id))).length;
+      archiveSelectAll.checked = visibleCount > 0 && visibleCount === selectedVisibleCount;
     }
     if (archiveEmptyState) archiveEmptyState.hidden = archivedComplaints.length > 0;
 
@@ -440,9 +513,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (teacherRoomsSelect) {
       teacherRoomsSelect.innerHTML = dashboardState.rooms.map((room) => `<option value="${room.id}">${escapeHtml(room.name)}</option>`).join('');
     }
-    if (archiveRoomFilter) {
-      archiveRoomFilter.innerHTML = '<option value="">Все аудитории</option>' + dashboardState.rooms.map((room) => `<option value="${escapeHtml(room.name)}">${escapeHtml(room.name)}</option>`).join('');
-    }
+    renderArchiveRoomDropdown();
     renderAnalytics();
     applyDashboardFilters();
   }
@@ -539,9 +610,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const { roomId, roomName } = getQueryParams();
     const safeRoomName = roomName && roomName !== 'undefined' ? roomName : '';
     if (!roomId || !userEquipmentTableBody) return;
-    if (userRoomTitle) userRoomTitle.textContent = `Аудитория ${safeRoomName || roomId}`;
     const { ok, data } = await requestJSON(`/user/rooms/${roomId}/equipment`);
     if (!ok) return;
+    const resolvedRoomName = data.room?.name || safeRoomName || roomId;
+    if (userRoomTitle) userRoomTitle.textContent = `Аудитория ${resolvedRoomName}`;
     userEquipmentTableBody.innerHTML = (data.equipment || []).map((item) => {
       const lower = String(item.status || '').toLowerCase();
       const rowClass = lower === 'на рассмотрении' ? 'status-review' : (lower === 'в ремонте' ? 'status-repair' : '');
@@ -659,7 +731,28 @@ document.addEventListener('DOMContentLoaded', () => {
     teachersSearchInput,
     adminsSearchInput
   ].forEach((input) => input?.addEventListener('input', applyDashboardFilters));
-  [complaintsStatusFilter, complaintsSortSelect, archiveRoomFilter, archiveDateFrom, archiveDateTo].forEach((input) => input?.addEventListener('change', applyDashboardFilters));
+  [complaintsStatusFilter, complaintsSortSelect, archiveDateFrom, archiveDateTo, archiveSortSelect].forEach((input) => input?.addEventListener('change', applyDashboardFilters));
+
+  archiveRoomDropdownBtn?.addEventListener('click', () => {
+    archiveRoomDropdownPanel?.classList.toggle('hidden');
+  });
+
+  archiveRoomDropdownPanel?.addEventListener('change', (event) => {
+    const checkbox = event.target.closest('.archive-room-checkbox');
+    if (!checkbox) return;
+    const selected = new Set(getArchiveRoomFilters());
+    if (checkbox.checked) selected.add(checkbox.value);
+    else selected.delete(checkbox.value);
+    dashboardState.archiveRoomFilters = Array.from(selected);
+    updateArchiveRoomButtonLabel();
+    applyDashboardFilters();
+  });
+
+  document.addEventListener('click', (event) => {
+    if (archiveRoomDropdown && !event.target.closest('#archiveRoomDropdown')) {
+      archiveRoomDropdownPanel?.classList.add('hidden');
+    }
+  });
 
   closeUserEditModal?.addEventListener('click', () => closeModal(userEditModal, userEditForm));
   cancelUserEditModal?.addEventListener('click', () => closeModal(userEditModal, userEditForm));
@@ -727,7 +820,50 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!confirmed) return;
       const { ok, data } = await requestJSON(`/admin/archive/${deleteBtn.dataset.id}`, { method: 'DELETE' });
       if (!ok) return showToast(data.message || 'Не удалось удалить запись', 'error', 'Ошибка');
+      dashboardState.archiveSelectedIds.delete(Number(deleteBtn.dataset.id));
       showToast('Запись из архива удалена');
+      await loadAdminDashboard();
+    });
+
+    archiveTableBody?.addEventListener('change', (event) => {
+      const checkbox = event.target.closest('.archive-row-checkbox');
+      if (!checkbox) return;
+      const id = Number(checkbox.dataset.id);
+      if (checkbox.checked) dashboardState.archiveSelectedIds.add(id);
+      else dashboardState.archiveSelectedIds.delete(id);
+      applyDashboardFilters();
+    });
+
+    archiveSelectAll?.addEventListener('change', (event) => {
+      const checked = Boolean(event.target.checked);
+      Array.from(archiveTableBody?.querySelectorAll('.archive-row-checkbox') || []).forEach((checkbox) => {
+        checkbox.checked = checked;
+        const id = Number(checkbox.dataset.id);
+        if (checked) dashboardState.archiveSelectedIds.add(id);
+        else dashboardState.archiveSelectedIds.delete(id);
+      });
+      applyDashboardFilters();
+    });
+
+    archiveBulkDeleteBtn?.addEventListener('click', async () => {
+      const ids = Array.from(dashboardState.archiveSelectedIds);
+      if (!ids.length) {
+        return showToast('Сначала отметьте записи в архиве', 'warning', 'Внимание');
+      }
+      const confirmed = await askConfirm({
+        title: 'Удаление выбранных записей',
+        message: `Будут удалены ${ids.length} архивных записей без возможности восстановления.`,
+        acceptLabel: 'Удалить выбранные'
+      });
+      if (!confirmed) return;
+
+      for (const id of ids) {
+        const { ok, data } = await requestJSON(`/admin/archive/${id}`, { method: 'DELETE' });
+        if (!ok) return showToast(data.message || 'Не удалось удалить часть записей архива', 'error', 'Ошибка');
+      }
+
+      dashboardState.archiveSelectedIds = new Set();
+      showToast('Выбранные записи из архива удалены');
       await loadAdminDashboard();
     });
 
@@ -935,12 +1071,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!roomId || !equipmentId) return showToast('Сначала выберите оборудование', 'warning', 'Внимание');
     if (description.length < 5) return showToast('Описание должно быть минимум 5 символов', 'warning', 'Внимание');
 
-    const response = await fetch('/complaints', { method: 'POST', body: new FormData(complaintForm) });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) return showToast(data.message || 'Не удалось отправить заявку', 'error', 'Ошибка');
-    complaintForm.reset();
-    showToast('Заявка отправлена');
-    await loadUserRoomEquipment();
+    try {
+      const response = await fetch('/complaints', { method: 'POST', body: new FormData(complaintForm) });
+      const data = await response.json().catch(() => ({}));
+      if (response.status === 404) {
+        return showToast('Сервер работает на старой версии. Перезапустите приложение и обновите страницу.', 'error', 'Нужно обновление');
+      }
+      if (!response.ok) return showToast(data.message || 'Не удалось отправить заявку', 'error', 'Ошибка');
+      complaintForm.reset();
+      showToast('Заявка отправлена');
+      await loadUserRoomEquipment();
+    } catch (error) {
+      showToast('Не удалось отправить заявку. Проверьте, что сервер запущен и страница обновлена.', 'error', 'Ошибка');
+    }
   });
 
   if (notificationBtn) {

@@ -2,36 +2,38 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Кабинет преподавателя</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
-<body>
-  <header class="topbar">
-    <h1>Кабинет преподавателя</h1>
+<body class="dashboard-page">
+  <header class="topbar topbar-modern">
+    <div class="topbar-left">
+      <p class="eyebrow">Кабинет преподавателя</p>
+      <h1>Мои аудитории</h1>
+    </div>
     <div class="topbar-actions">
-      <!-- Иконка уведомлений -->
       <div class="notification-bell">
-        <button id="notificationBtn" class="notification-icon">
+        <button id="notificationBtn" class="notification-icon" type="button">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
           </svg>
           <span id="notificationBadge" class="notification-badge">0</span>
         </button>
-        
-        <!-- Выпадающее меню уведомлений -->
+
         <div id="notificationDropdown" class="notification-dropdown">
           <div class="notification-header">
             <h3>Уведомления</h3>
-            <button id="markAllReadBtn" class="btn-small">Отметить все как прочитанные</button>
+            <button id="markAllReadBtn" class="btn-small" type="button">Отметить все как прочитанные</button>
           </div>
           <div id="notificationList" class="notification-list">
             <p class="notification-empty">Нет уведомлений</p>
           </div>
         </div>
       </div>
-      
-      <button id="logoutBtn" class="btn">Выйти</button>
+
+      <button id="logoutBtn" class="btn" type="button">Выйти</button>
     </div>
   </header>
 
@@ -46,9 +48,7 @@
               <th>Название аудитории</th>
             </tr>
           </thead>
-          <tbody id="userRoomsTableBody">
-            <!-- Строки для аудиторий добавляются динамически -->
-          </tbody>
+          <tbody id="userRoomsTableBody"></tbody>
         </table>
         <p class="hint">Нажмите на аудиторию, чтобы открыть оборудование и отправить сообщение об ошибке.</p>
       </div>
@@ -56,9 +56,11 @@
   </main>
 
   <footer class="user-footer">
-    Если у вас не указана аудитория, которая закреплена за Вами, свяжитесь с администратором по номеру:
+    Если у вас не указана аудитория, которая закреплена за вами, свяжитесь с администратором по номеру:
     <strong>7 (999) 999-99-99</strong>
   </footer>
+
+  <div id="toastContainer" class="toast-container"></div>
 
   <script src="/js/main.js"></script>
 </body>

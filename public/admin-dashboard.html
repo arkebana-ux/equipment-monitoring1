@@ -2,38 +2,37 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Панель администратора</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body class="dashboard-page">
   <header class="topbar topbar-modern">
     <div class="topbar-brand">
-      <p class="eyebrow">Equipment Monitoring</p>
-      <h1>Современная светлая админка</h1>
+      <p class="eyebrow">Информационная система для учета состояния оборудования в аудиториях высшего учебного заведения</p>
+      <h1>ГБОУ ВО «Башкирская академия государственной службы и управления при Главе Республики Башкортостан»</h1>
       <p class="topbar-subtitle">Заявки, аналитика, архив и управление пользователями в одном рабочем пространстве.</p>
     </div>
     <div class="topbar-actions">
       <div class="notification-bell">
-        <button id="notificationBtn" class="notification-icon">
+        <button id="notificationBtn" class="notification-icon" type="button">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
           </svg>
           <span id="notificationBadge" class="notification-badge">0</span>
         </button>
-
         <div id="notificationDropdown" class="notification-dropdown">
           <div class="notification-header">
             <h3>Уведомления</h3>
-            <button id="markAllReadBtn" class="btn-small">Отметить все как прочитанные</button>
+            <button id="markAllReadBtn" class="btn-small" type="button">Отметить все как прочитанные</button>
           </div>
           <div id="notificationList" class="notification-list">
             <p class="notification-empty">Нет уведомлений</p>
           </div>
         </div>
       </div>
-
-      <button id="logoutBtn" class="btn">Выйти</button>
+      <button id="logoutBtn" class="btn" type="button">Выйти</button>
     </div>
   </header>
 
@@ -100,7 +99,6 @@
             <option value="">Все статусы</option>
             <option value="на рассмотрении">На рассмотрении</option>
             <option value="в ремонте">В ремонте</option>
-            <option value="исправлено">Исправлено</option>
           </select>
           <select id="complaintsSortSelect" class="toolbar-input">
             <option value="updated_desc">Сначала новые</option>
@@ -138,23 +136,43 @@
         </div>
         <div class="pane-actions">
           <a id="exportArchiveLink" class="btn" href="/admin/export/archive.csv">Экспорт CSV</a>
+          <button id="archiveBulkDeleteBtn" class="btn btn-danger" type="button" hidden>Удалить выбранные</button>
         </div>
       </div>
 
       <div class="card wide">
         <p id="archiveDeleteHint" class="hint" hidden>Удалять записи из архива может только главный администратор.</p>
-        <div class="toolbar toolbar-grid">
+        <div class="toolbar toolbar-grid archive-toolbar">
           <input id="archiveSearchInput" class="toolbar-input" type="search" placeholder="Поиск по архиву" />
-          <select id="archiveRoomFilter" class="toolbar-input">
-            <option value="">Все аудитории</option>
+          <div class="checkbox-dropdown" id="archiveRoomDropdown">
+            <button id="archiveRoomDropdownBtn" class="toolbar-input checkbox-dropdown-trigger" type="button">Аудитории: все</button>
+            <div id="archiveRoomDropdownPanel" class="checkbox-dropdown-panel hidden"></div>
+          </div>
+          <div class="toolbar-group">
+            <label class="toolbar-label" for="archiveDateFrom">Закрыто с</label>
+            <input id="archiveDateFrom" class="toolbar-input" type="date" />
+          </div>
+          <div class="toolbar-group">
+            <label class="toolbar-label" for="archiveDateTo">Закрыто по</label>
+            <input id="archiveDateTo" class="toolbar-input" type="date" />
+          </div>
+          <select id="archiveSortSelect" class="toolbar-input">
+            <option value="closed_desc">Сначала недавно закрытые</option>
+            <option value="closed_asc">Сначала старые закрытые</option>
+            <option value="created_desc">Сначала недавно созданные</option>
+            <option value="room_asc">По аудитории</option>
           </select>
-          <input id="archiveDateFrom" class="toolbar-input" type="date" />
-          <input id="archiveDateTo" class="toolbar-input" type="date" />
         </div>
         <table class="data-table">
           <thead>
             <tr>
               <th>ID</th>
+              <th id="archiveSelectHeader" hidden>
+                <label class="check-cell">
+                  <input id="archiveSelectAll" type="checkbox" />
+                  <span></span>
+                </label>
+              </th>
               <th>Аудитория</th>
               <th>Преподаватель</th>
               <th>Оборудование</th>

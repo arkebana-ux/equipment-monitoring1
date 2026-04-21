@@ -6,9 +6,101 @@ const logger = require('../config/logger');
 const RoomTeacher = require('../models/RoomTeacher');
 
 const SALT_ROUNDS = 10;
+const RESET_CODE = '0000';
+
+function normalizeEmail(value = '') {
+  return String(value).trim().toLowerCase();
+}
 
 exports.showLoginPage = (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'public', 'index.html'));
+};
+
+exports.startPasswordReset = (req, res, next) => {
+  const email = normalizeEmail(req.body.email);
+  if (!email) {
+    return res.status(400).json({ message: 'Укажите электронную почту' });
+  }
+
+  User.findByEmail(email, (err, user) => {
+    if (err) return next(err);
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь с такой электронной почтой не найден' });
+    }
+
+    req.session.passwordReset = {
+      userId: user.id,
+      email,
+      code: RESET_CODE,
+      verified: false,
+      expiresAt: Date.now() + (15 * 60 * 1000)
+    };
+
+    res.json({
+      message: 'Код подтверждения отправлен. Для теста используйте код 0000.',
+      email
+    });
+  });
+};
+
+exports.verifyPasswordResetCode = (req, res) => {
+  const email = normalizeEmail(req.body.email);
+  const code = String(req.body.code || '').trim();
+  const resetState = req.session.passwordReset;
+
+  if (!resetState || resetState.email !== email) {
+    return res.status(400).json({ message: 'Сначала запросите восстановление пароля' });
+  }
+
+  if (resetState.expiresAt < Date.now()) {
+    req.session.passwordReset = null;
+    return res.status(400).json({ message: 'Срок действия кода истёк. Запросите новый код.' });
+  }
+
+  if (code !== resetState.code) {
+    return res.status(400).json({ message: 'Неверный код подтверждения' });
+  }
+
+  req.session.passwordReset = {
+    ...resetState,
+    verified: true
+  };
+
+  res.json({ message: 'Код подтвержден' });
+};
+
+exports.resetPassword = (req, res, next) => {
+  const email = normalizeEmail(req.body.email);
+  const code = String(req.body.code || '').trim();
+  const password = String(req.body.password || '');
+  const resetState = req.session.passwordReset;
+
+  if (!resetState || resetState.email !== email) {
+    return res.status(400).json({ message: 'Сначала запросите восстановление пароля' });
+  }
+
+  if (resetState.expiresAt < Date.now()) {
+    req.session.passwordReset = null;
+    return res.status(400).json({ message: 'Срок действия кода истёк. Запросите новый код.' });
+  }
+
+  if (code !== resetState.code || !resetState.verified) {
+    return res.status(400).json({ message: 'Код подтверждения не пройден' });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({ message: 'Новый пароль должен быть не короче 6 символов' });
+  }
+
+  bcrypt.hash(password, SALT_ROUNDS, (err, hash) => {
+    if (err) return next(err);
+
+    User.updatePassword(resetState.userId, hash, (updateErr) => {
+      if (updateErr) return next(updateErr);
+      req.session.passwordReset = null;
+      res.json({ message: 'Пароль успешно обновлён' });
+    });
+  });
 };
 
 exports.register = (req, res, next) => {

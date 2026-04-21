@@ -3,6 +3,7 @@ const User = require('../models/User');
 const RoomTeacher = require('../models/RoomTeacher');
 const Complaint = require('../models/Complaint');
 const Equipment = require('../models/Equipment');
+const Room = require('../models/Room');
 
 // Получить все аудитории, привязанные к текущему пользователю
 exports.getMyRooms = (req, res, next) => {
@@ -16,10 +17,13 @@ exports.getMyRooms = (req, res, next) => {
 // Получить оборудование для конкретной аудитории
 exports.getRoomEquipment = (req, res, next) => {
   const roomId = req.params.id;
-
-  Equipment.findByRoom(roomId, (err, equipment) => {
-    if (err) return next(err);
-    res.json({ equipment });
+  Room.findById(roomId, (roomErr, room) => {
+    if (roomErr) return next(roomErr);
+    if (!room) return res.status(404).json({ message: 'Аудитория не найдена' });
+    Equipment.findByRoom(roomId, (err, equipment) => {
+      if (err) return next(err);
+      res.json({ equipment, room });
+    });
   });
 };
 

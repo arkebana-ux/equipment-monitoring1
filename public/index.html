@@ -2,28 +2,109 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Авторизация</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body class="auth-page">
-  <div class="card">
-    <h1>Авторизация</h1>
-    <form id="loginForm">
-      <label>Логин
-        <input type="text" name="login" required placeholder="например: ivanov_01" />
-        <div class="hint">Логин от 3 до 30 символов — буквы, цифры или _</div>
-      </label>
-      <label>Пароль
-        <input type="password" name="password" required placeholder="минимум 6 символов" />
-        <div class="hint">Используйте надёжный пароль — минимум 6 символов</div>
-      </label>
-      <button type="submit" class="btn btn-primary hover-highlight">
-        Войти
-      </button>
-    </form>
+  <main class="auth-shell">
+    <section class="auth-hero">
+      <p class="eyebrow">Информационная система</p>
+      <h1>Учет состояния оборудования в аудиториях высшего учебного заведения</h1>
+      <p>
+        Рабочее пространство для преподавателей и администраторов: аудитории, оборудование,
+        обращения о неисправностях, архив и аналитика в одной системе.
+      </p>
 
-    <!-- Регистрация теперь доступна только в админ-панели -->
+      <div class="auth-highlights">
+        <div class="auth-highlight">
+          <strong>Для преподавателей</strong>
+          Быстрая подача заявки по конкретному оборудованию с фото и видео.
+        </div>
+        <div class="auth-highlight">
+          <strong>Для администраторов</strong>
+          Контроль статусов, архив, аналитика и управление пользователями.
+        </div>
+        <div class="auth-highlight">
+          <strong>Для тестирования</strong>
+          Восстановление пароля пока работает через тестовый код `0000`.
+        </div>
+      </div>
+    </section>
+
+    <section class="card auth-card">
+      <p class="eyebrow">Вход в систему</p>
+      <h2>Авторизация</h2>
+      <form id="loginForm">
+        <label>Логин
+          <input type="text" name="login" required placeholder="например: ivanov_01" />
+          <div class="hint">Логин от 3 до 30 символов: буквы, цифры или `_`</div>
+        </label>
+        <label>Пароль
+          <input type="password" name="password" required placeholder="минимум 6 символов" />
+          <div class="hint">Используйте ваш действующий пароль от учетной записи</div>
+        </label>
+        <div class="card-actions">
+          <button type="submit" class="btn btn-primary hover-highlight">Войти</button>
+          <button id="forgotPasswordBtn" type="button" class="btn-link">Забыли пароль?</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <div id="passwordResetModal" class="modal-backdrop hidden" aria-hidden="true">
+    <div class="modal-card modal-card-modern">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Восстановление доступа</p>
+          <h3 id="passwordResetTitle">Введите электронную почту</h3>
+        </div>
+        <button id="closePasswordResetModal" class="modal-close" type="button">×</button>
+      </div>
+
+      <form id="passwordResetEmailStep" class="password-reset-step">
+        <label>
+          Электронная почта
+          <input type="email" name="email" id="passwordResetEmail" placeholder="name@example.com" required />
+        </label>
+        <p class="hint">Проверим, есть ли такая почта в системе, и откроем следующий шаг.</p>
+        <div class="modal-actions sticky-actions">
+          <button class="btn hover-highlight" type="submit">Продолжить</button>
+        </div>
+      </form>
+
+      <form id="passwordResetCodeStep" class="password-reset-step hidden">
+        <label>
+          Код подтверждения
+          <input type="text" name="code" id="passwordResetCode" inputmode="numeric" maxlength="4" placeholder="0000" required />
+        </label>
+        <p class="hint">Пока действует тестовая заглушка: код всегда `0000`.</p>
+        <div class="modal-actions sticky-actions">
+          <button class="btn" data-reset-back="email" type="button">Назад</button>
+          <button class="btn hover-highlight" type="submit">Подтвердить код</button>
+        </div>
+      </form>
+
+      <form id="passwordResetPasswordStep" class="password-reset-step hidden">
+        <label>
+          Новый пароль
+          <input type="password" name="password" id="passwordResetNewPassword" minlength="6" placeholder="минимум 6 символов" required />
+        </label>
+        <label>
+          Повторите новый пароль
+          <input type="password" name="password_repeat" id="passwordResetRepeatPassword" minlength="6" placeholder="повторите пароль" required />
+        </label>
+        <div class="modal-actions sticky-actions">
+          <button class="btn" data-reset-back="code" type="button">Назад</button>
+          <button class="btn hover-highlight" type="submit">Сохранить новый пароль</button>
+        </div>
+      </form>
+    </div>
   </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
   <script src="/js/main.js"></script>
+  <script src="/js/auth-reset.js"></script>
 </body>
 </html>
