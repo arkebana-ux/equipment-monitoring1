@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Панель администратора</title>
+  <title>Аудиторный контроль</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body class="dashboard-page">
   <header class="topbar topbar-modern">
     <div class="topbar-brand">
-      <p class="eyebrow">Информационная система для учета состояния оборудования в аудиториях высшего учебного заведения</p>
-      <h1>ГБОУ ВО «Башкирская академия государственной службы и управления при Главе Республики Башкортостан»</h1>
-      <p class="topbar-subtitle">Заявки, аналитика, архив и управление пользователями в одном рабочем пространстве.</p>
+      <p class="eyebrow">БАГСУ • Аудиторный контроль</p>
+      <h1>Состояние оборудования в учебных аудиториях</h1>
+      <p class="topbar-subtitle">Заявки, архив, аналитика и контроль по аудиториям Башкирской академии государственной службы и управления.</p>
     </div>
     <div class="topbar-actions">
       <div class="notification-bell">
@@ -49,15 +49,18 @@
       <div class="pane-header">
         <div>
           <p class="eyebrow">Раздел аудиторий</p>
-          <h2>Управление аудиториями</h2>
+          <h2>Обзор по аудиториям</h2>
         </div>
       </div>
+
+      <div id="roomOverviewStats" class="dashboard-mini-stats"></div>
 
       <div class="card wide">
         <div class="toolbar">
           <input id="roomsSearchInput" class="toolbar-input" type="search" placeholder="Поиск по аудиториям" />
         </div>
-        <table class="data-table">
+        <div id="roomsCardGrid" class="room-card-grid"></div>
+        <table class="data-table room-table-legacy" hidden>
           <thead>
             <tr>
               <th>ID</th>
@@ -67,13 +70,13 @@
           <tbody id="roomTableBody"></tbody>
         </table>
         <div id="roomsEmptyState" class="empty-state" hidden>
-          <h3>Аудиторий пока нет</h3>
-          <p>Создайте первую аудиторию, чтобы начать наполнять систему оборудованием.</p>
+          <h3>Аудитории пока не добавлены</h3>
+          <p>Создайте первую аудиторию, чтобы начать наполнять систему оборудованием и заявками.</p>
         </div>
       </div>
 
       <div class="card">
-        <h3>Создать новую аудиторию</h3>
+        <h3>Добавить новую аудиторию</h3>
         <form id="roomForm" class="form-inline">
           <label>
             Название аудитории
@@ -92,6 +95,8 @@
         </div>
       </div>
 
+      <div id="complaintsSummary" class="dashboard-mini-stats"></div>
+
       <div class="card wide">
         <div class="toolbar toolbar-grid">
           <input id="complaintsSearchInput" class="toolbar-input" type="search" placeholder="Поиск по аудитории, преподавателю, описанию" />
@@ -101,6 +106,7 @@
             <option value="в ремонте">В ремонте</option>
           </select>
           <select id="complaintsSortSelect" class="toolbar-input">
+            <option value="review_first">Сначала на рассмотрении</option>
             <option value="updated_desc">Сначала новые</option>
             <option value="room_asc">По аудитории</option>
             <option value="status_asc">По статусу</option>
@@ -140,6 +146,8 @@
         </div>
       </div>
 
+      <div id="archiveSummary" class="dashboard-mini-stats"></div>
+
       <div class="card wide">
         <p id="archiveDeleteHint" class="hint" hidden>Удалять записи из архива может только главный администратор.</p>
         <div class="toolbar toolbar-grid archive-toolbar">
@@ -149,10 +157,10 @@
             <div id="archiveRoomDropdownPanel" class="checkbox-dropdown-panel hidden"></div>
           </div>
           <div class="toolbar-group">
-            <input id="archiveDateFrom" class="toolbar-input" type="date" placeholder="Закрыто с" aria-label="Закрыто с" />
+            <input id="archiveDateFrom" class="toolbar-input" type="date" aria-label="Закрыто с" />
           </div>
           <div class="toolbar-group">
-            <input id="archiveDateTo" class="toolbar-input" type="date" placeholder="Закрыто по" aria-label="Закрыто по" />
+            <input id="archiveDateTo" class="toolbar-input" type="date" aria-label="Закрыто по" />
           </div>
           <select id="archiveSortSelect" class="toolbar-input">
             <option value="closed_desc">Сначала недавно закрытые</option>
@@ -368,7 +376,7 @@
           <p class="eyebrow">Карточка пользователя</p>
           <h3 id="userEditModalTitle">Редактирование пользователя</h3>
         </div>
-        <button id="closeUserEditModal" class="modal-close" type="button">×</button>
+        <button id="closeUserEditModal" class="modal-close" type="button">&times;</button>
       </div>
       <form id="userEditForm">
         <input type="hidden" name="id" />

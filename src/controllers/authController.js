@@ -3,43 +3,78 @@ const path = require('path');
 
 const User = require('../models/User');
 const logger = require('../config/logger');
+const mailer = require('../services/mailer');
 const RoomTeacher = require('../models/RoomTeacher');
 
 const SALT_ROUNDS = 10;
-const RESET_CODE = '0000';
+const RESET_CODE_EXPIRATION_MS = 15 * 60 * 1000;
+const RESET_RESEND_COOLDOWN_MS = 60 * 1000;
 
 function normalizeEmail(value = '') {
   return String(value).trim().toLowerCase();
+}
+
+function generateResetCode() {
+  return String(Math.floor(100000 + Math.random() * 900000));
 }
 
 exports.showLoginPage = (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'public', 'index.html'));
 };
 
-exports.startPasswordReset = (req, res, next) => {
+exports.startPasswordReset = async (req, res, next) => {
   const email = normalizeEmail(req.body.email);
   if (!email) {
     return res.status(400).json({ message: 'Укажите электронную почту' });
   }
 
-  User.findByEmail(email, (err, user) => {
+  logger.info(`Password reset requested for email: ${email}`);
+  User.findByEmail(email, async (err, user) => {
     if (err) return next(err);
     if (!user) {
       return res.status(404).json({ message: 'Пользователь с такой электронной почтой не найден' });
     }
 
-    req.session.passwordReset = {
-      userId: user.id,
-      email,
-      code: RESET_CODE,
-      verified: false,
-      expiresAt: Date.now() + (15 * 60 * 1000)
-    };
+    const previousReset = req.session.passwordReset;
+    const now = Date.now();
+    if (
+      previousReset &&
+      previousReset.email === email &&
+      previousReset.expiresAt > now &&
+      previousReset.lastSentAt &&
+      (now - previousReset.lastSentAt) < RESET_RESEND_COOLDOWN_MS
+    ) {
+      return res.json({
+        message: 'Код уже отправлен. Проверьте почту и введите его в следующем шаге.',
+        email
+      });
+    }
 
-    res.json({
-      message: 'Код подтверждения отправлен. Для теста используйте код 0000.',
-      email
-    });
+    const code = generateResetCode();
+    const expiresAt = now + RESET_CODE_EXPIRATION_MS;
+
+    try {
+      await mailer.sendPasswordResetEmail(email, code);
+
+      req.session.passwordReset = {
+        userId: user.id,
+        email,
+        code,
+        verified: false,
+        expiresAt,
+        lastSentAt: now
+      };
+
+      res.json({
+        message: 'Код подтверждения отправлен на указанную почту.',
+        email
+      });
+    } catch (sendErr) {
+      logger.error('Password reset email send error: ' + sendErr.message);
+      return res.status(500).json({
+        message: 'Не удалось отправить код на почту. Проверьте настройки почтового сервиса.'
+      });
+    }
   });
 };
 

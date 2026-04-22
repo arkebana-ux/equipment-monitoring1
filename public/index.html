@@ -3,31 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Авторизация</title>
+  <title>Аудиторный контроль</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body class="auth-page">
   <main class="auth-shell">
     <section class="auth-hero">
-      <p class="eyebrow">Информационная система</p>
-      <h1>Учет состояния оборудования в аудиториях высшего учебного заведения</h1>
+      <p class="eyebrow">Цифровая платформа вуза</p>
+      <h1>Аудиторный контроль</h1>
       <p>
-        Рабочее пространство для преподавателей и администраторов: аудитории, оборудование,
-        обращения о неисправностях, архив и аналитика в одной системе.
+        Система для контроля состояния оборудования в учебных аудиториях:
+        заявки, архив, аналитика и управление доступом в одном рабочем пространстве.
       </p>
 
       <div class="auth-highlights">
         <div class="auth-highlight">
           <strong>Для преподавателей</strong>
-          Быстрая подача заявки по конкретному оборудованию с фото и видео.
+          Быстрая подача заявки по конкретному оборудованию в закрепленной аудитории.
         </div>
         <div class="auth-highlight">
           <strong>Для администраторов</strong>
-          Контроль статусов, архив, аналитика и управление пользователями.
-        </div>
-        <div class="auth-highlight">
-          <strong>Для тестирования</strong>
-          Восстановление пароля пока работает через тестовый код `0000`.
+          Контроль статусов, аудит аудиторий, аналитика и управление пользователями.
         </div>
       </div>
     </section>
@@ -59,7 +55,7 @@
           <p class="eyebrow">Восстановление доступа</p>
           <h3 id="passwordResetTitle">Введите электронную почту</h3>
         </div>
-        <button id="closePasswordResetModal" class="modal-close" type="button">×</button>
+        <button id="closePasswordResetModal" class="modal-close" type="button">&times;</button>
       </div>
 
       <form id="passwordResetEmailStep" class="password-reset-step">
@@ -67,7 +63,7 @@
           Электронная почта
           <input type="email" name="email" id="passwordResetEmail" placeholder="name@example.com" required />
         </label>
-        <p class="hint">Проверим, есть ли такая почта в системе, и откроем следующий шаг.</p>
+        <p class="hint">Проверим, есть ли такая почта в системе, и отправим код для восстановления.</p>
         <div class="modal-actions sticky-actions">
           <button class="btn hover-highlight" type="submit">Продолжить</button>
         </div>
@@ -76,9 +72,9 @@
       <form id="passwordResetCodeStep" class="password-reset-step hidden">
         <label>
           Код подтверждения
-          <input type="text" name="code" id="passwordResetCode" inputmode="numeric" maxlength="4" placeholder="0000" required />
+          <input type="text" name="code" id="passwordResetCode" inputmode="numeric" maxlength="6" placeholder="123456" required />
         </label>
-        <p class="hint">Пока действует тестовая заглушка: код всегда `0000`.</p>
+        <p class="hint">Проверьте почтовый ящик и введите код из письма.</p>
         <div class="modal-actions sticky-actions">
           <button class="btn" data-reset-back="email" type="button">Назад</button>
           <button class="btn hover-highlight" type="submit">Подтвердить код</button>

@@ -180,10 +180,28 @@ exports.getDashboardData = (req, res, next) => {
         User.findAllAdmins((adminErr, admins) => {
           if (adminErr) return next(adminErr);
           buildAnalytics(teachers, admins, complaints, rooms)
-            .then((analytics) => {
+            .then(async (analytics) => {
+              const roomInsights = await dbAll(`
+                SELECT
+                  r.id,
+                  r.name,
+                  COUNT(DISTINCT rt.user_id) AS teacher_count,
+                  COUNT(DISTINCT e.id) AS equipment_count,
+                  COUNT(DISTINCT c.id) AS total_complaints,
+                  COUNT(DISTINCT CASE WHEN c.status != 'РёСЃРїСЂР°РІР»РµРЅРѕ' THEN c.id END) AS active_complaints,
+                  COUNT(DISTINCT CASE WHEN c.status = 'РёСЃРїСЂР°РІР»РµРЅРѕ' THEN c.id END) AS archived_complaints,
+                  MAX(COALESCE(c.updated_at, c.created_at)) AS last_activity_at
+                FROM rooms r
+                LEFT JOIN room_teachers rt ON rt.room_id = r.id
+                LEFT JOIN equipment e ON e.room_id = r.id
+                LEFT JOIN complaints c ON c.equipment_id = e.id
+                GROUP BY r.id, r.name
+                ORDER BY r.name ASC
+              `);
               res.json({
                 complaints,
                 rooms,
+                roomInsights,
                 teachers,
                 admins,
                 analytics,
@@ -235,7 +253,43 @@ exports.getRoomData = (req, res, next) => {
         if (roomTeacherErr) return next(roomTeacherErr);
         User.findAllTeachers((teacherErr, allTeachers) => {
           if (teacherErr) return next(teacherErr);
-          res.json({ room, equipment, roomTeachers, allTeachers });
+          Promise.all([
+            dbAll(`
+              SELECT
+                c.id,
+                c.status,
+                c.description,
+                c.created_at,
+                c.updated_at,
+                u.full_name,
+                e.name AS equipment_name
+              FROM complaints c
+              LEFT JOIN users u ON u.id = c.user_id
+              LEFT JOIN equipment e ON e.id = c.equipment_id
+              WHERE e.room_id = ?
+              ORDER BY COALESCE(c.updated_at, c.created_at) DESC
+              LIMIT 8
+            `, [roomId]),
+            dbGet(`
+              SELECT
+                COUNT(DISTINCT e.id) AS equipment_count,
+                COUNT(DISTINCT CASE WHEN e.status = 'РІ СЂР°Р±РѕС‚Рµ' THEN e.id END) AS healthy_equipment_count,
+                COUNT(DISTINCT CASE WHEN e.status = 'РЅР° СЂР°СЃСЃРјРѕС‚СЂРµРЅРёРё' THEN e.id END) AS review_equipment_count,
+                COUNT(DISTINCT CASE WHEN e.status = 'РІ СЂРµРјРѕРЅС‚Рµ' THEN e.id END) AS repair_equipment_count,
+                COUNT(DISTINCT c.id) AS total_complaints,
+                COUNT(DISTINCT CASE WHEN c.status != 'РёСЃРїСЂР°РІР»РµРЅРѕ' THEN c.id END) AS active_complaints,
+                COUNT(DISTINCT CASE WHEN c.status = 'РёСЃРїСЂР°РІР»РµРЅРѕ' THEN c.id END) AS archived_complaints,
+                MAX(COALESCE(c.updated_at, c.created_at)) AS last_activity_at
+              FROM rooms r
+              LEFT JOIN equipment e ON e.room_id = r.id
+              LEFT JOIN complaints c ON c.equipment_id = e.id
+              WHERE r.id = ?
+            `, [roomId])
+          ])
+            .then(([recentComplaints, roomSummary]) => {
+              res.json({ room, equipment, roomTeachers, allTeachers, recentComplaints, roomSummary });
+            })
+            .catch(next);
         });
       });
     });

@@ -1,4 +1,4 @@
-async function requestJSON(url, options = {}) {
+﻿async function requestJSON(url, options = {}) {
   const response = await fetch(url, options);
   const data = await response.json().catch(() => ({}));
   return { ok: response.ok, status: response.status, data };
@@ -41,28 +41,53 @@ function formatRelativeTime(dateValue) {
   const diffMin = Math.floor(diffMs / 60000);
   const diffHour = Math.floor(diffMin / 60);
   const diffDay = Math.floor(diffHour / 24);
-  if (diffMin < 1) return 'только что';
-  if (diffMin < 60) return `${diffMin} мин назад`;
-  if (diffHour < 24) return `${diffHour} ч назад`;
-  if (diffDay < 7) return `${diffDay} дн назад`;
+  if (diffMin < 1) return '\u0442\u043e\u043b\u044c\u043a\u043e \u0447\u0442\u043e';
+  if (diffMin < 60) return `${diffMin} \u043c\u0438\u043d \u043d\u0430\u0437\u0430\u0434`;
+  if (diffHour < 24) return `${diffHour} \u0447 \u043d\u0430\u0437\u0430\u0434`;
+  if (diffDay < 7) return `${diffDay} \u0434\u043d \u043d\u0430\u0437\u0430\u0434`;
   return date.toLocaleDateString('ru-RU');
 }
 
 function statusBadge(status) {
   const value = String(status || '').toLowerCase();
-  if (value === 'на рассмотрении') {
-    return '<span class="status-badge status-review-badge">На рассмотрении</span>';
+  if (value === '\u043d\u0430 \u0440\u0430\u0441\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u0438\u0438') {
+    return '<span class="status-badge status-review-badge">\u041d\u0430 \u0440\u0430\u0441\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u0438\u0438</span>';
   }
-  if (value === 'в ремонте') {
-    return '<span class="status-badge status-repair-badge">В ремонте</span>';
+  if (value === '\u0432 \u0440\u0435\u043c\u043e\u043d\u0442\u0435') {
+    return '<span class="status-badge status-repair-badge">\u0412 \u0440\u0435\u043c\u043e\u043d\u0442\u0435</span>';
   }
-  if (value === 'исправлено' || value === 'в работе') {
-    return `<span class="status-badge status-fixed-badge">${escapeHtml(status || 'В работе')}</span>`;
+  if (value === '\u0438\u0441\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u043e' || value === '\u0432 \u0440\u0430\u0431\u043e\u0442\u0435') {
+    return `<span class="status-badge status-fixed-badge">${escapeHtml(status || '\u0412 \u0440\u0430\u0431\u043e\u0442\u0435')}</span>`;
   }
-  return `<span class="status-badge">${escapeHtml(status || 'Без статуса')}</span>`;
+  return `<span class="status-badge">${escapeHtml(status || '\u0411\u0435\u0437 \u0441\u0442\u0430\u0442\u0443\u0441\u0430')}</span>`;
+}
+
+function formatDateLabel(dateValue) {
+  const date = parseDate(dateValue);
+  if (!date) return '\u2014';
+  return date.toLocaleString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  const topbarBrand = document.querySelector('.topbar-brand');
+  const topbarEyebrow = topbarBrand?.querySelector('.eyebrow');
+  const topbarHeading = topbarBrand?.querySelector('h1');
+  const topbarSubtitle = topbarBrand?.querySelector('.topbar-subtitle');
+
+  if (document.body.classList.contains('dashboard-page')) {
+    document.title = '\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u043d\u044b\u0439 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044c';
+    if (topbarEyebrow) topbarEyebrow.textContent = '\u0411\u0410\u0413\u0421\u0423 \u2022 \u0410\u0443\u0434\u0438\u0442\u043e\u0440\u043d\u044b\u0439 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044c';
+    if (topbarHeading) topbarHeading.textContent = '\u0421\u043e\u0441\u0442\u043e\u044f\u043d\u0438\u0435 \u043e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u044f \u0432 \u0443\u0447\u0435\u0431\u043d\u044b\u0445 \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044f\u0445';
+    if (topbarSubtitle) topbarSubtitle.textContent = '\u0417\u0430\u044f\u0432\u043a\u0438, \u0430\u0440\u0445\u0438\u0432, \u0430\u043d\u0430\u043b\u0438\u0442\u0438\u043a\u0430 \u0438 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u044c \u043f\u043e \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044f\u043c \u0411\u0430\u0448\u043a\u0438\u0440\u0441\u043a\u043e\u0439 \u0430\u043a\u0430\u0434\u0435\u043c\u0438\u0438 \u0433\u043e\u0441\u0443\u0434\u0430\u0440\u0441\u0442\u0432\u0435\u043d\u043d\u043e\u0439 \u0441\u043b\u0443\u0436\u0431\u044b \u0438 \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f.';
+  }
+
+
   const loginForm = document.getElementById('loginForm');
   const logoutBtn = document.getElementById('logoutBtn');
   const roomForm = document.getElementById('roomForm');
@@ -71,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const complaintForm = document.getElementById('complaintForm');
 
   const roomTableBody = document.getElementById('roomTableBody');
+  const roomsCardGrid = document.getElementById('roomsCardGrid');
   const complaintTableBody = document.getElementById('complaintTableBody');
   const archiveTableBody = document.getElementById('archiveTableBody');
   const teacherTableBody = document.getElementById('teacherTableBody');
@@ -80,6 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const archiveDeleteHint = document.getElementById('archiveDeleteHint');
 
   const analyticsSummary = document.getElementById('analyticsSummary');
+  const roomOverviewStats = document.getElementById('roomOverviewStats');
+  const complaintsSummary = document.getElementById('complaintsSummary');
+  const archiveSummary = document.getElementById('archiveSummary');
   const analyticsStatusChart = document.getElementById('analyticsStatusChart');
   const analyticsEquipmentChart = document.getElementById('analyticsEquipmentChart');
   const analyticsTopEquipmentChart = document.getElementById('analyticsTopEquipmentChart');
@@ -124,13 +153,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const roomPageTitle = document.getElementById('roomPageTitle');
   const roomNameHeading = document.getElementById('roomNameHeading');
+  const roomQuickStats = document.getElementById('roomQuickStats');
+  const roomIdentityCard = document.getElementById('roomIdentityCard');
+  const roomRecentComplaints = document.getElementById('roomRecentComplaints');
   const editRoomBtn = document.getElementById('editRoomBtn');
   const equipmentForm = document.getElementById('equipmentForm');
   const equipmentTableBody = document.getElementById('equipmentTableBody');
   const roomTeachersTableBody = document.getElementById('roomTeachersTableBody');
   const roomTeacherForm = document.getElementById('roomTeacherForm');
   const roomTeacherSearch = document.getElementById('roomTeacherSearch');
-  const roomTeacherSelect = document.getElementById('roomTeacherSelect');
+  const roomTeacherOptions = document.getElementById('roomTeacherOptions');
   const deleteRoomBtn = document.getElementById('deleteRoomBtn');
   const equipmentEditModal = document.getElementById('equipmentEditModal');
   const equipmentEditForm = document.getElementById('equipmentEditForm');
@@ -158,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     teachers: [],
     admins: [],
     analytics: null,
+    roomInsights: [],
     archiveRoomFilters: [],
     archiveSelectedIds: new Set()
   };
@@ -166,12 +199,15 @@ document.addEventListener('DOMContentLoaded', () => {
     room: null,
     equipment: [],
     roomTeachers: [],
-    allTeachers: []
+    allTeachers: [],
+    recentComplaints: [],
+    summary: null,
+    pendingTeacherIds: new Set()
   };
 
   const isMainAdmin = () => Boolean(dashboardState.currentUser?.is_super_admin);
 
-  function showToast(message, type = 'success', title = 'Готово') {
+  function showToast(message, type = 'success', title = '\u0413\u043e\u0442\u043e\u0432\u043e') {
     if (!toastContainer) return;
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
@@ -193,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form?.reset();
   }
 
-  function askConfirm({ title, message, acceptLabel = 'Подтвердить' }) {
+  function askConfirm({ title, message, acceptLabel = '\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u044c' }) {
     if (!confirmModal) return Promise.resolve(window.confirm(message));
     confirmModalTitle.textContent = title;
     confirmModalMessage.textContent = message;
@@ -226,14 +262,14 @@ document.addEventListener('DOMContentLoaded', () => {
     userEditForm.elements.login.value = login || '';
     userEditForm.elements.email.value = email || '';
     userEditForm.elements.password.value = '';
-    userEditModalTitle.textContent = userType === 'admin' ? 'Карточка администратора' : 'Карточка преподавателя';
+    userEditModalTitle.textContent = userType === 'admin' ? 'РљР°СЂС‚РѕС‡РєР° Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°' : 'РљР°СЂС‚РѕС‡РєР° РїСЂРµРїРѕРґР°РІР°С‚РµР»СЏ';
     openModal(userEditModal);
   }
 
   function renderAnalyticsBars(container, items, options = {}) {
     if (!container) return;
     if (!items?.length) {
-      container.innerHTML = '<p class="hint">Пока данных недостаточно.</p>';
+      container.innerHTML = '<p class="hint">РџРѕРєР° РґР°РЅРЅС‹С… РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ.</p>';
       return;
     }
     const max = Math.max(...items.map((item) => Number(item.value || item.score || 0)), 1);
@@ -261,14 +297,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!archiveRoomDropdownBtn) return;
     const selected = getArchiveRoomFilters();
     if (!selected.length) {
-      archiveRoomDropdownBtn.textContent = 'Аудитории: все';
+      archiveRoomDropdownBtn.textContent = '\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0438: \u0432\u0441\u0435';
       return;
     }
     if (selected.length <= 2) {
-      archiveRoomDropdownBtn.textContent = `Аудитории: ${selected.join(', ')}`;
+      archiveRoomDropdownBtn.textContent = `\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0438: ${selected.join(', ')}`;
       return;
     }
-    archiveRoomDropdownBtn.textContent = `Аудитории: выбрано ${selected.length}`;
+    archiveRoomDropdownBtn.textContent = `\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0438: \u0432\u044b\u0431\u0440\u0430\u043d\u043e ${selected.length}`;
   }
 
   function renderArchiveRoomDropdown() {
@@ -287,32 +323,52 @@ document.addEventListener('DOMContentLoaded', () => {
     updateArchiveRoomButtonLabel();
   }
 
+  function renderMiniStats(container, items) {
+    if (!container) return;
+    container.innerHTML = items.map((item) => `
+      <div class="mini-stat">
+        <div class="mini-stat-label">${escapeHtml(item.label)}</div>
+        <div class="mini-stat-value">${escapeHtml(item.value)}</div>
+        <div class="mini-stat-hint">${escapeHtml(item.hint || '')}</div>
+      </div>
+    `).join('');
+  }
+
+  function resolveRoomCardStatus(roomInsight) {
+    const active = Number(roomInsight.active_complaints || 0);
+    if (active >= 3) return { label: '\u0422\u0440\u0435\u0431\u0443\u0435\u0442 \u0432\u043d\u0438\u043c\u0430\u043d\u0438\u044f', className: 'danger' };
+    if (active >= 1) return { label: '\u0415\u0441\u0442\u044c \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u044f', className: 'warning' };
+    return { label: '\u0417\u0430\u044f\u0432\u043e\u043a \u043d\u0435\u0442', className: 'success' };
+  }
+
   function renderAnalytics() {
     const analytics = dashboardState.analytics;
     if (!analytics) return;
 
     const summaryCards = [
-      { label: 'Аудиторий', value: analytics.summary.totalRooms || 0, tone: 'info', trend: 'Общий охват инфраструктуры' },
-      { label: 'Оборудования', value: analytics.summary.totalEquipment || 0, tone: 'dark', trend: 'Вся техника под контролем' },
-      { label: 'Всего заявок', value: analytics.summary.totalComplaints || 0, tone: 'warning', trend: 'Текущий объем обращений' },
-      { label: 'Среднее время ремонта', value: `${analytics.summary.avgRepairHours || 0} ч`, tone: 'success', trend: 'От подачи до исправления' }
+      { label: '\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0439', value: analytics.summary.totalRooms || 0, tone: 'info', trend: '\u041e\u0431\u0449\u0438\u0439 \u043e\u0445\u0432\u0430\u0442 \u0443\u0447\u0435\u0431\u043d\u043e\u0433\u043e \u0444\u043e\u043d\u0434\u0430', accent: '\u041a\u0430\u0431\u0438\u043d\u0435\u0442\u044b \u043f\u043e\u0434 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0435\u043c' },
+      { label: '\u0415\u0434\u0438\u043d\u0438\u0446 \u0442\u0435\u0445\u043d\u0438\u043a\u0438', value: analytics.summary.totalEquipment || 0, tone: 'dark', trend: '\u0412\u0441\u044f \u0438\u043d\u0444\u0440\u0430\u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u0430 \u043f\u043e \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044f\u043c', accent: '\u041e\u0442 \u041f\u041a \u0434\u043e \u043c\u0443\u043b\u044c\u0442\u0438\u043c\u0435\u0434\u0438\u0430' },
+      { label: '\u0412\u0441\u0435\u0433\u043e \u0437\u0430\u044f\u0432\u043e\u043a', value: analytics.summary.totalComplaints || 0, tone: 'warning', trend: '\u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0435 \u0438 \u0437\u0430\u043a\u0440\u044b\u0442\u044b\u0435 \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u044f', accent: '\u0418\u0441\u0442\u043e\u0440\u0438\u044f \u044d\u043a\u0441\u043f\u043b\u0443\u0430\u0442\u0430\u0446\u0438\u0438' },
+      { label: '\u0421\u0440\u0435\u0434\u043d\u0435\u0435 \u0432\u0440\u0435\u043c\u044f \u0440\u0435\u043c\u043e\u043d\u0442\u0430', value: `${analytics.summary.avgRepairHours || 0} \u0447`, tone: 'success', trend: '\u041e\u0442 \u043f\u043e\u0434\u0430\u0447\u0438 \u0434\u043e \u0437\u0430\u043a\u0440\u044b\u0442\u0438\u044f', accent: '\u041f\u043e\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u044c \u0440\u0435\u0430\u043a\u0446\u0438\u0438 \u0441\u0438\u0441\u0442\u0435\u043c\u044b' }
     ];
 
     if (analyticsSummary) {
       analyticsSummary.innerHTML = summaryCards.map((item) => `
         <div class="analytics-stat" data-tone="${item.tone}">
+          <div class="analytics-stat-kicker">\u0421\u0432\u043e\u0434\u043a\u0430</div>
           <div class="analytics-stat-label">${item.label}</div>
           <div class="analytics-stat-value">${item.value}</div>
           <div class="analytics-trend">${item.trend}</div>
+          <div class="analytics-stat-accent">${item.accent}</div>
         </div>
       `).join('');
     }
 
     renderAnalyticsBars(analyticsStatusChart, analytics.complaintStatuses || [], {
-      classNameFor: (item) => item.label === 'на рассмотрении' ? 'warning' : (item.label === 'в ремонте' ? 'danger' : 'success')
+      classNameFor: (item) => item.label === '\u043d\u0430 \u0440\u0430\u0441\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u0438\u0438' ? 'warning' : (item.label === '\u0432 \u0440\u0435\u043c\u043e\u043d\u0442\u0435' ? 'danger' : 'success')
     });
     renderAnalyticsBars(analyticsEquipmentChart, analytics.equipmentStatuses || [], {
-      classNameFor: (item) => item.label === 'на рассмотрении' ? 'warning' : (item.label === 'в ремонте' ? 'danger' : 'success')
+      classNameFor: (item) => item.label === '\u043d\u0430 \u0440\u0430\u0441\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u0438\u0438' ? 'warning' : (item.label === '\u0432 \u0440\u0435\u043c\u043e\u043d\u0442\u0435' ? 'danger' : 'success')
     });
     renderAnalyticsBars(analyticsTopEquipmentChart, analytics.topBrokenEquipment || [], { classNameFor: () => 'accent' });
     renderAnalyticsBars((analyticsReliabilityChart), (analytics.roomReliability || []).slice(0, 6).map((item) => ({
@@ -329,15 +385,15 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="room-analytics-item">
           <div class="room-analytics-top">
             <div class="room-analytics-name">${escapeHtml(room.roomName)}</div>
-            <div class="room-analytics-meta">Открытых заявок: ${room.activeComplaints}</div>
+            <div class="room-analytics-meta">\u041e\u0442\u043a\u0440\u044b\u0442\u044b\u0445 \u0437\u0430\u044f\u0432\u043e\u043a: ${room.activeComplaints}</div>
           </div>
           <div class="room-analytics-tags">
-            <span class="room-analytics-tag">Оборудование: ${room.equipmentCount}</span>
-            <span class="room-analytics-tag">Всего заявок: ${room.totalComplaints}</span>
-            <span class="room-analytics-tag">В архиве: ${room.archivedComplaints}</span>
+            <span class="room-analytics-tag">\u041e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u0435: ${room.equipmentCount}</span>
+            <span class="room-analytics-tag">\u0412\u0441\u0435\u0433\u043e \u0437\u0430\u044f\u0432\u043e\u043a: ${room.totalComplaints}</span>
+            <span class="room-analytics-tag">\u0418\u0441\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u043e: ${room.archivedComplaints}</span>
           </div>
         </div>
-      `).join('') : '<p class="hint">Пока нет данных по аудиториям.</p>';
+      `).join('') : '<p class="hint">\u041f\u043e\u043a\u0430 \u043d\u0435\u0442 \u0434\u0430\u043d\u043d\u044b\u0445 \u043f\u043e \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044f\u043c.</p>';
     }
   }
 
@@ -345,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const roomsQuery = roomsSearchInput?.value?.trim().toLowerCase() || '';
     const complaintsQuery = complaintsSearchInput?.value?.trim().toLowerCase() || '';
     const complaintsStatus = complaintsStatusFilter?.value || '';
-    const complaintsSort = complaintsSortSelect?.value || 'updated_desc';
+    const complaintsSort = complaintsSortSelect?.value || 'review_first';
     const archiveQuery = archiveSearchInput?.value?.trim().toLowerCase() || '';
     const archiveRooms = getArchiveRoomFilters();
     const archiveFrom = archiveDateFrom?.value || '';
@@ -354,22 +410,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const teachersQuery = teachersSearchInput?.value?.trim().toLowerCase() || '';
     const adminsQuery = adminsSearchInput?.value?.trim().toLowerCase() || '';
 
-    const filteredRooms = dashboardState.rooms.filter((room) => room.name.toLowerCase().includes(roomsQuery));
+    const filteredRooms = (dashboardState.roomInsights || []).filter((room) => String(room.name || '').toLowerCase().includes(roomsQuery));
 
     const activeComplaints = dashboardState.complaints
-      .filter((item) => item.status !== 'исправлено')
+      .filter((item) => item.status !== 'РёСЃРїСЂР°РІР»РµРЅРѕ')
       .filter((item) => {
         const haystack = `${item.room_name || ''} ${item.full_name || ''} ${item.equipment_name || ''} ${item.description || ''}`.toLowerCase();
         return (!complaintsQuery || haystack.includes(complaintsQuery)) && (!complaintsStatus || item.status === complaintsStatus);
       })
       .sort((a, b) => {
+        if (complaintsSort === 'review_first') {
+          const order = { '\u043d\u0430 \u0440\u0430\u0441\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u0438\u0438': 0, '\u0432 \u0440\u0435\u043c\u043e\u043d\u0442\u0435': 1 };
+          const byStatus = (order[a.status] ?? 9) - (order[b.status] ?? 9);
+          if (byStatus !== 0) return byStatus;
+          return new Date(b.updated_at || 0) - new Date(a.updated_at || 0);
+        }
         if (complaintsSort === 'room_asc') return String(a.room_name || '').localeCompare(String(b.room_name || ''), 'ru');
         if (complaintsSort === 'status_asc') return String(a.status || '').localeCompare(String(b.status || ''), 'ru');
         return new Date(b.updated_at || 0) - new Date(a.updated_at || 0);
       });
 
     const archivedComplaints = dashboardState.complaints
-      .filter((item) => item.status === 'исправлено')
+      .filter((item) => item.status === 'РёСЃРїСЂР°РІР»РµРЅРѕ')
       .filter((item) => {
         const haystack = `${item.room_name || ''} ${item.full_name || ''} ${item.equipment_name || ''} ${item.description || ''}`.toLowerCase();
         const updatedDate = String(item.updated_at || '').slice(0, 10);
@@ -393,6 +455,49 @@ document.addEventListener('DOMContentLoaded', () => {
       Array.from(dashboardState.archiveSelectedIds).filter((id) => visibleArchiveIds.has(Number(id)))
     );
 
+    renderMiniStats(roomOverviewStats, [
+      { label: '\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0439', value: String(dashboardState.rooms.length), hint: '\u0412\u0441\u0435\u0433\u043e \u043a\u0430\u0431\u0438\u043d\u0435\u0442\u043e\u0432 \u043f\u043e\u0434 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0435\u043c' },
+      { label: '\u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0435 \u0437\u0430\u044f\u0432\u043a\u0438', value: String(dashboardState.complaints.filter((item) => item.status !== '\u0438\u0441\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u043e').length), hint: '\u0422\u0440\u0435\u0431\u0443\u044e\u0442 \u0432\u043d\u0438\u043c\u0430\u043d\u0438\u044f \u0430\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440\u043e\u0432' },
+      { label: '\u0410\u0440\u0445\u0438\u0432', value: String(dashboardState.complaints.filter((item) => item.status === '\u0438\u0441\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u043e').length), hint: '\u0417\u0430\u043a\u0440\u044b\u0442\u044b\u0435 \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u044f \u043f\u043e \u043e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u044e' },
+      { label: '\u041f\u0440\u0435\u043f\u043e\u0434\u0430\u0432\u0430\u0442\u0435\u043b\u0438', value: String(dashboardState.teachers.length), hint: '\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u0438 \u0441 \u0437\u0430\u043a\u0440\u0435\u043f\u043b\u0435\u043d\u043d\u044b\u043c\u0438 \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044f\u043c\u0438' }
+    ]);
+
+    if (roomsCardGrid) {
+      roomsCardGrid.innerHTML = filteredRooms.map((room) => {
+        const roomStatus = resolveRoomCardStatus(room);
+        return `
+          <article class="room-card" data-id="${room.id}" data-name="${escapeHtml(room.name)}">
+            <div class="room-card-head">
+              <div>
+                <h3 class="room-card-title">${escapeHtml(room.name)}</h3>
+              </div>
+              <span class="room-card-status ${roomStatus.className}">${escapeHtml(roomStatus.label)}</span>
+            </div>
+            <div class="room-card-metrics">
+              <div class="room-card-metric">
+                <strong>${Number(room.equipment_count || 0)}</strong>
+                <span>\u0435\u0434\u0438\u043d\u0438\u0446 \u0442\u0435\u0445\u043d\u0438\u043a\u0438</span>
+              </div>
+              <div class="room-card-metric">
+                <strong>${Number(room.teacher_count || 0)}</strong>
+                <span>\u043f\u0440\u0435\u043f\u043e\u0434\u0430\u0432\u0430\u0442\u0435\u043b\u0435\u0439</span>
+              </div>
+              <div class="room-card-metric">
+                <strong>${Number(room.active_complaints || 0)}</strong>
+                <span>\u0430\u043a\u0442\u0438\u0432\u043d\u044b\u0445 \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u0439</span>
+              </div>
+              <div class="room-card-metric">
+                <strong>${Number(room.total_complaints || 0)}</strong>
+                <span>\u0437\u0430 \u0432\u0441\u0451 \u0432\u0440\u0435\u043c\u044f</span>
+              </div>
+            </div>
+            <div class="room-card-footer">
+              <span>\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u043f\u0430\u0441\u043f\u043e\u0440\u0442 \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0438</span>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
     if (roomTableBody) {
       roomTableBody.innerHTML = filteredRooms.map((room) => `
         <tr data-id="${room.id}" data-name="${escapeHtml(room.name)}">
@@ -403,6 +508,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (roomsEmptyState) roomsEmptyState.hidden = filteredRooms.length > 0;
 
+    renderMiniStats(complaintsSummary, [
+      { label: '\u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0435', value: String(activeComplaints.length), hint: '\u0412\u0441\u0435 \u043e\u0442\u043a\u0440\u044b\u0442\u044b\u0435 \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u044f \u043f\u043e\u0441\u043b\u0435 \u0444\u0438\u043b\u044c\u0442\u0440\u0430\u0446\u0438\u0438' },
+      { label: '\u041d\u0430 \u0440\u0430\u0441\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u0438\u0438', value: String(activeComplaints.filter((item) => item.status === '\u043d\u0430 \u0440\u0430\u0441\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u0438\u0438').length), hint: '\u041e\u0436\u0438\u0434\u0430\u044e\u0442 \u0440\u0435\u0448\u0435\u043d\u0438\u044f \u0438\u043b\u0438 \u0434\u0438\u0430\u0433\u043d\u043e\u0441\u0442\u0438\u043a\u0438' },
+      { label: '\u0412 \u0440\u0435\u043c\u043e\u043d\u0442\u0435', value: String(activeComplaints.filter((item) => item.status === '\u0432 \u0440\u0435\u043c\u043e\u043d\u0442\u0435').length), hint: '\u0422\u0435\u0445\u043d\u0438\u043a\u0430 \u043f\u0435\u0440\u0435\u0434\u0430\u043d\u0430 \u0432 \u0440\u0430\u0431\u043e\u0442\u0443' },
+      { label: '\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0439 \u0441 \u043f\u0440\u043e\u0431\u043b\u0435\u043c\u0430\u043c\u0438', value: String(new Set(activeComplaints.map((item) => item.room_name)).size), hint: '\u041a\u0430\u0431\u0438\u043d\u0435\u0442\u044b \u0441 \u0442\u0435\u043a\u0443\u0449\u0438\u043c\u0438 \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u044f\u043c\u0438' }
+    ]);
+
     if (complaintTableBody) {
       complaintTableBody.innerHTML = activeComplaints.map((item) => `
         <tr>
@@ -410,18 +522,17 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${escapeHtml(item.room_name || '-')}</td>
           <td>${escapeHtml(item.full_name || '-')}</td>
           <td>${escapeHtml(item.equipment_name || '-')}</td>
-          <td>${escapeHtml(item.assigned_admin_name || 'Не назначен')}</td>
+          <td>${escapeHtml(item.assigned_admin_name || '\u041d\u0435 \u043d\u0430\u0437\u043d\u0430\u0447\u0435\u043d')}</td>
           <td class="compl-desc">${escapeHtml(item.description || '-')}</td>
           <td>${statusBadge(item.status)}</td>
           <td class="table-actions-cell">
             <div class="action-stack">
               <select class="status-select toolbar-input" data-id="${item.id}">
-                <option value="на рассмотрении" ${item.status === 'на рассмотрении' ? 'selected' : ''}>На рассмотрении</option>
-                <option value="в ремонте" ${item.status === 'в ремонте' ? 'selected' : ''}>В ремонте</option>
-                <option value="исправлено" ${item.status === 'исправлено' ? 'selected' : ''}>Исправлено</option>
+                <option value="\u043d\u0430 \u0440\u0430\u0441\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u0438\u0438" ${item.status === '\u043d\u0430 \u0440\u0430\u0441\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u0438\u0438' ? 'selected' : ''}>\u041d\u0430 \u0440\u0430\u0441\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u0438\u0438</option>
+                <option value="\u0432 \u0440\u0435\u043c\u043e\u043d\u0442\u0435" ${item.status === '\u0432 \u0440\u0435\u043c\u043e\u043d\u0442\u0435' ? 'selected' : ''}>\u0412 \u0440\u0435\u043c\u043e\u043d\u0442\u0435</option>
               </select>
-              <button class="btn btn-sm hover-highlight btn-status-save" data-id="${item.id}">Сохранить</button>
-              <button class="btn btn-sm hover-highlight btn-open-complaint" data-id="${item.id}">Открыть</button>
+              <button class="btn btn-sm hover-highlight btn-status-save" data-id="${item.id}">\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c</button>
+              <button class="btn btn-sm hover-highlight btn-open-complaint" data-id="${item.id}">\u041e\u0442\u043a\u0440\u044b\u0442\u044c</button>
             </div>
           </td>
         </tr>
@@ -449,8 +560,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${escapeHtml(item.updated_at || '-')}</td>
           <td class="table-actions-cell">
             <div class="action-stack">
-              <button class="btn btn-sm hover-highlight btn-open-complaint" data-id="${item.id}">Открыть</button>
-              ${isMainAdmin() ? `<button class="btn btn-sm btn-danger btn-archive-delete" data-id="${item.id}">Удалить</button>` : '<span class="hint">Только главный админ</span>'}
+              <button class="btn btn-sm hover-highlight btn-open-complaint" data-id="${item.id}">\u041e\u0442\u043a\u0440\u044b\u0442\u044c</button>
+              ${isMainAdmin() ? `<button class="btn btn-sm btn-danger btn-archive-delete" data-id="${item.id}">\u0423\u0434\u0430\u043b\u0438\u0442\u044c</button>` : '<span class="hint">\u0422\u043e\u043b\u044c\u043a\u043e \u0433\u043b\u0430\u0432\u043d\u044b\u0439 \u0430\u0434\u043c\u0438\u043d</span>'}
             </div>
           </td>
         </tr>
@@ -465,6 +576,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (archiveEmptyState) archiveEmptyState.hidden = archivedComplaints.length > 0;
 
+    renderMiniStats(archiveSummary, [
+      { label: '\u0412 \u0430\u0440\u0445\u0438\u0432\u0435', value: String(archivedComplaints.length), hint: '\u0417\u0430\u043a\u0440\u044b\u0442\u044b\u0435 \u0437\u0430\u044f\u0432\u043a\u0438 \u043f\u043e\u0441\u043b\u0435 \u0444\u0438\u043b\u044c\u0442\u0440\u0430\u0446\u0438\u0438' },
+      { label: '\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0439', value: String(new Set(archivedComplaints.map((item) => item.room_name)).size), hint: '\u041a\u0430\u0431\u0438\u043d\u0435\u0442\u044b \u0441 \u0437\u0430\u043a\u0440\u044b\u0442\u044b\u043c\u0438 \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u044f\u043c\u0438' },
+      { label: '\u041e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u0435', value: String(new Set(archivedComplaints.map((item) => item.equipment_name)).size), hint: '\u0415\u0434\u0438\u043d\u0438\u0446 \u0442\u0435\u0445\u043d\u0438\u043a\u0438 \u0441 \u0438\u0441\u0442\u043e\u0440\u0438\u0435\u0439 \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u0439' },
+      { label: '\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0435\u0435 \u0437\u0430\u043a\u0440\u044b\u0442\u0438\u0435', value: archivedComplaints[0]?.updated_at ? formatDateLabel(archivedComplaints[0].updated_at) : '\u2014', hint: '\u0421\u0430\u043c\u0430\u044f \u0441\u0432\u0435\u0436\u0430\u044f \u0437\u0430\u043f\u0438\u0441\u044c \u0430\u0440\u0445\u0438\u0432\u0430' }
+    ]);
+
     if (teacherTableBody) {
       teacherTableBody.innerHTML = filteredTeachers.map((item) => `
         <tr data-id="${item.id}" data-user-type="teacher" data-full-name="${escapeHtml(item.full_name)}" data-login="${escapeHtml(item.login)}" data-email="${escapeHtml(item.email || '')}">
@@ -472,8 +590,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${escapeHtml(item.full_name)}</td>
           <td>${escapeHtml(item.login)}</td>
           <td>
-            <button class="btn btn-sm hover-highlight btn-user-edit" data-id="${item.id}" data-user-type="teacher">Карточка</button>
-            <button class="btn btn-sm btn-danger btn-user-delete" data-id="${item.id}" data-user-type="teacher">Удалить</button>
+            <button class="btn btn-sm hover-highlight btn-user-edit" data-id="${item.id}" data-user-type="teacher">\u041a\u0430\u0440\u0442\u043e\u0447\u043a\u0430</button>
+            <button class="btn btn-sm btn-danger btn-user-delete" data-id="${item.id}" data-user-type="teacher">\u0423\u0434\u0430\u043b\u0435\u043d\u0438\u0435</button>
           </td>
         </tr>
       `).join('');
@@ -486,13 +604,13 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${item.id}</td>
           <td>${escapeHtml(item.full_name)}</td>
           <td>${escapeHtml(item.login)}</td>
-          <td>${item.is_super_admin ? 'Главный' : 'Обычный'}</td>
+          <td>${item.is_super_admin ? '\u0413\u043b\u0430\u0432\u043d\u044b\u0439' : '\u041e\u0431\u044b\u0447\u043d\u044b\u0439'}</td>
           <td>
             ${item.is_super_admin
-              ? '<span class="hint">Недоступно</span>'
+              ? '<span class="hint">\u041d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e</span>'
               : `
-                <button class="btn btn-sm hover-highlight btn-user-edit" data-id="${item.id}" data-user-type="admin">Карточка</button>
-                <button class="btn btn-sm btn-danger btn-user-delete" data-id="${item.id}" data-user-type="admin">Удалить</button>
+                <button class="btn btn-sm hover-highlight btn-user-edit" data-id="${item.id}" data-user-type="admin">\u041a\u0430\u0440\u0442\u043e\u0447\u043a\u0430</button>
+                <button class="btn btn-sm btn-danger btn-user-delete" data-id="${item.id}" data-user-type="admin">\u0423\u0434\u0430\u043b\u0435\u043d\u0438\u0435</button>
               `}
           </td>
         </tr>
@@ -503,13 +621,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadAdminDashboard() {
     const { ok, data } = await requestJSON('/admin/dashboard');
-    if (!ok) return showToast(data.message || 'Не удалось загрузить админку', 'error', 'Ошибка');
+    if (!ok) return showToast(data.message || '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u0430\u0434\u043c\u0438\u043d\u043a\u0443', 'error', '\u041e\u0448\u0438\u0431\u043a\u0430');
     dashboardState.currentUser = data.currentUser || null;
     dashboardState.rooms = data.rooms || [];
     dashboardState.complaints = data.complaints || [];
     dashboardState.teachers = data.teachers || [];
     dashboardState.admins = data.admins || [];
     dashboardState.analytics = data.analytics || null;
+    dashboardState.roomInsights = data.roomInsights || [];
 
     if (mainAdminSection) mainAdminSection.hidden = !isMainAdmin();
     if (archiveDeleteHint) archiveDeleteHint.hidden = isMainAdmin();
@@ -529,10 +648,10 @@ document.addEventListener('DOMContentLoaded', () => {
       : [];
 
     const { ok, data } = await requestJSON('/auth/register', jsonOptions('POST', payload));
-    if (!ok) return showToast(data.message || 'Не удалось создать пользователя', 'error', 'Ошибка');
+    if (!ok) return showToast(data.message || '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f', 'error', '\u041e\u0448\u0438\u0431\u043a\u0430');
     form.reset();
     Array.from(teacherRoomsSelect?.options || []).forEach((option) => { option.selected = false; });
-    showToast(role === 'admin' ? 'Администратор добавлен' : 'Преподаватель добавлен');
+    showToast(role === 'admin' ? '\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440 \u0434\u043e\u0431\u0430\u0432\u043b\u0435\u043d' : '\u041f\u0440\u0435\u043f\u043e\u0434\u0430\u0432\u0430\u0442\u0435\u043b\u044c \u0434\u043e\u0431\u0430\u0432\u043b\u0435\u043d');
     await loadAdminDashboard();
   }
 
@@ -541,12 +660,81 @@ document.addEventListener('DOMContentLoaded', () => {
     const safeRoomName = roomName && roomName !== 'undefined' ? roomName : '';
     if (!roomId) return;
     const { ok, data } = await requestJSON(`/admin/rooms/${roomId}/data`);
-    if (!ok) return showToast(data.message || 'Не удалось загрузить аудиторию', 'error', 'Ошибка');
+    if (!ok) return showToast(data.message || '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044e', 'error', '\u041e\u0448\u0438\u0431\u043a\u0430');
 
     roomPageState.room = data.room || null;
     roomPageState.equipment = data.equipment || [];
-    if (roomPageTitle) roomPageTitle.textContent = `Аудитория ${data.room?.name || safeRoomName || roomId}`;
+    roomPageState.recentComplaints = data.recentComplaints || [];
+    roomPageState.summary = data.roomSummary || null;
+    if (roomPageTitle) roomPageTitle.textContent = `\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044f ${data.room?.name || safeRoomName || roomId}`;
     if (roomNameHeading) roomNameHeading.textContent = data.room?.name || safeRoomName || roomId;
+
+    renderMiniStats(roomQuickStats, [
+      {
+        label: '\u0422\u0435\u0445\u043d\u0438\u043a\u0430',
+        value: String(Number(roomPageState.summary?.equipment_count || roomPageState.equipment.length || 0)),
+        hint: '\u0412\u0441\u0435\u0433\u043e \u0435\u0434\u0438\u043d\u0438\u0446 \u043e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u044f \u0432 \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0438'
+      },
+      {
+        label: '\u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0435 \u0437\u0430\u044f\u0432\u043a\u0438',
+        value: String(Number(roomPageState.summary?.active_complaints || 0)),
+        hint: '\u041e\u0442\u043a\u0440\u044b\u0442\u044b\u0435 \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u044f \u043f\u043e \u043a\u0430\u0431\u0438\u043d\u0435\u0442\u0443'
+      },
+      {
+        label: '\u0410\u0440\u0445\u0438\u0432',
+        value: String(Number(roomPageState.summary?.archived_complaints || 0)),
+        hint: '\u0417\u0430\u043a\u0440\u044b\u0442\u044b\u0435 \u0437\u0430\u044f\u0432\u043a\u0438 \u043f\u043e \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0438'
+      },
+      {
+        label: '\u041f\u0440\u0435\u043f\u043e\u0434\u0430\u0432\u0430\u0442\u0435\u043b\u0438',
+        value: String((data.roomTeachers || []).length),
+        hint: '\u0417\u0430\u043a\u0440\u0435\u043f\u043b\u0435\u043d\u043d\u044b\u0435 \u043f\u0440\u0435\u043f\u043e\u0434\u0430\u0432\u0430\u0442\u0435\u043b\u0438'
+      }
+    ]);
+
+    if (roomIdentityCard) {
+      const roomSummary = roomPageState.summary || {};
+      roomIdentityCard.innerHTML = `
+        <div class="room-identity-main">
+          <h3>${escapeHtml(data.room?.name || safeRoomName || roomId)}</h3>
+          <p>\u041f\u0430\u0441\u043f\u043e\u0440\u0442 \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0438 \u043f\u043e\u043a\u0430\u0437\u044b\u0432\u0430\u0435\u0442 \u0442\u0435\u043a\u0443\u0449\u0443\u044e \u043e\u0441\u043d\u0430\u0449\u0435\u043d\u043d\u043e\u0441\u0442\u044c \u043a\u0430\u0431\u0438\u043d\u0435\u0442\u0430, \u0437\u0430\u043a\u0440\u0435\u043f\u043b\u0435\u043d\u043d\u044b\u0445 \u043f\u0440\u0435\u043f\u043e\u0434\u0430\u0432\u0430\u0442\u0435\u043b\u0435\u0439 \u0438 \u0438\u0441\u0442\u043e\u0440\u0438\u044e \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u0439 \u043f\u043e \u043e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u044e.</p>
+        </div>
+        <div class="room-identity-tags">
+          <span class="room-identity-tag">\u0422\u0435\u0445\u043d\u0438\u043a\u0438: ${Number(roomSummary.equipment_count || roomPageState.equipment.length || 0)}</span>
+          <span class="room-identity-tag">\u0418\u0441\u043f\u0440\u0430\u0432\u043d\u043e: ${Number(roomSummary.healthy_equipment_count || 0)}</span>
+          <span class="room-identity-tag">\u041d\u0430 \u0440\u0430\u0441\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u0438\u0438: ${Number(roomSummary.review_equipment_count || 0)}</span>
+          <span class="room-identity-tag">\u0412 \u0440\u0435\u043c\u043e\u043d\u0442\u0435: ${Number(roomSummary.repair_equipment_count || 0)}</span>
+          <span class="room-identity-tag">\u041f\u0440\u0435\u043f\u043e\u0434\u0430\u0432\u0430\u0442\u0435\u043b\u0435\u0439: ${(data.roomTeachers || []).length}</span>
+          <span class="room-identity-tag">\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u044f\u044f \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u044c: ${escapeHtml(formatDateLabel(roomSummary.last_activity_at))}</span>
+        </div>
+      `;
+    }
+
+    if (roomRecentComplaints) {
+      roomRecentComplaints.innerHTML = roomPageState.recentComplaints.length
+        ? roomPageState.recentComplaints.map((item) => `
+          <article class="room-timeline-item">
+            <div class="room-timeline-top">
+              <div>
+                <h3 class="room-timeline-title">${escapeHtml(item.equipment_name || '\u041e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u0435')}</h3>
+                <p class="room-timeline-meta">${escapeHtml(item.full_name || '\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c \u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d')} - ${escapeHtml(formatDateLabel(item.updated_at || item.created_at))}</p>
+              </div>
+              ${statusBadge(item.status || '\u043d\u0430 \u0440\u0430\u0441\u0441\u043c\u043e\u0442\u0440\u0435\u043d\u0438\u0438')}
+            </div>
+            <p>${escapeHtml(item.description || '\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u044f \u043e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442')}</p>
+          </article>
+        `).join('')
+        : `
+          <article class="room-timeline-item">
+            <div class="room-timeline-top">
+              <div>
+                <h3 class="room-timeline-title">\u0418\u0441\u0442\u043e\u0440\u0438\u044f \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u0439 \u043f\u043e\u043a\u0430 \u043f\u0443\u0441\u0442\u0430</h3>
+                <p class="room-timeline-meta">\u0414\u043b\u044f \u044d\u0442\u043e\u0439 \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0438 \u0435\u0449\u0435 \u043d\u0435\u0442 \u0437\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u044b\u0445 \u0437\u0430\u044f\u0432\u043e\u043a.</p>
+              </div>
+            </div>
+          </article>
+        `;
+    }
 
     if (equipmentTableBody) {
       equipmentTableBody.innerHTML = roomPageState.equipment.map((eq) => `
@@ -555,10 +743,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${escapeHtml(eq.name)}</td>
           <td>${escapeHtml(eq.serial_number || '')}</td>
           <td>${escapeHtml(eq.purchase_date || '')}</td>
-          <td>${statusBadge(eq.status || 'в работе')}</td>
+          <td>${statusBadge(eq.status || '\u0432 \u0440\u0430\u0431\u043e\u0442\u0435')}</td>
           <td class="table-actions-cell">
-            <button class="btn btn-sm hover-highlight btn-equipment-edit" data-id="${eq.id}">Редактировать</button>
-            <button class="btn btn-sm btn-danger btn-equipment-delete" data-id="${eq.id}">Удалить</button>
+            <button class="btn btn-sm hover-highlight btn-equipment-edit" data-id="${eq.id}">\u0420\u0435\u0434\u0430\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c</button>
+            <button class="btn btn-sm btn-danger btn-equipment-delete" data-id="${eq.id}">\u0423\u0434\u0430\u043b\u0438\u0442\u044c</button>
           </td>
         </tr>
       `).join('');
@@ -570,14 +758,18 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${teacher.id}</td>
           <td>${escapeHtml(teacher.full_name)}</td>
           <td>${escapeHtml(teacher.login)}</td>
-          <td><button class="btn btn-sm btn-danger btn-room-teacher-remove" data-id="${teacher.id}">Удалить</button></td>
+          <td><button class="btn btn-sm btn-danger btn-room-teacher-remove" data-id="${teacher.id}">\u0423\u0434\u0430\u043b\u0438\u0442\u044c</button></td>
         </tr>
       `).join('');
     }
 
     roomPageState.roomTeachers = data.roomTeachers || [];
     roomPageState.allTeachers = data.allTeachers || [];
-    renderRoomTeacherSelect();
+    const assignedIds = new Set(roomPageState.roomTeachers.map((teacher) => String(teacher.id)));
+    roomPageState.pendingTeacherIds = new Set(
+      Array.from(roomPageState.pendingTeacherIds).filter((teacherId) => !assignedIds.has(String(teacherId)))
+    );
+    renderRoomTeacherPicker();
   }
 
   function openEquipmentModal(equipment) {
@@ -586,7 +778,7 @@ document.addEventListener('DOMContentLoaded', () => {
     equipmentEditForm.elements.name.value = equipment.name || '';
     equipmentEditForm.elements.serial_number.value = equipment.serial_number || '';
     equipmentEditForm.elements.purchase_date.value = equipment.purchase_date || '';
-    equipmentEditForm.elements.status.value = equipment.status || 'в работе';
+    equipmentEditForm.elements.status.value = equipment.status || 'РІ СЂР°Р±РѕС‚Рµ';
     openModal(equipmentEditModal);
   }
 
@@ -596,21 +788,33 @@ document.addEventListener('DOMContentLoaded', () => {
     openModal(roomEditModal);
   }
 
-  function renderRoomTeacherSelect() {
-    if (!roomTeacherSelect) return;
+  function renderRoomTeacherPicker() {
+    if (!roomTeacherOptions) return;
     const query = roomTeacherSearch?.value.trim().toLowerCase() || '';
     const assignedIds = new Set(roomPageState.roomTeachers.map((teacher) => String(teacher.id)));
     const filtered = roomPageState.allTeachers.filter((teacher) => {
       const haystack = `${teacher.full_name} ${teacher.login}`.toLowerCase();
       return !assignedIds.has(String(teacher.id)) && (!query || haystack.includes(query));
     });
-    const previouslySelected = new Set(Array.from(roomTeacherSelect.selectedOptions).map((option) => option.value));
-    roomTeacherSelect.innerHTML = filtered.map((teacher) => `
-      <option value="${teacher.id}">${escapeHtml(teacher.full_name)} (${escapeHtml(teacher.login)})</option>
+    if (!filtered.length) {
+      roomTeacherOptions.innerHTML = '<p class="teacher-picker-empty">\u041d\u0435\u0442 \u043f\u043e\u0434\u0445\u043e\u0434\u044f\u0449\u0438\u0445 \u043f\u0440\u0435\u043f\u043e\u0434\u0430\u0432\u0430\u0442\u0435\u043b\u0435\u0439</p>';
+      return;
+    }
+    roomTeacherOptions.innerHTML = filtered.map((teacher) => `
+      <label class="teacher-picker-item">
+        <input
+          class="room-teacher-checkbox"
+          type="checkbox"
+          value="${teacher.id}"
+          ${roomPageState.pendingTeacherIds.has(String(teacher.id)) ? 'checked' : ''}
+        />
+        <span class="teacher-picker-check"></span>
+        <span class="teacher-picker-text">
+          <strong>${escapeHtml(teacher.full_name)}</strong>
+          <small>${escapeHtml(teacher.login)}</small>
+        </span>
+      </label>
     `).join('');
-    Array.from(roomTeacherSelect.options).forEach((option) => {
-      if (previouslySelected.has(option.value)) option.selected = true;
-    });
   }
 
   async function loadUserRooms() {
@@ -631,17 +835,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const { ok, data } = await requestJSON(`/user/rooms/${roomId}/equipment`);
     if (!ok) return;
     const resolvedRoomName = data.room?.name || safeRoomName || roomId;
-    if (userRoomTitle) userRoomTitle.textContent = `Аудитория ${resolvedRoomName}`;
+    if (userRoomTitle) userRoomTitle.textContent = `\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044f ${resolvedRoomName}`;
     userEquipmentTableBody.innerHTML = (data.equipment || []).map((item) => {
       const lower = String(item.status || '').toLowerCase();
-      const rowClass = lower === 'на рассмотрении' ? 'status-review' : (lower === 'в ремонте' ? 'status-repair' : '');
+      const rowClass = lower === 'РЅР° СЂР°СЃСЃРјРѕС‚СЂРµРЅРёРё' ? 'status-review' : (lower === 'РІ СЂРµРјРѕРЅС‚Рµ' ? 'status-repair' : '');
       return `
         <tr class="${rowClass}" data-id="${item.id}" data-name="${escapeHtml(item.name)}">
           <td>${item.id}</td>
           <td>${escapeHtml(item.name)}</td>
           <td>${escapeHtml(item.serial_number || '')}</td>
           <td>${escapeHtml(item.purchase_date || '')}</td>
-          <td>${statusBadge(item.status || 'в работе')}</td>
+          <td>${statusBadge(item.status || 'РІ СЂР°Р±РѕС‚Рµ')}</td>
         </tr>
       `;
     }).join('');
@@ -660,7 +864,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (!notifications.length) {
-      notificationList.innerHTML = '<p class="notification-empty">Нет уведомлений</p>';
+      notificationList.innerHTML = '<p class="notification-empty">\u041d\u0435\u0442 \u0443\u0432\u0435\u0434\u043e\u043c\u043b\u0435\u043d\u0438\u0439</p>';
       return;
     }
 
@@ -674,14 +878,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="notification-message">${escapeHtml(notif.message)}</p>
           <div class="notification-time">${escapeHtml(formatRelativeTime(notif.created_at))}</div>
           <div class="notification-type-badge ${escapeHtml(notif.type || 'info')}">
-            ${notif.type === 'warning' ? 'Заявка' : (notif.type === 'success' ? 'Выполнено' : 'Обновление')}
+            ${notif.type === 'warning' ? '\u0417\u0430\u044f\u0432\u043a\u0430' : (notif.type === 'success' ? '\u0412\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u043e' : '\u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435')}
           </div>
         </div>
       `;
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'notification-delete-btn';
       deleteBtn.type = 'button';
-      deleteBtn.innerHTML = '×';
+      deleteBtn.innerHTML = '&times;';
       deleteBtn.addEventListener('click', async (event) => {
         event.stopPropagation();
         await fetch(`/notifications/${notif.id}`, { method: 'DELETE' });
@@ -710,7 +914,7 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       const payload = Object.fromEntries(new FormData(loginForm).entries());
       const { ok, data } = await requestJSON('/auth/login', jsonOptions('POST', payload));
-      if (!ok) return showToast(data.message || 'Ошибка входа', 'error', 'Ошибка');
+      if (!ok) return showToast(data.message || 'РћС€РёР±РєР° РІС…РѕРґР°', 'error', 'РћС€РёР±РєР°');
       window.location.href = '/';
     });
   }
@@ -749,7 +953,13 @@ document.addEventListener('DOMContentLoaded', () => {
     teachersSearchInput,
     adminsSearchInput
   ].forEach((input) => input?.addEventListener('input', applyDashboardFilters));
-  roomTeacherSearch?.addEventListener('input', renderRoomTeacherSelect);
+  roomTeacherSearch?.addEventListener('input', renderRoomTeacherPicker);
+  roomTeacherOptions?.addEventListener('change', (event) => {
+    const checkbox = event.target.closest('.room-teacher-checkbox');
+    if (!checkbox) return;
+    if (checkbox.checked) roomPageState.pendingTeacherIds.add(String(checkbox.value));
+    else roomPageState.pendingTeacherIds.delete(String(checkbox.value));
+  });
   [complaintsStatusFilter, complaintsSortSelect, archiveDateFrom, archiveDateTo, archiveSortSelect].forEach((input) => input?.addEventListener('change', applyDashboardFilters));
 
   archiveRoomDropdownBtn?.addEventListener('click', () => {
@@ -790,9 +1000,9 @@ document.addEventListener('DOMContentLoaded', () => {
         email: payload.email || '',
         password: payload.password || ''
       }));
-      if (!ok) return showToast(data.message || 'Не удалось сохранить пользователя', 'error', 'Ошибка');
+      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ', 'error', 'РћС€РёР±РєР°');
       closeModal(userEditModal, userEditForm);
-      showToast(data.message || 'Пользователь обновлен');
+      showToast(data.message || 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РѕР±РЅРѕРІР»РµРЅ');
       await loadAdminDashboard();
     });
   }
@@ -806,6 +1016,12 @@ document.addEventListener('DOMContentLoaded', () => {
       window.location.href = `/admin-room.html?roomId=${encodeURIComponent(tr.dataset.id)}&roomName=${encodeURIComponent(tr.dataset.name || '')}`;
     });
 
+    roomsCardGrid?.addEventListener('click', (event) => {
+      const card = event.target.closest('.room-card');
+      if (!card) return;
+      window.location.href = `/admin-room.html?roomId=${encodeURIComponent(card.dataset.id)}&roomName=${encodeURIComponent(card.dataset.name || '')}`;
+    });
+
     complaintTableBody?.addEventListener('click', async (event) => {
       const saveBtn = event.target.closest('.btn-status-save');
       const openBtn = event.target.closest('.btn-open-complaint');
@@ -817,8 +1033,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!saveBtn) return;
       const select = complaintTableBody.querySelector(`.status-select[data-id="${saveBtn.dataset.id}"]`);
       const { ok, data } = await requestJSON(`/admin/complaints/${saveBtn.dataset.id}/status`, jsonOptions('PATCH', { status: select.value }));
-      if (!ok) return showToast(data.message || 'Не удалось обновить статус', 'error', 'Ошибка');
-      showToast(data.message || 'Статус обновлен');
+      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ РѕР±РЅРѕРІРёС‚СЊ СЃС‚Р°С‚СѓСЃ', 'error', 'РћС€РёР±РєР°');
+      showToast(data.message || 'РЎС‚Р°С‚СѓСЃ РѕР±РЅРѕРІР»РµРЅ');
       await loadAdminDashboard();
     });
 
@@ -832,15 +1048,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (!deleteBtn) return;
       const confirmed = await askConfirm({
-        title: 'Удаление записи из архива',
-        message: 'Эта запись будет удалена без возможности восстановления.',
-        acceptLabel: 'Удалить'
+        title: 'РЈРґР°Р»РµРЅРёРµ Р·Р°РїРёСЃРё РёР· Р°СЂС…РёРІР°',
+        message: 'Р­С‚Р° Р·Р°РїРёСЃСЊ Р±СѓРґРµС‚ СѓРґР°Р»РµРЅР° Р±РµР· РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ.',
+        acceptLabel: 'РЈРґР°Р»РёС‚СЊ'
       });
       if (!confirmed) return;
       const { ok, data } = await requestJSON(`/admin/archive/${deleteBtn.dataset.id}`, { method: 'DELETE' });
-      if (!ok) return showToast(data.message || 'Не удалось удалить запись', 'error', 'Ошибка');
+      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ Р·Р°РїРёСЃСЊ', 'error', 'РћС€РёР±РєР°');
       dashboardState.archiveSelectedIds.delete(Number(deleteBtn.dataset.id));
-      showToast('Запись из архива удалена');
+      showToast('Р—Р°РїРёСЃСЊ РёР· Р°СЂС…РёРІР° СѓРґР°Р»РµРЅР°');
       await loadAdminDashboard();
     });
 
@@ -867,22 +1083,22 @@ document.addEventListener('DOMContentLoaded', () => {
     archiveBulkDeleteBtn?.addEventListener('click', async () => {
       const ids = Array.from(dashboardState.archiveSelectedIds);
       if (!ids.length) {
-        return showToast('Сначала отметьте записи в архиве', 'warning', 'Внимание');
+        return showToast('РЎРЅР°С‡Р°Р»Р° РѕС‚РјРµС‚СЊС‚Рµ Р·Р°РїРёСЃРё РІ Р°СЂС…РёРІРµ', 'warning', 'Р’РЅРёРјР°РЅРёРµ');
       }
       const confirmed = await askConfirm({
-        title: 'Удаление выбранных записей',
-        message: `Будут удалены ${ids.length} архивных записей без возможности восстановления.`,
-        acceptLabel: 'Удалить выбранные'
+        title: 'РЈРґР°Р»РµРЅРёРµ РІС‹Р±СЂР°РЅРЅС‹С… Р·Р°РїРёСЃРµР№',
+        message: `Р‘СѓРґСѓС‚ СѓРґР°Р»РµРЅС‹ ${ids.length} Р°СЂС…РёРІРЅС‹С… Р·Р°РїРёСЃРµР№ Р±РµР· РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ.`,
+        acceptLabel: 'РЈРґР°Р»РёС‚СЊ РІС‹Р±СЂР°РЅРЅС‹Рµ'
       });
       if (!confirmed) return;
 
       for (const id of ids) {
         const { ok, data } = await requestJSON(`/admin/archive/${id}`, { method: 'DELETE' });
-        if (!ok) return showToast(data.message || 'Не удалось удалить часть записей архива', 'error', 'Ошибка');
+        if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ С‡Р°СЃС‚СЊ Р·Р°РїРёСЃРµР№ Р°СЂС…РёРІР°', 'error', 'РћС€РёР±РєР°');
       }
 
       dashboardState.archiveSelectedIds = new Set();
-      showToast('Выбранные записи из архива удалены');
+      showToast('Р’С‹Р±СЂР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё РёР· Р°СЂС…РёРІР° СѓРґР°Р»РµРЅС‹');
       await loadAdminDashboard();
     });
 
@@ -902,17 +1118,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (deleteBtn) {
           const confirmed = await askConfirm({
-            title: 'Удаление пользователя',
-            message: 'Пользователь будет удален из системы.',
-            acceptLabel: 'Удалить'
+            title: 'РЈРґР°Р»РµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ',
+            message: 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р±СѓРґРµС‚ СѓРґР°Р»РµРЅ РёР· СЃРёСЃС‚РµРјС‹.',
+            acceptLabel: 'РЈРґР°Р»РёС‚СЊ'
           });
           if (!confirmed) return;
           const url = deleteBtn.dataset.userType === 'admin'
             ? `/admin/admins/${deleteBtn.dataset.id}`
             : `/admin/teachers/${deleteBtn.dataset.id}`;
           const { ok, data } = await requestJSON(url, { method: 'DELETE' });
-          if (!ok) return showToast(data.message || 'Не удалось удалить пользователя', 'error', 'Ошибка');
-          showToast(data.message || 'Пользователь удален');
+      if (!ok) return showToast(data.message || '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0443\u0434\u0430\u043b\u0438\u0442\u044c \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f', 'error', '\u041e\u0448\u0438\u0431\u043a\u0430');
+      showToast(data.message || '\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c \u0443\u0434\u0430\u043b\u0435\u043d');
           await loadAdminDashboard();
         }
       });
@@ -926,9 +1142,9 @@ document.addEventListener('DOMContentLoaded', () => {
     event.preventDefault();
     const payload = Object.fromEntries(new FormData(roomForm).entries());
     const { ok, data } = await requestJSON('/admin/rooms', jsonOptions('POST', payload));
-    if (!ok) return showToast(data.message || 'Не удалось создать аудиторию', 'error', 'Ошибка');
+    if (!ok) return showToast(data.message || '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044e', 'error', '\u041e\u0448\u0438\u0431\u043a\u0430');
     roomForm.reset();
-    showToast('Аудитория создана');
+    showToast('\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044f \u0441\u043e\u0437\u0434\u0430\u043d\u0430');
     await loadAdminDashboard();
   });
 
@@ -950,9 +1166,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const { roomId } = getQueryParams();
       const payload = Object.fromEntries(new FormData(equipmentForm).entries());
       const { ok, data } = await requestJSON(`/admin/rooms/${roomId}/equipment`, jsonOptions('POST', payload));
-      if (!ok) return showToast(data.message || 'Не удалось добавить оборудование', 'error', 'Ошибка');
+      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ РґРѕР±Р°РІРёС‚СЊ РѕР±РѕСЂСѓРґРѕРІР°РЅРёРµ', 'error', 'РћС€РёР±РєР°');
       equipmentForm.reset();
-      showToast('Оборудование добавлено');
+      showToast('РћР±РѕСЂСѓРґРѕРІР°РЅРёРµ РґРѕР±Р°РІР»РµРЅРѕ');
       await loadAdminRoomPage();
     });
 
@@ -966,14 +1182,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (!deleteBtn) return;
       const confirmed = await askConfirm({
-        title: 'Удаление оборудования',
-        message: 'Эта единица оборудования будет удалена.',
-        acceptLabel: 'Удалить'
+        title: 'РЈРґР°Р»РµРЅРёРµ РѕР±РѕСЂСѓРґРѕРІР°РЅРёСЏ',
+        message: 'Р­С‚Р° РµРґРёРЅРёС†Р° РѕР±РѕСЂСѓРґРѕРІР°РЅРёСЏ Р±СѓРґРµС‚ СѓРґР°Р»РµРЅР°.',
+        acceptLabel: 'РЈРґР°Р»РёС‚СЊ'
       });
       if (!confirmed) return;
       const { ok, data } = await requestJSON(`/admin/equipment/${deleteBtn.dataset.id}`, { method: 'DELETE' });
-      if (!ok) return showToast(data.message || 'Не удалось удалить оборудование', 'error', 'Ошибка');
-      showToast('Оборудование удалено');
+      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ РѕР±РѕСЂСѓРґРѕРІР°РЅРёРµ', 'error', 'РћС€РёР±РєР°');
+      showToast('РћР±РѕСЂСѓРґРѕРІР°РЅРёРµ СѓРґР°Р»РµРЅРѕ');
       await loadAdminRoomPage();
     });
 
@@ -986,9 +1202,9 @@ document.addEventListener('DOMContentLoaded', () => {
         purchase_date: payload.purchase_date || '',
         status: payload.status
       }));
-      if (!ok) return showToast(data.message || 'Не удалось обновить оборудование', 'error', 'Ошибка');
+      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ РѕР±РЅРѕРІРёС‚СЊ РѕР±РѕСЂСѓРґРѕРІР°РЅРёРµ', 'error', 'РћС€РёР±РєР°');
       closeModal(equipmentEditModal, equipmentEditForm);
-      showToast('Оборудование обновлено');
+      showToast('РћР±РѕСЂСѓРґРѕРІР°РЅРёРµ РѕР±РЅРѕРІР»РµРЅРѕ');
       await loadAdminRoomPage();
     });
 
@@ -1010,21 +1226,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const { roomId } = getQueryParams();
       const payload = Object.fromEntries(new FormData(roomEditForm).entries());
       const { ok, data } = await requestJSON(`/admin/rooms/${roomId}`, jsonOptions('PATCH', payload));
-      if (!ok) return showToast(data.message || 'Не удалось обновить аудиторию', 'error', 'Ошибка');
+      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ РѕР±РЅРѕРІРёС‚СЊ Р°СѓРґРёС‚РѕСЂРёСЋ', 'error', 'РћС€РёР±РєР°');
       closeModal(roomEditModal, roomEditForm);
-      showToast('Название аудитории обновлено');
+      showToast('РќР°Р·РІР°РЅРёРµ Р°СѓРґРёС‚РѕСЂРёРё РѕР±РЅРѕРІР»РµРЅРѕ');
       await loadAdminRoomPage();
     });
 
     roomTeacherForm?.addEventListener('submit', async (event) => {
       event.preventDefault();
       const { roomId } = getQueryParams();
-      const formData = new FormData(roomTeacherForm);
-      const teacherIds = formData.getAll('teacher_id');
-      if (!teacherIds.length) return showToast('Выберите хотя бы одного преподавателя', 'warning', 'Внимание');
+      const teacherIds = Array.from(roomPageState.pendingTeacherIds);
+      if (!teacherIds.length) return showToast('Р’С‹Р±РµСЂРёС‚Рµ С…РѕС‚СЏ Р±С‹ РѕРґРЅРѕРіРѕ РїСЂРµРїРѕРґР°РІР°С‚РµР»СЏ', 'warning', 'Р’РЅРёРјР°РЅРёРµ');
       const { ok, data } = await requestJSON(`/admin/rooms/${roomId}/teachers`, jsonOptions('POST', { teacher_id: teacherIds }));
-      if (!ok) return showToast(data.message || 'Не удалось назначить преподавателя', 'error', 'Ошибка');
-      showToast('Преподаватели добавлены в аудиторию');
+      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ РЅР°Р·РЅР°С‡РёС‚СЊ РїСЂРµРїРѕРґР°РІР°С‚РµР»СЏ', 'error', 'РћС€РёР±РєР°');
+      showToast('РџСЂРµРїРѕРґР°РІР°С‚РµР»Рё РґРѕР±Р°РІР»РµРЅС‹ РІ Р°СѓРґРёС‚РѕСЂРёСЋ');
+      roomPageState.pendingTeacherIds = new Set();
       if (roomTeacherSearch) roomTeacherSearch.value = '';
       await loadAdminRoomPage();
     });
@@ -1034,27 +1250,27 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!removeBtn) return;
       const { roomId } = getQueryParams();
       const confirmed = await askConfirm({
-        title: 'Удаление преподавателя',
-        message: 'Преподаватель будет откреплен от аудитории.',
-        acceptLabel: 'Удалить'
+        title: 'РЈРґР°Р»РµРЅРёРµ РїСЂРµРїРѕРґР°РІР°С‚РµР»СЏ',
+        message: 'РџСЂРµРїРѕРґР°РІР°С‚РµР»СЊ Р±СѓРґРµС‚ РѕС‚РєСЂРµРїР»РµРЅ РѕС‚ Р°СѓРґРёС‚РѕСЂРёРё.',
+        acceptLabel: 'РЈРґР°Р»РёС‚СЊ'
       });
       if (!confirmed) return;
       const { ok, data } = await requestJSON(`/admin/rooms/${roomId}/teachers/${removeBtn.dataset.id}`, { method: 'DELETE' });
-      if (!ok) return showToast(data.message || 'Не удалось удалить преподавателя', 'error', 'Ошибка');
-      showToast('Преподаватель удален из аудитории');
+      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ РїСЂРµРїРѕРґР°РІР°С‚РµР»СЏ', 'error', 'РћС€РёР±РєР°');
+      showToast('РџСЂРµРїРѕРґР°РІР°С‚РµР»СЊ СѓРґР°Р»РµРЅ РёР· Р°СѓРґРёС‚РѕСЂРёРё');
       await loadAdminRoomPage();
     });
 
     deleteRoomBtn?.addEventListener('click', async () => {
       const { roomId } = getQueryParams();
       const confirmed = await askConfirm({
-        title: 'Удаление аудитории',
-        message: 'Будут удалены аудитория и все связанные данные.',
-        acceptLabel: 'Удалить аудиторию'
+        title: 'РЈРґР°Р»РµРЅРёРµ Р°СѓРґРёС‚РѕСЂРёРё',
+        message: 'Р‘СѓРґСѓС‚ СѓРґР°Р»РµРЅС‹ Р°СѓРґРёС‚РѕСЂРёСЏ Рё РІСЃРµ СЃРІСЏР·Р°РЅРЅС‹Рµ РґР°РЅРЅС‹Рµ.',
+        acceptLabel: 'РЈРґР°Р»РёС‚СЊ Р°СѓРґРёС‚РѕСЂРёСЋ'
       });
       if (!confirmed) return;
       const { ok, data } = await requestJSON(`/admin/rooms/${roomId}`, { method: 'DELETE' });
-      if (!ok) return showToast(data.message || 'Не удалось удалить аудиторию', 'error', 'Ошибка');
+      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ Р°СѓРґРёС‚РѕСЂРёСЋ', 'error', 'РћС€РёР±РєР°');
       window.location.href = '/';
     });
   }
@@ -1075,7 +1291,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const tr = event.target.closest('tr');
       if (!tr) return;
       if (tr.classList.contains('status-review') || tr.classList.contains('status-repair')) {
-        return showToast('По этому оборудованию уже есть активная заявка или оно в ремонте', 'warning', 'Недоступно');
+        return showToast('РџРѕ СЌС‚РѕРјСѓ РѕР±РѕСЂСѓРґРѕРІР°РЅРёСЋ СѓР¶Рµ РµСЃС‚СЊ Р°РєС‚РёРІРЅР°СЏ Р·Р°СЏРІРєР° РёР»Рё РѕРЅРѕ РІ СЂРµРјРѕРЅС‚Рµ', 'warning', 'РќРµРґРѕСЃС‚СѓРїРЅРѕ');
       }
       document.getElementById('complaintRoomId').value = getQueryParams().roomId || '';
       document.getElementById('complaintEquipmentId').value = tr.dataset.id || '';
@@ -1090,21 +1306,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const roomId = document.getElementById('complaintRoomId')?.value;
     const equipmentId = document.getElementById('complaintEquipmentId')?.value;
     const description = complaintForm.querySelector('textarea[name="description"]')?.value || '';
-    if (!roomId || !equipmentId) return showToast('Сначала выберите оборудование', 'warning', 'Внимание');
-    if (description.length < 5) return showToast('Описание должно быть минимум 5 символов', 'warning', 'Внимание');
+    if (!roomId || !equipmentId) return showToast('РЎРЅР°С‡Р°Р»Р° РІС‹Р±РµСЂРёС‚Рµ РѕР±РѕСЂСѓРґРѕРІР°РЅРёРµ', 'warning', 'Р’РЅРёРјР°РЅРёРµ');
+    if (description.length < 5) return showToast('РћРїРёСЃР°РЅРёРµ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РјРёРЅРёРјСѓРј 5 СЃРёРјРІРѕР»РѕРІ', 'warning', 'Р’РЅРёРјР°РЅРёРµ');
 
     try {
       const response = await fetch('/complaints', { method: 'POST', body: new FormData(complaintForm) });
       const data = await response.json().catch(() => ({}));
       if (response.status === 404) {
-        return showToast('Сервер работает на старой версии. Перезапустите приложение и обновите страницу.', 'error', 'Нужно обновление');
+        return showToast('РЎРµСЂРІРµСЂ СЂР°Р±РѕС‚Р°РµС‚ РЅР° СЃС‚Р°СЂРѕР№ РІРµСЂСЃРёРё. РџРµСЂРµР·Р°РїСѓСЃС‚РёС‚Рµ РїСЂРёР»РѕР¶РµРЅРёРµ Рё РѕР±РЅРѕРІРёС‚Рµ СЃС‚СЂР°РЅРёС†Сѓ.', 'error', 'РќСѓР¶РЅРѕ РѕР±РЅРѕРІР»РµРЅРёРµ');
       }
-      if (!response.ok) return showToast(data.message || 'Не удалось отправить заявку', 'error', 'Ошибка');
+      if (!response.ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РїСЂР°РІРёС‚СЊ Р·Р°СЏРІРєСѓ', 'error', 'РћС€РёР±РєР°');
       complaintForm.reset();
-      showToast('Заявка отправлена');
+      showToast('Р—Р°СЏРІРєР° РѕС‚РїСЂР°РІР»РµРЅР°');
       await loadUserRoomEquipment();
     } catch (error) {
-      showToast('Не удалось отправить заявку. Проверьте, что сервер запущен и страница обновлена.', 'error', 'Ошибка');
+      showToast('РќРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РїСЂР°РІРёС‚СЊ Р·Р°СЏРІРєСѓ. РџСЂРѕРІРµСЂСЊС‚Рµ, С‡С‚Рѕ СЃРµСЂРІРµСЂ Р·Р°РїСѓС‰РµРЅ Рё СЃС‚СЂР°РЅРёС†Р° РѕР±РЅРѕРІР»РµРЅР°.', 'error', 'РћС€РёР±РєР°');
     }
   });
 

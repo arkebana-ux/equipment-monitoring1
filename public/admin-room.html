@@ -2,96 +2,132 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Аудитория</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Паспорт аудитории</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
-<body>
-  <header class="topbar">
+<body class="dashboard-page">
+  <header class="topbar topbar-modern">
     <div class="topbar-left">
       <a href="/" class="back-link">← Назад к панели администратора</a>
+      <p class="eyebrow">Паспорт аудитории</p>
       <h1 id="roomPageTitle">Аудитория</h1>
+      <p class="topbar-subtitle">Состав оборудования, закрепленные преподаватели и история обращений по кабинету.</p>
     </div>
-    <button id="logoutBtn" class="btn">Выйти</button>
+    <button id="logoutBtn" class="btn" type="button">Выйти</button>
   </header>
 
   <main class="tabs-container">
+    <div id="roomQuickStats" class="dashboard-mini-stats"></div>
+
     <div class="room-layout">
       <section class="card wide">
         <div class="pane-header">
           <div>
-            <p class="eyebrow">Настройки аудитории</p>
+            <p class="eyebrow">Паспорт кабинета</p>
             <h2 id="roomNameHeading">Аудитория</h2>
           </div>
           <button id="editRoomBtn" class="btn hover-highlight" type="button">Редактировать аудиторию</button>
         </div>
 
-        <h2>Оборудование аудитории</h2>
-        <table class="data-table" id="equipmentTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Название</th>
-              <th>Номер</th>
-              <th>Дата покупки</th>
-              <th>Статус</th>
-              <th>Действие</th>
-            </tr>
-          </thead>
-          <tbody id="equipmentTableBody"></tbody>
-        </table>
+        <div id="roomIdentityCard" class="room-identity-card"></div>
 
-        <h3>Добавить оборудование</h3>
-        <form id="equipmentForm" class="form-vertical">
-          <label>
-            Название оборудования
-            <input type="text" name="name" required placeholder="Например: Проектор Epson X123" />
-            <div class="hint">Короткое понятное название оборудования</div>
-          </label>
-          <label>
-            Номер оборудования
-            <input type="text" name="serial_number" placeholder="Например: SN-12345-AB" />
-            <div class="hint">Серийный номер из наклейки, если он есть</div>
-          </label>
-          <label>
-            Дата покупки
-            <input type="date" name="purchase_date" />
-            <div class="hint">Поле можно оставить пустым</div>
-          </label>
-          <button class="btn hover-highlight" type="submit">Добавить оборудование</button>
-        </form>
+        <div class="section-block">
+          <div class="section-block-header">
+            <h3>Оборудование аудитории</h3>
+            <p>Текущее состояние техники и быстрые действия по редактированию.</p>
+          </div>
+          <table class="data-table" id="equipmentTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Номер</th>
+                <th>Дата покупки</th>
+                <th>Статус</th>
+                <th>Действие</th>
+              </tr>
+            </thead>
+            <tbody id="equipmentTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="section-block">
+          <div class="section-block-header">
+            <h3>Добавить оборудование</h3>
+            <p>Новая единица техники сразу появится в паспорте аудитории.</p>
+          </div>
+          <form id="equipmentForm" class="form-vertical">
+            <label>
+              Название оборудования
+              <input type="text" name="name" required placeholder="Например: Проектор Epson EB-X06" />
+              <div class="hint">Короткое понятное название техники</div>
+            </label>
+            <label>
+              Номер оборудования
+              <input type="text" name="serial_number" placeholder="Например: SN-12345-AB" />
+              <div class="hint">Серийный номер или внутренний инвентарный код</div>
+            </label>
+            <label>
+              Дата покупки
+              <input type="date" name="purchase_date" />
+              <div class="hint">Поле можно оставить пустым</div>
+            </label>
+            <button class="btn hover-highlight" type="submit">Добавить оборудование</button>
+          </form>
+        </div>
       </section>
 
       <section class="card wide">
         <div class="pane-header">
           <div>
-            <p class="eyebrow">Преподаватели аудитории</p>
-            <h2>Преподаватели</h2>
+            <p class="eyebrow">Состав аудитории</p>
+            <h2>Преподаватели и обращения</h2>
           </div>
           <button id="deleteRoomBtn" class="btn btn-danger" type="button">Удалить аудиторию</button>
         </div>
 
-        <table class="data-table" id="roomTeachersTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>ФИО</th>
-              <th>Логин</th>
-              <th>Действие</th>
-            </tr>
-          </thead>
-          <tbody id="roomTeachersTableBody"></tbody>
-        </table>
+        <div class="section-block">
+          <div class="section-block-header">
+            <h3>Закрепленные преподаватели</h3>
+            <p>Список преподавателей, которые работают в этой аудитории.</p>
+          </div>
+          <table class="data-table" id="roomTeachersTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>ФИО</th>
+                <th>Логин</th>
+                <th>Действие</th>
+              </tr>
+            </thead>
+            <tbody id="roomTeachersTableBody"></tbody>
+          </table>
+        </div>
 
-        <h3>Добавить преподавателей в аудиторию</h3>
-        <form id="roomTeacherForm" class="form-vertical">
-          <input type="search" id="roomTeacherSearch" class="toolbar-input" placeholder="Поиск преподавателя" aria-label="Поиск преподавателя" />
-          <label>
-            Преподаватели
-            <select name="teacher_id" id="roomTeacherSelect" multiple size="6"></select>
-          </label>
-          <div class="hint">Удерживайте Ctrl / Cmd для выбора нескольких преподавателей.</div>
-          <button class="btn hover-highlight" type="submit">Добавить</button>
-        </form>
+        <div class="section-block">
+          <div class="section-block-header">
+            <h3>Добавить преподавателей</h3>
+            <p>Поддерживается множественный выбор и поиск по списку.</p>
+          </div>
+          <form id="roomTeacherForm" class="form-vertical">
+            <input type="search" id="roomTeacherSearch" class="toolbar-input" placeholder="Поиск преподавателя" aria-label="Поиск преподавателя" />
+            <label>
+              Преподаватели
+              <div id="roomTeacherOptions" class="teacher-picker"></div>
+            </label>
+            <div class="hint">Отмечайте нужных преподавателей в списке ниже.</div>
+            <button class="btn hover-highlight" type="submit">Добавить</button>
+          </form>
+        </div>
+
+        <div class="section-block">
+          <div class="section-block-header">
+            <h3>Последние обращения</h3>
+            <p>Краткая история заявок по оборудованию этой аудитории.</p>
+          </div>
+          <div id="roomRecentComplaints" class="room-timeline"></div>
+        </div>
       </section>
     </div>
   </main>
@@ -103,7 +139,7 @@
           <p class="eyebrow">Оборудование</p>
           <h3 id="equipmentEditModalTitle">Редактирование оборудования</h3>
         </div>
-        <button id="closeEquipmentEditModal" class="modal-close" type="button">×</button>
+        <button id="closeEquipmentEditModal" class="modal-close" type="button">&times;</button>
       </div>
       <form id="equipmentEditForm">
         <input type="hidden" name="id" />
@@ -142,7 +178,7 @@
           <p class="eyebrow">Аудитория</p>
           <h3>Редактирование аудитории</h3>
         </div>
-        <button id="closeRoomEditModal" class="modal-close" type="button">×</button>
+        <button id="closeRoomEditModal" class="modal-close" type="button">&times;</button>
       </div>
       <form id="roomEditForm">
         <label>
