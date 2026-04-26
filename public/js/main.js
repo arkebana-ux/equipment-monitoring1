@@ -27,9 +27,18 @@ function escapeHtml(value) {
 
 function parseDate(dateValue) {
   if (!dateValue) return null;
-  const direct = new Date(dateValue);
+  const normalized = String(dateValue).trim();
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(normalized)) {
+    const sqliteUtc = new Date(normalized.replace(' ', 'T') + 'Z');
+    if (!Number.isNaN(sqliteUtc.getTime())) return sqliteUtc;
+  }
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
+    const dateOnly = new Date(`${normalized}T00:00:00`);
+    if (!Number.isNaN(dateOnly.getTime())) return dateOnly;
+  }
+  const direct = new Date(normalized);
   if (!Number.isNaN(direct.getTime())) return direct;
-  const fallback = new Date(String(dateValue).replace(' ', 'T') + 'Z');
+  const fallback = new Date(normalized.replace(' ', 'T') + 'Z');
   if (!Number.isNaN(fallback.getTime())) return fallback;
   return null;
 }
@@ -262,14 +271,14 @@ document.addEventListener('DOMContentLoaded', () => {
     userEditForm.elements.login.value = login || '';
     userEditForm.elements.email.value = email || '';
     userEditForm.elements.password.value = '';
-    userEditModalTitle.textContent = userType === 'admin' ? 'РљР°СЂС‚РѕС‡РєР° Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°' : 'РљР°СЂС‚РѕС‡РєР° РїСЂРµРїРѕРґР°РІР°С‚РµР»СЏ';
+    userEditModalTitle.textContent = userType === 'admin' ? 'Карточка администратора' : 'Карточка преподавателя';
     openModal(userEditModal);
   }
 
   function renderAnalyticsBars(container, items, options = {}) {
     if (!container) return;
     if (!items?.length) {
-      container.innerHTML = '<p class="hint">РџРѕРєР° РґР°РЅРЅС‹С… РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ.</p>';
+      container.innerHTML = '<p class="hint">Пока данных недостаточно.</p>';
       return;
     }
     const max = Math.max(...items.map((item) => Number(item.value || item.score || 0)), 1);
@@ -348,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const summaryCards = [
       { label: '\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0439', value: analytics.summary.totalRooms || 0, tone: 'info', trend: '\u041e\u0431\u0449\u0438\u0439 \u043e\u0445\u0432\u0430\u0442 \u0443\u0447\u0435\u0431\u043d\u043e\u0433\u043e \u0444\u043e\u043d\u0434\u0430', accent: '\u041a\u0430\u0431\u0438\u043d\u0435\u0442\u044b \u043f\u043e\u0434 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0435\u043c' },
       { label: '\u0415\u0434\u0438\u043d\u0438\u0446 \u0442\u0435\u0445\u043d\u0438\u043a\u0438', value: analytics.summary.totalEquipment || 0, tone: 'dark', trend: '\u0412\u0441\u044f \u0438\u043d\u0444\u0440\u0430\u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u0430 \u043f\u043e \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044f\u043c', accent: '\u041e\u0442 \u041f\u041a \u0434\u043e \u043c\u0443\u043b\u044c\u0442\u0438\u043c\u0435\u0434\u0438\u0430' },
-      { label: '\u0412\u0441\u0435\u0433\u043e \u0437\u0430\u044f\u0432\u043e\u043a', value: analytics.summary.totalComplaints || 0, tone: 'warning', trend: '\u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0435 \u0438 \u0437\u0430\u043a\u0440\u044b\u0442\u044b\u0435 \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u044f', accent: '\u0418\u0441\u0442\u043e\u0440\u0438\u044f \u044d\u043a\u0441\u043f\u043b\u0443\u0430\u0442\u0430\u0446\u0438\u0438' },
+      { label: '\u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0445 \u0437\u043e\u043d \u0440\u0438\u0441\u043a\u0430', value: (analytics.roomLoad || []).filter((room) => Number(room.activeComplaints || 0) > 0).length, tone: 'warning', trend: '\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0438, \u0433\u0434\u0435 \u043d\u0443\u0436\u043d\u043e \u0432\u043d\u0438\u043c\u0430\u043d\u0438\u0435', accent: '\u0411\u044b\u0441\u0442\u0440\u044b\u0439 \u0441\u0440\u0435\u0437 \u043f\u043e \u0440\u0438\u0441\u043a\u0430\u043c' },
       { label: '\u0421\u0440\u0435\u0434\u043d\u0435\u0435 \u0432\u0440\u0435\u043c\u044f \u0440\u0435\u043c\u043e\u043d\u0442\u0430', value: `${analytics.summary.avgRepairHours || 0} \u0447`, tone: 'success', trend: '\u041e\u0442 \u043f\u043e\u0434\u0430\u0447\u0438 \u0434\u043e \u0437\u0430\u043a\u0440\u044b\u0442\u0438\u044f', accent: '\u041f\u043e\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u044c \u0440\u0435\u0430\u043a\u0446\u0438\u0438 \u0441\u0438\u0441\u0442\u0435\u043c\u044b' }
     ];
 
@@ -384,14 +393,15 @@ document.addEventListener('DOMContentLoaded', () => {
       analyticsRoomChart.innerHTML = rows.length ? rows.map((room) => `
         <div class="room-analytics-item">
           <div class="room-analytics-top">
-            <div class="room-analytics-name">${escapeHtml(room.roomName)}</div>
-            <div class="room-analytics-meta">\u041e\u0442\u043a\u0440\u044b\u0442\u044b\u0445 \u0437\u0430\u044f\u0432\u043e\u043a: ${room.activeComplaints}</div>
+            <div class="room-analytics-name">\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044f ${escapeHtml(room.roomName)}</div>
+            <div class="room-analytics-meta">${Math.max(0, 100 - (room.activeComplaints * 18) - (room.totalComplaints * 6))}% \u0443\u0441\u0442\u043e\u0439\u0447\u0438\u0432\u043e\u0441\u0442\u0438</div>
           </div>
           <div class="room-analytics-tags">
             <span class="room-analytics-tag">\u041e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u0435: ${room.equipmentCount}</span>
-            <span class="room-analytics-tag">\u0412\u0441\u0435\u0433\u043e \u0437\u0430\u044f\u0432\u043e\u043a: ${room.totalComplaints}</span>
+            <span class="room-analytics-tag">\u0410\u043a\u0442\u0438\u0432\u043d\u044b\u0435: ${room.activeComplaints}</span>
             <span class="room-analytics-tag">\u0418\u0441\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u043e: ${room.archivedComplaints}</span>
           </div>
+          <p>${room.activeComplaints === 0 ? '\u041a\u0430\u0431\u0438\u043d\u0435\u0442 \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u0441\u0442\u0430\u0431\u0438\u043b\u044c\u043d\u043e, \u043e\u0442\u043a\u0440\u044b\u0442\u044b\u0445 \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u0439 \u0441\u0435\u0439\u0447\u0430\u0441 \u043d\u0435\u0442.' : `\u0421\u0435\u0439\u0447\u0430\u0441 \u0432 \u0440\u0430\u0431\u043e\u0442\u0435 ${room.activeComplaints} \u043e\u0431\u0440\u0430\u0449\u0435\u043d\u0438\u0439. \u0418\u0441\u0442\u043e\u0440\u0438\u0447\u0435\u0441\u043a\u0438 \u043f\u043e \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u0438 \u0437\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u043d\u043e ${room.totalComplaints} \u0437\u0430\u044f\u0432\u043e\u043a.`}</p>
         </div>
       `).join('') : '<p class="hint">\u041f\u043e\u043a\u0430 \u043d\u0435\u0442 \u0434\u0430\u043d\u043d\u044b\u0445 \u043f\u043e \u0430\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044f\u043c.</p>';
     }
@@ -413,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const filteredRooms = (dashboardState.roomInsights || []).filter((room) => String(room.name || '').toLowerCase().includes(roomsQuery));
 
     const activeComplaints = dashboardState.complaints
-      .filter((item) => item.status !== 'РёСЃРїСЂР°РІР»РµРЅРѕ')
+      .filter((item) => item.status !== 'исправлено')
       .filter((item) => {
         const haystack = `${item.room_name || ''} ${item.full_name || ''} ${item.equipment_name || ''} ${item.description || ''}`.toLowerCase();
         return (!complaintsQuery || haystack.includes(complaintsQuery)) && (!complaintsStatus || item.status === complaintsStatus);
@@ -431,7 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
     const archivedComplaints = dashboardState.complaints
-      .filter((item) => item.status === 'РёСЃРїСЂР°РІР»РµРЅРѕ')
+      .filter((item) => item.status === 'исправлено')
       .filter((item) => {
         const haystack = `${item.room_name || ''} ${item.full_name || ''} ${item.equipment_name || ''} ${item.description || ''}`.toLowerCase();
         const updatedDate = String(item.updated_at || '').slice(0, 10);
@@ -532,6 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <option value="\u0432 \u0440\u0435\u043c\u043e\u043d\u0442\u0435" ${item.status === '\u0432 \u0440\u0435\u043c\u043e\u043d\u0442\u0435' ? 'selected' : ''}>\u0412 \u0440\u0435\u043c\u043e\u043d\u0442\u0435</option>
               </select>
               <button class="btn btn-sm hover-highlight btn-status-save" data-id="${item.id}">\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c</button>
+              <button class="btn btn-sm btn-success btn-mark-fixed" data-id="${item.id}">\u041f\u043e\u0447\u0438\u043d\u0435\u043d\u043e</button>
               <button class="btn btn-sm hover-highlight btn-open-complaint" data-id="${item.id}">\u041e\u0442\u043a\u0440\u044b\u0442\u044c</button>
             </div>
           </td>
@@ -778,7 +789,7 @@ document.addEventListener('DOMContentLoaded', () => {
     equipmentEditForm.elements.name.value = equipment.name || '';
     equipmentEditForm.elements.serial_number.value = equipment.serial_number || '';
     equipmentEditForm.elements.purchase_date.value = equipment.purchase_date || '';
-    equipmentEditForm.elements.status.value = equipment.status || 'РІ СЂР°Р±РѕС‚Рµ';
+    equipmentEditForm.elements.status.value = equipment.status || 'в работе';
     openModal(equipmentEditModal);
   }
 
@@ -838,14 +849,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userRoomTitle) userRoomTitle.textContent = `\u0410\u0443\u0434\u0438\u0442\u043e\u0440\u0438\u044f ${resolvedRoomName}`;
     userEquipmentTableBody.innerHTML = (data.equipment || []).map((item) => {
       const lower = String(item.status || '').toLowerCase();
-      const rowClass = lower === 'РЅР° СЂР°СЃСЃРјРѕС‚СЂРµРЅРёРё' ? 'status-review' : (lower === 'РІ СЂРµРјРѕРЅС‚Рµ' ? 'status-repair' : '');
+      const rowClass = lower === 'на рассмотрении' ? 'status-review' : (lower === 'в ремонте' ? 'status-repair' : '');
       return `
         <tr class="${rowClass}" data-id="${item.id}" data-name="${escapeHtml(item.name)}">
           <td>${item.id}</td>
           <td>${escapeHtml(item.name)}</td>
           <td>${escapeHtml(item.serial_number || '')}</td>
           <td>${escapeHtml(item.purchase_date || '')}</td>
-          <td>${statusBadge(item.status || 'РІ СЂР°Р±РѕС‚Рµ')}</td>
+          <td>${statusBadge(item.status || 'в работе')}</td>
         </tr>
       `;
     }).join('');
@@ -914,7 +925,7 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       const payload = Object.fromEntries(new FormData(loginForm).entries());
       const { ok, data } = await requestJSON('/auth/login', jsonOptions('POST', payload));
-      if (!ok) return showToast(data.message || 'РћС€РёР±РєР° РІС…РѕРґР°', 'error', 'РћС€РёР±РєР°');
+      if (!ok) return showToast(data.message || 'Ошибка входа', 'error', 'Ошибка');
       window.location.href = '/';
     });
   }
@@ -1000,9 +1011,9 @@ document.addEventListener('DOMContentLoaded', () => {
         email: payload.email || '',
         password: payload.password || ''
       }));
-      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ', 'error', 'РћС€РёР±РєР°');
+      if (!ok) return showToast(data.message || 'Не удалось сохранить пользователя', 'error', 'Ошибка');
       closeModal(userEditModal, userEditForm);
-      showToast(data.message || 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РѕР±РЅРѕРІР»РµРЅ');
+      showToast(data.message || 'Пользователь обновлён');
       await loadAdminDashboard();
     });
   }
@@ -1024,17 +1035,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     complaintTableBody?.addEventListener('click', async (event) => {
       const saveBtn = event.target.closest('.btn-status-save');
+      const fixedBtn = event.target.closest('.btn-mark-fixed');
       const openBtn = event.target.closest('.btn-open-complaint');
       if (openBtn) {
         sessionStorage.setItem('adminLastTab', 'errors');
         window.location.href = `/admin-complaint.html?id=${encodeURIComponent(openBtn.dataset.id)}`;
         return;
       }
+      if (fixedBtn) {
+        const confirmed = await askConfirm({
+          title: 'Перевести в архив',
+          message: 'Заявка будет помечена как исправленная, а оборудование вернётся в рабочее состояние.',
+          acceptLabel: 'Починено'
+        });
+        if (!confirmed) return;
+        const { ok, data } = await requestJSON(`/admin/complaints/${fixedBtn.dataset.id}/status`, jsonOptions('PATCH', { status: 'исправлено' }));
+        if (!ok) return showToast(data.message || 'Не удалось закрыть заявку', 'error', 'Ошибка');
+        showToast(data.message || 'Заявка переведена в архив');
+        await loadAdminDashboard();
+        return;
+      }
       if (!saveBtn) return;
       const select = complaintTableBody.querySelector(`.status-select[data-id="${saveBtn.dataset.id}"]`);
       const { ok, data } = await requestJSON(`/admin/complaints/${saveBtn.dataset.id}/status`, jsonOptions('PATCH', { status: select.value }));
-      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ РѕР±РЅРѕРІРёС‚СЊ СЃС‚Р°С‚СѓСЃ', 'error', 'РћС€РёР±РєР°');
-      showToast(data.message || 'РЎС‚Р°С‚СѓСЃ РѕР±РЅРѕРІР»РµРЅ');
+      if (!ok) return showToast(data.message || 'Не удалось обновить статус', 'error', 'Ошибка');
+      showToast(data.message || 'Статус обновлён');
       await loadAdminDashboard();
     });
 
@@ -1048,15 +1073,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (!deleteBtn) return;
       const confirmed = await askConfirm({
-        title: 'РЈРґР°Р»РµРЅРёРµ Р·Р°РїРёСЃРё РёР· Р°СЂС…РёРІР°',
-        message: 'Р­С‚Р° Р·Р°РїРёСЃСЊ Р±СѓРґРµС‚ СѓРґР°Р»РµРЅР° Р±РµР· РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ.',
-        acceptLabel: 'РЈРґР°Р»РёС‚СЊ'
+        title: 'Удаление записи из архива',
+        message: 'Эта запись будет удалена без возможности восстановления.',
+        acceptLabel: 'Удалить'
       });
       if (!confirmed) return;
       const { ok, data } = await requestJSON(`/admin/archive/${deleteBtn.dataset.id}`, { method: 'DELETE' });
-      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ Р·Р°РїРёСЃСЊ', 'error', 'РћС€РёР±РєР°');
+      if (!ok) return showToast(data.message || 'Не удалось удалить запись', 'error', 'Ошибка');
       dashboardState.archiveSelectedIds.delete(Number(deleteBtn.dataset.id));
-      showToast('Р—Р°РїРёСЃСЊ РёР· Р°СЂС…РёРІР° СѓРґР°Р»РµРЅР°');
+      showToast('Запись из архива удалена');
       await loadAdminDashboard();
     });
 
@@ -1083,22 +1108,22 @@ document.addEventListener('DOMContentLoaded', () => {
     archiveBulkDeleteBtn?.addEventListener('click', async () => {
       const ids = Array.from(dashboardState.archiveSelectedIds);
       if (!ids.length) {
-        return showToast('РЎРЅР°С‡Р°Р»Р° РѕС‚РјРµС‚СЊС‚Рµ Р·Р°РїРёСЃРё РІ Р°СЂС…РёРІРµ', 'warning', 'Р’РЅРёРјР°РЅРёРµ');
+        return showToast('Сначала отметьте записи в архиве', 'warning', 'Внимание');
       }
       const confirmed = await askConfirm({
-        title: 'РЈРґР°Р»РµРЅРёРµ РІС‹Р±СЂР°РЅРЅС‹С… Р·Р°РїРёСЃРµР№',
-        message: `Р‘СѓРґСѓС‚ СѓРґР°Р»РµРЅС‹ ${ids.length} Р°СЂС…РёРІРЅС‹С… Р·Р°РїРёСЃРµР№ Р±РµР· РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ.`,
-        acceptLabel: 'РЈРґР°Р»РёС‚СЊ РІС‹Р±СЂР°РЅРЅС‹Рµ'
+        title: 'Удаление выбранных записей',
+        message: `Будут удалены ${ids.length} архивных записей без возможности восстановления.`,
+        acceptLabel: 'Удалить выбранные'
       });
       if (!confirmed) return;
 
       for (const id of ids) {
         const { ok, data } = await requestJSON(`/admin/archive/${id}`, { method: 'DELETE' });
-        if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ С‡Р°СЃС‚СЊ Р·Р°РїРёСЃРµР№ Р°СЂС…РёРІР°', 'error', 'РћС€РёР±РєР°');
+        if (!ok) return showToast(data.message || 'Не удалось удалить часть записей архива', 'error', 'Ошибка');
       }
 
       dashboardState.archiveSelectedIds = new Set();
-      showToast('Р’С‹Р±СЂР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё РёР· Р°СЂС…РёРІР° СѓРґР°Р»РµРЅС‹');
+      showToast('Выбранные записи из архива удалены');
       await loadAdminDashboard();
     });
 
@@ -1118,9 +1143,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (deleteBtn) {
           const confirmed = await askConfirm({
-            title: 'РЈРґР°Р»РµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ',
-            message: 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р±СѓРґРµС‚ СѓРґР°Р»РµРЅ РёР· СЃРёСЃС‚РµРјС‹.',
-            acceptLabel: 'РЈРґР°Р»РёС‚СЊ'
+            title: 'Удаление пользователя',
+            message: 'Пользователь будет удалён из системы.',
+            acceptLabel: 'Удалить'
           });
           if (!confirmed) return;
           const url = deleteBtn.dataset.userType === 'admin'
@@ -1166,9 +1191,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const { roomId } = getQueryParams();
       const payload = Object.fromEntries(new FormData(equipmentForm).entries());
       const { ok, data } = await requestJSON(`/admin/rooms/${roomId}/equipment`, jsonOptions('POST', payload));
-      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ РґРѕР±Р°РІРёС‚СЊ РѕР±РѕСЂСѓРґРѕРІР°РЅРёРµ', 'error', 'РћС€РёР±РєР°');
+      if (!ok) return showToast(data.message || 'Не удалось добавить оборудование', 'error', 'Ошибка');
       equipmentForm.reset();
-      showToast('РћР±РѕСЂСѓРґРѕРІР°РЅРёРµ РґРѕР±Р°РІР»РµРЅРѕ');
+      showToast('Оборудование добавлено');
       await loadAdminRoomPage();
     });
 
@@ -1182,14 +1207,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (!deleteBtn) return;
       const confirmed = await askConfirm({
-        title: 'РЈРґР°Р»РµРЅРёРµ РѕР±РѕСЂСѓРґРѕРІР°РЅРёСЏ',
-        message: 'Р­С‚Р° РµРґРёРЅРёС†Р° РѕР±РѕСЂСѓРґРѕРІР°РЅРёСЏ Р±СѓРґРµС‚ СѓРґР°Р»РµРЅР°.',
-        acceptLabel: 'РЈРґР°Р»РёС‚СЊ'
+        title: 'Удаление оборудования',
+        message: 'Эта единица оборудования будет удалена.',
+        acceptLabel: 'Удалить'
       });
       if (!confirmed) return;
       const { ok, data } = await requestJSON(`/admin/equipment/${deleteBtn.dataset.id}`, { method: 'DELETE' });
-      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ РѕР±РѕСЂСѓРґРѕРІР°РЅРёРµ', 'error', 'РћС€РёР±РєР°');
-      showToast('РћР±РѕСЂСѓРґРѕРІР°РЅРёРµ СѓРґР°Р»РµРЅРѕ');
+      if (!ok) return showToast(data.message || 'Не удалось удалить оборудование', 'error', 'Ошибка');
+      showToast('Оборудование удалено');
       await loadAdminRoomPage();
     });
 
@@ -1202,9 +1227,9 @@ document.addEventListener('DOMContentLoaded', () => {
         purchase_date: payload.purchase_date || '',
         status: payload.status
       }));
-      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ РѕР±РЅРѕРІРёС‚СЊ РѕР±РѕСЂСѓРґРѕРІР°РЅРёРµ', 'error', 'РћС€РёР±РєР°');
+      if (!ok) return showToast(data.message || 'Не удалось обновить оборудование', 'error', 'Ошибка');
       closeModal(equipmentEditModal, equipmentEditForm);
-      showToast('РћР±РѕСЂСѓРґРѕРІР°РЅРёРµ РѕР±РЅРѕРІР»РµРЅРѕ');
+      showToast('Оборудование обновлено');
       await loadAdminRoomPage();
     });
 
@@ -1226,9 +1251,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const { roomId } = getQueryParams();
       const payload = Object.fromEntries(new FormData(roomEditForm).entries());
       const { ok, data } = await requestJSON(`/admin/rooms/${roomId}`, jsonOptions('PATCH', payload));
-      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ РѕР±РЅРѕРІРёС‚СЊ Р°СѓРґРёС‚РѕСЂРёСЋ', 'error', 'РћС€РёР±РєР°');
+      if (!ok) return showToast(data.message || 'Не удалось обновить аудиторию', 'error', 'Ошибка');
       closeModal(roomEditModal, roomEditForm);
-      showToast('РќР°Р·РІР°РЅРёРµ Р°СѓРґРёС‚РѕСЂРёРё РѕР±РЅРѕРІР»РµРЅРѕ');
+      showToast('Название аудитории обновлено');
       await loadAdminRoomPage();
     });
 
@@ -1236,10 +1261,10 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       const { roomId } = getQueryParams();
       const teacherIds = Array.from(roomPageState.pendingTeacherIds);
-      if (!teacherIds.length) return showToast('Р’С‹Р±РµСЂРёС‚Рµ С…РѕС‚СЏ Р±С‹ РѕРґРЅРѕРіРѕ РїСЂРµРїРѕРґР°РІР°С‚РµР»СЏ', 'warning', 'Р’РЅРёРјР°РЅРёРµ');
+      if (!teacherIds.length) return showToast('Выберите хотя бы одного преподавателя', 'warning', 'Внимание');
       const { ok, data } = await requestJSON(`/admin/rooms/${roomId}/teachers`, jsonOptions('POST', { teacher_id: teacherIds }));
-      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ РЅР°Р·РЅР°С‡РёС‚СЊ РїСЂРµРїРѕРґР°РІР°С‚РµР»СЏ', 'error', 'РћС€РёР±РєР°');
-      showToast('РџСЂРµРїРѕРґР°РІР°С‚РµР»Рё РґРѕР±Р°РІР»РµРЅС‹ РІ Р°СѓРґРёС‚РѕСЂРёСЋ');
+      if (!ok) return showToast(data.message || 'Не удалось назначить преподавателей', 'error', 'Ошибка');
+      showToast('Преподаватели добавлены в аудиторию');
       roomPageState.pendingTeacherIds = new Set();
       if (roomTeacherSearch) roomTeacherSearch.value = '';
       await loadAdminRoomPage();
@@ -1250,27 +1275,27 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!removeBtn) return;
       const { roomId } = getQueryParams();
       const confirmed = await askConfirm({
-        title: 'РЈРґР°Р»РµРЅРёРµ РїСЂРµРїРѕРґР°РІР°С‚РµР»СЏ',
-        message: 'РџСЂРµРїРѕРґР°РІР°С‚РµР»СЊ Р±СѓРґРµС‚ РѕС‚РєСЂРµРїР»РµРЅ РѕС‚ Р°СѓРґРёС‚РѕСЂРёРё.',
-        acceptLabel: 'РЈРґР°Р»РёС‚СЊ'
+        title: 'Удаление преподавателя',
+        message: 'Преподаватель будет откреплён от аудитории.',
+        acceptLabel: 'Удалить'
       });
       if (!confirmed) return;
       const { ok, data } = await requestJSON(`/admin/rooms/${roomId}/teachers/${removeBtn.dataset.id}`, { method: 'DELETE' });
-      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ РїСЂРµРїРѕРґР°РІР°С‚РµР»СЏ', 'error', 'РћС€РёР±РєР°');
-      showToast('РџСЂРµРїРѕРґР°РІР°С‚РµР»СЊ СѓРґР°Р»РµРЅ РёР· Р°СѓРґРёС‚РѕСЂРёРё');
+      if (!ok) return showToast(data.message || 'Не удалось удалить преподавателя', 'error', 'Ошибка');
+      showToast('Преподаватель удалён из аудитории');
       await loadAdminRoomPage();
     });
 
     deleteRoomBtn?.addEventListener('click', async () => {
       const { roomId } = getQueryParams();
       const confirmed = await askConfirm({
-        title: 'РЈРґР°Р»РµРЅРёРµ Р°СѓРґРёС‚РѕСЂРёРё',
-        message: 'Р‘СѓРґСѓС‚ СѓРґР°Р»РµРЅС‹ Р°СѓРґРёС‚РѕСЂРёСЏ Рё РІСЃРµ СЃРІСЏР·Р°РЅРЅС‹Рµ РґР°РЅРЅС‹Рµ.',
-        acceptLabel: 'РЈРґР°Р»РёС‚СЊ Р°СѓРґРёС‚РѕСЂРёСЋ'
+        title: 'Удаление аудитории',
+        message: 'Будут удалены аудитория и все связанные данные.',
+        acceptLabel: 'Удалить аудиторию'
       });
       if (!confirmed) return;
       const { ok, data } = await requestJSON(`/admin/rooms/${roomId}`, { method: 'DELETE' });
-      if (!ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ Р°СѓРґРёС‚РѕСЂРёСЋ', 'error', 'РћС€РёР±РєР°');
+      if (!ok) return showToast(data.message || 'Не удалось удалить аудиторию', 'error', 'Ошибка');
       window.location.href = '/';
     });
   }
@@ -1291,7 +1316,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const tr = event.target.closest('tr');
       if (!tr) return;
       if (tr.classList.contains('status-review') || tr.classList.contains('status-repair')) {
-        return showToast('РџРѕ СЌС‚РѕРјСѓ РѕР±РѕСЂСѓРґРѕРІР°РЅРёСЋ СѓР¶Рµ РµСЃС‚СЊ Р°РєС‚РёРІРЅР°СЏ Р·Р°СЏРІРєР° РёР»Рё РѕРЅРѕ РІ СЂРµРјРѕРЅС‚Рµ', 'warning', 'РќРµРґРѕСЃС‚СѓРїРЅРѕ');
+        return showToast('По этому оборудованию уже есть активная заявка или оно в ремонте', 'warning', 'Недоступно');
       }
       document.getElementById('complaintRoomId').value = getQueryParams().roomId || '';
       document.getElementById('complaintEquipmentId').value = tr.dataset.id || '';
@@ -1306,21 +1331,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const roomId = document.getElementById('complaintRoomId')?.value;
     const equipmentId = document.getElementById('complaintEquipmentId')?.value;
     const description = complaintForm.querySelector('textarea[name="description"]')?.value || '';
-    if (!roomId || !equipmentId) return showToast('РЎРЅР°С‡Р°Р»Р° РІС‹Р±РµСЂРёС‚Рµ РѕР±РѕСЂСѓРґРѕРІР°РЅРёРµ', 'warning', 'Р’РЅРёРјР°РЅРёРµ');
-    if (description.length < 5) return showToast('РћРїРёСЃР°РЅРёРµ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РјРёРЅРёРјСѓРј 5 СЃРёРјРІРѕР»РѕРІ', 'warning', 'Р’РЅРёРјР°РЅРёРµ');
+    if (!roomId || !equipmentId) return showToast('Сначала выберите оборудование', 'warning', 'Внимание');
+    if (description.length < 5) return showToast('Описание должно быть минимум 5 символов', 'warning', 'Внимание');
 
     try {
       const response = await fetch('/complaints', { method: 'POST', body: new FormData(complaintForm) });
       const data = await response.json().catch(() => ({}));
       if (response.status === 404) {
-        return showToast('РЎРµСЂРІРµСЂ СЂР°Р±РѕС‚Р°РµС‚ РЅР° СЃС‚Р°СЂРѕР№ РІРµСЂСЃРёРё. РџРµСЂРµР·Р°РїСѓСЃС‚РёС‚Рµ РїСЂРёР»РѕР¶РµРЅРёРµ Рё РѕР±РЅРѕРІРёС‚Рµ СЃС‚СЂР°РЅРёС†Сѓ.', 'error', 'РќСѓР¶РЅРѕ РѕР±РЅРѕРІР»РµРЅРёРµ');
+        return showToast('Сервер работает на старой версии. Перезапустите приложение и обновите страницу.', 'error', 'Нужно обновление');
       }
-      if (!response.ok) return showToast(data.message || 'РќРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РїСЂР°РІРёС‚СЊ Р·Р°СЏРІРєСѓ', 'error', 'РћС€РёР±РєР°');
+      if (!response.ok) return showToast(data.message || 'Не удалось отправить заявку', 'error', 'Ошибка');
       complaintForm.reset();
-      showToast('Р—Р°СЏРІРєР° РѕС‚РїСЂР°РІР»РµРЅР°');
+      showToast('Заявка отправлена');
       await loadUserRoomEquipment();
     } catch (error) {
-      showToast('РќРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РїСЂР°РІРёС‚СЊ Р·Р°СЏРІРєСѓ. РџСЂРѕРІРµСЂСЊС‚Рµ, С‡С‚Рѕ СЃРµСЂРІРµСЂ Р·Р°РїСѓС‰РµРЅ Рё СЃС‚СЂР°РЅРёС†Р° РѕР±РЅРѕРІР»РµРЅР°.', 'error', 'РћС€РёР±РєР°');
+      showToast('Не удалось отправить заявку. Проверьте, что сервер запущен и страница обновлена.', 'error', 'Ошибка');
     }
   });
 

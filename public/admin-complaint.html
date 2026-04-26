@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Карточка заявки</title>
+  <title>Карточка обращения</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body class="complaint-page">
   <header class="topbar topbar-modern">
     <div class="topbar-left">
       <button id="backBtn" class="back-link" type="button">← Назад к панели</button>
-      <h1 id="complaintTitle">Карточка заявки</h1>
+      <h1 id="complaintTitle">Карточка обращения</h1>
     </div>
     <button id="logoutBtn" class="btn" type="button">Выйти</button>
   </header>
@@ -19,7 +19,7 @@
     <section class="card wide">
       <div class="pane-header">
         <div>
-          <p class="eyebrow">Заявка</p>
+          <p class="eyebrow">Обращение</p>
           <h2>Основная информация</h2>
         </div>
       </div>
@@ -152,15 +152,25 @@
       }
 
       const complaint = data.complaint;
-      document.getElementById('complaintTitle').textContent = `Заявка #${complaint.id}`;
+      const complaintHeading = complaint.room_name && complaint.equipment_name
+        ? `Аудитория ${complaint.room_name} • ${complaint.equipment_name}`
+        : (complaint.equipment_name || complaint.room_name || 'Карточка обращения');
+
+      document.getElementById('complaintTitle').textContent = complaintHeading;
+      document.title = complaintHeading;
+
       document.getElementById('complaintDetails').innerHTML = `
         <div class="room-analytics-list">
           <div class="room-analytics-item">
             <div class="room-analytics-top">
-              <div class="room-analytics-name">${escapeHtml(complaint.room_name || 'Без аудитории')}</div>
+              <div class="room-analytics-name">${escapeHtml(complaint.room_name ? `Аудитория ${complaint.room_name}` : 'Без аудитории')}</div>
               <div class="room-analytics-meta">${statusBadge(complaint.status)}</div>
             </div>
             <div class="complaint-info-grid">
+              <div class="complaint-info-card">
+                <span class="complaint-info-label">Номер обращения</span>
+                <span class="complaint-info-value">#${escapeHtml(complaint.id)}</span>
+              </div>
               <div class="complaint-info-card">
                 <span class="complaint-info-label">Преподаватель</span>
                 <span class="complaint-info-value">${escapeHtml(complaint.full_name || complaint.login || '-')}</span>
@@ -222,7 +232,7 @@
             </p>
           </div>
         `).join('')
-        : '<div class="empty-state"><h3>История пока пуста</h3><p>Изменения по заявке будут отображаться здесь.</p></div>';
+        : '<div class="empty-state"><h3>История пока пустая</h3><p>Изменения по заявке будут отображаться здесь.</p></div>';
 
       const attachments = document.getElementById('attachments');
       attachments.innerHTML = '';

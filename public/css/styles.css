@@ -211,6 +211,16 @@ textarea {
   color: #fff;
 }
 
+.btn-success {
+  background: linear-gradient(180deg, #dcfce7 0%, #bbf7d0 100%);
+  color: #166534;
+}
+
+.btn-success:hover {
+  background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+  color: #fff;
+}
+
 .btn-small,
 .btn-sm {
   padding: 7px 12px;
